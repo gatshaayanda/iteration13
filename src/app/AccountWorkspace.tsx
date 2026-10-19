@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { generateReactHelpers } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
 
@@ -33,7 +33,27 @@ export default function AccountWorkspace({ orders, email, setEmail, online, onBr
   const [gardenSeeds, setGardenSeeds] = useState(0);
   const [journal, setJournal] = useState("");
   const [savedJournal, setSavedJournal] = useState("");
+  const [extrasReady, setExtrasReady] = useState(false);
   const [openThread, setOpenThread] = useState<string | null>(null);
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("iteration13:account-extras:v1");
+      if (saved) {
+        const parsed = JSON.parse(saved) as { gardenSeeds?: number; savedJournal?: string };
+        setGardenSeeds(Number.isFinite(parsed.gardenSeeds) ? Math.max(0, Number(parsed.gardenSeeds)) : 0);
+        setJournal(typeof parsed.savedJournal === "string" ? parsed.savedJournal.slice(0, 500) : "");
+        setSavedJournal(typeof parsed.savedJournal === "string" ? parsed.savedJournal.slice(0, 500) : "");
+      }
+    } catch { /* Account extras are optional when browser storage is blocked. */ }
+    setExtrasReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!extrasReady) return;
+    try { window.localStorage.setItem("iteration13:account-extras:v1", JSON.stringify({ gardenSeeds, savedJournal })); }
+    catch { /* Order history and messages remain usable if optional extras cannot be saved. */ }
+  }, [extrasReady, gardenSeeds, savedJournal]);
+
   const { startUpload, isUploading } = useUploadThing("fileUploader", {
     onUploadProgress: progress => setUploadProgress(Math.max(0, Math.min(100, Math.round(progress)))),
     onUploadError: error => { setUploadNotice(error.message || "Upload failed. Your message has not been sent."); setUploadingOrder(null); setUploadProgress(0); },
@@ -107,8 +127,8 @@ export default function AccountWorkspace({ orders, email, setEmail, online, onBr
       })}</div>}
       {uploadNotice && <p className="sd-media-status" role="status">{uploadNotice}</p>}
       <div className="sd-account-extras">
-        <section className="sd-account-extra"><span className="sd-kicker">01 / PROJECT GARDEN</span><h2>Grow your next idea.</h2><p>A tiny, playful studio garden grows as you work through project steps. It is a creative progress marker, not a productivity score.</p><div className="sd-garden-scene" aria-label={seeds + " project seeds tended"}><span>{seeds > 0 ? "🌱" : "🪴"}</span><div><strong>{seeds} seeds planted</strong><small>{filteredOrders.length} project(s) · {totalMessages} message(s)</small></div>{seeds >= 5 ? <span>🌿</span> : <span>✳</span>}</div><button className="sd-button sd-primary" onClick={() => setGardenSeeds(value => value + 1)}>Plant a seed +1</button><p className="sd-account-note">Your garden is a small theme-specific demo interaction. Planting is saved for this open session only; request and message counts come from this browser's saved records.</p></section>
-        <section className="sd-account-extra"><span className="sd-kicker">02 / PROJECT JOURNAL</span><h2>Keep a thought.</h2><p>Save a short intention, question or idea while you plan. This journal stays in the current page session and is not a secure private vault.</p><label className="sd-journal-label" htmlFor="studio-journal">A note for your next step<textarea id="studio-journal" rows={4} maxLength={500} value={journal} onChange={event => setJournal(event.target.value)} placeholder="What should we remember for this project?" /></label><div className="sd-journal-actions"><span>{journal.length}/500 characters</span><button className="sd-small-button" onClick={() => setSavedJournal(journal.trim())}>Save note</button></div>{savedJournal && <p className="sd-saved-note"><strong>Saved note</strong>{savedJournal}</p>}</section>
+        <section className="sd-account-extra"><span className="sd-kicker">01 / PROJECT GARDEN</span><h2>Grow your next idea.</h2><p>A tiny, playful studio garden grows as you work through project steps. It is a creative progress marker, not a productivity score.</p><div className="sd-garden-scene" aria-label={seeds + " project seeds tended"}><span>{seeds > 0 ? "🌱" : "🪴"}</span><div><strong>{seeds} seeds planted</strong><small>{filteredOrders.length} project(s) · {totalMessages} message(s)</small></div>{seeds >= 5 ? <span>🌿</span> : <span>✳</span>}</div><button className="sd-button sd-primary" onClick={() => setGardenSeeds(value => value + 1)}>Plant a seed +1</button><p className="sd-account-note">Your garden is a small theme-specific demo interaction. Garden progress and saved notes stay on this browser; request and message counts come from this browser's saved records.</p></section>
+        <section className="sd-account-extra"><span className="sd-kicker">02 / PROJECT JOURNAL</span><h2>Keep a thought.</h2><p>Save a short intention, question or idea while you plan. This journal stays in this browser and is not a secure private vault.</p><label className="sd-journal-label" htmlFor="studio-journal">A note for your next step<textarea id="studio-journal" rows={4} maxLength={500} value={journal} onChange={event => setJournal(event.target.value)} placeholder="What should we remember for this project?" /></label><div className="sd-journal-actions"><span>{journal.length}/500 characters</span><button className="sd-small-button" onClick={() => setSavedJournal(journal.trim())}>Save note</button></div>{savedJournal && <p className="sd-saved-note"><strong>Saved note</strong>{savedJournal}</p>}</section>
       </div>
       <section className="sd-account-extra sd-account-guide"><span className="sd-kicker">03 / YOUR NEXT STEP</span><h2>Make progress, not guesswork.</h2><div className="sd-next-steps"><article><b>01</b><strong>Review your brief</strong><p>Make sure your requested date and project details are clear.</p></article><article><b>02</b><strong>Share a reference</strong><p>Use the conversation to attach an image, PDF or short video while online.</p></article><article><b>03</b><strong>Keep the thread handy</strong><p>Check your messages and status again when you return to this browser.</p></article></div></section>
       <p className="sd-local-warning">Offline ready for local browsing and text messages after the app shell is cached. Requests, messages and status updates remain on this browser only. Attachments need internet and upload to UploadThing; they are not queued for offline upload.</p>
