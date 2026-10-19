@@ -1141,3 +1141,10 @@ button.plugProductAction{width:100%;align-items:center;background:transparent;bo
 .sd-admin-thread form label{display:grid;gap:7px;font-size:.8rem;font-weight:900}
 .sd-admin-thread form button{justify-self:start}
 @media(max-width:680px){.sd-account-extras{grid-template-columns:1fr}.sd-next-steps{grid-template-columns:1fr}.sd-thread{padding:12px}.sd-workspace-meta .sd-small-button{margin-left:0;width:100%}.sd-thread-actions .sd-button{flex:1}.sd-thread-message>div{align-items:flex-start;flex-direction:column;gap:4px}}
+
+.sd-account-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.sd-account-stats article{display:grid;gap:4px;padding:13px 15px;background:#141414;border:1px solid #39352f;border-radius:13px}
+.sd-account-stats article span{color:#aaa197;font-size:.69rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.sd-account-stats article strong{font-family:Impact,"Arial Black",Arial,sans-serif;font-size:1.7rem;color:var(--plug-blue)}
+.sd-account-stats article small{color:#a49b90;font-size:.69rem;line-height:1.4}
+@media(max-width:560px){.sd-account-stats{grid-template-columns:1fr 1fr}.sd-account-stats article:last-child{grid-column:1/-1}}
