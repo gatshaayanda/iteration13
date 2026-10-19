@@ -62,6 +62,7 @@ export default function AccountWorkspace({ orders, email, setEmail, online, onBr
   const filteredOrders = useMemo(() => orders.filter(order => !email.trim() || order.email.toLowerCase() === email.trim().toLowerCase()), [orders, email]);
   const totalMessages = filteredOrders.reduce((total, order) => total + (order.messages?.length || 0), 0);
   const openOrders = filteredOrders.filter(order => !["Completed", "Declined"].includes(order.status)).length;
+  const fileCount = filteredOrders.reduce((total, order) => total + (order.messages || []).filter(message => Boolean(message.attachment)).length, 0);
   const seeds = gardenSeeds + filteredOrders.length + Math.floor(totalMessages / 2);
 
   function sendMessage(order: WorkspaceOrder, attachment?: AccountAttachment) {
@@ -106,6 +107,7 @@ export default function AccountWorkspace({ orders, email, setEmail, online, onBr
     </div>
     <div className="sd-account-content">
       <div className="sd-account-filter"><label>Find your requests by email<input type="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="The email used on your order" autoComplete="email" /></label><span>{filteredOrders.length} {filteredOrders.length === 1 ? "project" : "projects"} found</span></div>
+      <div className="sd-account-stats"><article><span>Active projects</span><strong>{openOrders}</strong><small>Not completed or declined</small></article><article><span>Conversation</span><strong>{totalMessages}</strong><small>Saved local messages</small></article><article><span>Shared files</span><strong>{fileCount}</strong><small>Attachments in your threads</small></article></div>
       {filteredOrders.length === 0 ? <div className="sd-empty"><span>↗</span><h2>Your next project starts here.</h2><p>No matching requests on this browser yet. Use the same browser and email you entered when submitting a service request.</p><button className="sd-button sd-primary" onClick={onBrowse}>Browse services →</button></div> : <div className="sd-orders">{filteredOrders.map(order => {
         const messages = order.messages || [];
         const expanded = openThread === order.id;
