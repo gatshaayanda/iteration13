@@ -1,6 +1,6 @@
 # Cloning Iteration 13 safely
 
-**Before cloning or adapting:** read [START-HERE.md](./START-HERE.md), [AGENTS.md](./AGENTS.md), [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md), [FOUNDATION-BLUEPRINT.md](./FOUNDATION-BLUEPRINT.md) and [README.md](./README.md). Start-HERE is the mandatory handoff so a new chat does not have to rediscover which files govern which steps. Iteration 13 is now the default cloning source for new customer-first PWA projects in this portfolio, including new Admin Hub apps, unless the product owner explicitly chooses another foundation. For an existing project, inspect and improve its current repository instead of recloning it.
+**Before cloning or adapting:** read [START-HERE.md](./START-HERE.md), [AGENTS.md](./AGENTS.md), [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md), [docs/PWA-INSTALLATION-LOCK.md](./docs/PWA-INSTALLATION-LOCK.md), [FOUNDATION-BLUEPRINT.md](./FOUNDATION-BLUEPRINT.md) and [README.md](./README.md). Start-HERE is the mandatory handoff so a new chat does not have to rediscover which files govern which steps. Iteration 13 is now the default cloning source for new customer-first PWA projects in this portfolio, including new Admin Hub apps, unless the product owner explicitly chooses another foundation. For an existing project, inspect and improve its current repository instead of recloning it.
 
 Use this guide when creating a new project from Iteration 13. For an existing project, inspect and improve the existing repository instead of recloning it.
 ## 1. Establish the source and target
@@ -12,7 +12,7 @@ Before starting, record the current approved baseline from [GOLDEN-BASELINE.md](
 
 ## 2. Preserve installation before changing identity
 
-**Installation is frozen during ordinary project adaptation.** Treat it as infrastructure, not branding. For a new project's icon, colors, typography, layout or copy, change artwork and metadata only; do not rewrite `layout.tsx`, `pwa-register.tsx`, event names, prompt timing, service-worker behavior or install visibility.
+**Installation is frozen during ordinary project adaptation.** Treat it as infrastructure, not branding. The full mandatory contract and regression checklist are in [docs/PWA-INSTALLATION-LOCK.md](./docs/PWA-INSTALLATION-LOCK.md); every new clone must preserve and run the installation invariant guard in `scripts/verify-identity.mjs`. For a new project's icon, colors, typography, layout or copy, change artwork and metadata only; do not rewrite `layout.tsx`, `pwa-register.tsx`, event names, prompt timing, service-worker behavior or install visibility.
 
 Inspect these exact files and assets in the source and target:
 - `src/app/layout.tsx` — metadata, manifest declaration, early `beforeinstallprompt` capture and embedded-browser detection.
