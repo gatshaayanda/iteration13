@@ -34,15 +34,18 @@ Iteration 13 is the reusable, customer-first PWA prototype and candidate foundat
 - Never describe local-only changes as synced to a server or shared with another device.
 - Preserve the PWA pattern lab at `/patterns`, the iPhone installation guide at `/iphone-install`, and the existing offline guide.
 
-## Installation — protected behavior
-Installation currently works and must not be casually rewritten. Before touching any PWA identity/icon/install files, inspect their actual implementation and consult current primary documentation (MDN and web.dev; Apple guidance for iOS).
+## Installation — protected, do-not-touch-by-default behavior
+**The install flow is a protected foundation primitive, not a design component.** For branding, icon, color, typography, layout, copy, catalogue or account work, do not edit the install runtime or its event flow. Change only the relevant icon assets and metadata references. Any install-mechanics change requires an explicit product requirement, a focused diff, checks, and browser QA.
+
 - Preserve the early `beforeinstallprompt` capture in `src/app/layout.tsx`, the retained one-shot event, the `iteration13-open-install` click event, and the user-initiated call to the native browser prompt in `src/app/pwa-register.tsx`.
-- Do not fake a native prompt, consume the prompt before the user clicks, or replace the working install action with a dead button.
-- Keep the embedded-browser handoff and `/iphone-install` Safari Share → Add to Home Screen guide, including its referenced media assets.
+- **Native prompt first:** when the browser supplies `beforeinstallprompt`, retain it and invoke `prompt()` directly from the user's branded install click. Do not consume it during page load, defer the call behind another user interaction, or replace it with a custom imitation.
+- **No generic install explainer/modal on desktop or Android.** The install CTA is visible only when a retained native prompt is available. If the browser has not offered a prompt, do not display a dead CTA or a modal telling users to use the Chrome/Edge menu.
+- **iOS exception:** because iOS Safari does not provide `beforeinstallprompt`, show concise Share → Add to Home Screen guidance only in iOS Safari. Do not show that manual guide as a substitute on desktop or Android.
+- Keep the blocking embedded-browser handoff and `/iphone-install` Safari guide, including referenced media assets. A social referrer alone is not proof that the page is inside an embedded browser.
 - Inspect both `public/manifest.webmanifest` and `src/app/manifest.ts` before changing manifest output. Verify which manifest Next.js actually serves; do not assume similarly named files are interchangeable.
 - Change icon artwork separately from install mechanics. Keep valid manifest icon paths, MIME types, purpose and supported sizes. Do not delete or rename an icon until every reference is updated and the built manifest/assets have been checked.
 - Keep service-worker cache namespaces scoped to Iteration 13. Preserve update detection, the visible refresh action, offline fallback and existing privacy boundaries. Do not cache private Firebase responses as public content.
-- After any install-related change, run identity verification and build/lint checks, inspect the served manifest and assets, and state that real Chrome/Android and iPhone/Safari testing remains for the product owner unless it was actually performed.
+- `npm run verify:identity` now guards core install-flow invariants. After any PWA asset/metadata change, run identity verification, lint and build; inspect the served manifest/assets. State that real Chrome/Android and iPhone/Safari testing remains for the product owner unless it was actually performed.
 
 ## Verification and reporting
 Run `npm run verify:identity`, `npm run lint`, and `npm run build` when the available environment permits. Report the exact commit/branch, checks actually run, deployment status separately, and concise QA steps. A successful GitHub push does not prove a successful Vercel deployment.
