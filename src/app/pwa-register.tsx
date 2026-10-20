@@ -67,7 +67,8 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   const [updateReady, setUpdateReady] = useState<ServiceWorker | null>(null);
   const [embeddedAndroid, setEmbeddedAndroid] = useState(initialEmbedded && initialAndroid);
   const [installHelpOpen, setInstallHelpOpen] = useState(false);
-  const [installPlatform, setInstallPlatform] = useState<"android" | "ios" | "other">("ios");
+  const [canInstall, setCanInstall] = useState(false);
+  const [canShowManualInstall, setCanShowManualInstall] = useState(false);
   const embeddedActionRef = useRef<HTMLButtonElement | null>(null);
   const reloadForUpdate = useRef(false);
 
@@ -76,7 +77,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
     const env = environment();
     const embedded = initialEmbedded || env.embedded;
     setEmbeddedAndroid((initialEmbedded && initialAndroid) || (env.embedded && env.android));
-    setInstallPlatform(env.ios ? "ios" : env.android ? "android" : "other");
+    setCanShowManualInstall(isIosSafari());
 
     const retryPendingOrderNotifications = async () => {
       const user = auth.currentUser;
@@ -116,6 +117,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       event.preventDefault();
       const prompt = event as InstallPromptEvent;
       installPromptRef.current = prompt;
+      setCanInstall(true);
       // Retain the one-shot native event for the user's explicit Install click.
       // Do not interrupt page load with a second, custom install screen.
     };
@@ -152,15 +154,17 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
         void install();
         return;
       }
-      // Match the working Odi install flow: never let a visible install CTA silently
-      // do nothing when this browser has not emitted beforeinstallprompt.
-      const platform = current.ios ? "ios" : current.android ? "android" : "other";
-      setInstallPlatform(platform);
-      setInstallHelpOpen(true);
-      setInstallState("native");
+      // Only iOS Safari needs manual guidance. On desktop/Android, do not replace
+      // the browser-owned prompt with a custom explainer or fake install flow.
+      if (current.ios && isIosSafari()) {
+        setInstallHelpOpen(true);
+        setInstallState("native");
+      }
     };
     const appInstalled = () => {
       installPromptRef.current = null;
+      setCanInstall(false);
+      setCanShowManualInstall(false);
       setInstallHelpOpen(false);
       setInstallState("hidden");
       clearDismissal();
@@ -238,12 +242,12 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   async function install() {
     const prompt = installPromptRef.current;
     if (!prompt) {
-      // Native install events are browser-controlled. Show the same explicit
-      // platform-specific fallback as Odi rather than silently returning.
-      const env = environment();
-      setInstallPlatform(env.ios ? "ios" : env.android ? "android" : "other");
-      setInstallHelpOpen(true);
-      setInstallState("native");
+      // Never manufacture a replacement prompt. Manual steps are only valid for
+      // iOS Safari, where beforeinstallprompt is not available.
+      if (isIosSafari()) {
+        setInstallHelpOpen(true);
+        setInstallState("native");
+      }
       return;
     }
     try {
@@ -255,6 +259,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       // generic Chrome-menu instructions when the native prompt fails.
     } finally {
       installPromptRef.current = null;
+      setCanInstall(false);
       setInstallHelpOpen(false);
       setInstallState("hidden");
     }
@@ -294,44 +299,17 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
 
   const installShellStyle: CSSProperties = { position: "fixed", left: 16, right: 16, bottom: 16, zIndex: 1000, maxWidth: 720, margin: "0 auto", padding: 16, borderRadius: 18, background: "#FFFFFF", color: "#111318", boxShadow: "0 12px 40px rgba(0,0,0,.18)", border: "1px solid rgba(17,19,24,.12)" };
   const embeddedInstallStyle: CSSProperties = { position: "fixed", inset: 0, zIndex: 2147483647, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, background: "rgba(0,0,0,.82)", backdropFilter: "blur(4px)", overscrollBehavior: "contain" };
-  const installCard = installState === "native" ? (
+  const installCard = installState === "native" && installHelpOpen && isIosSafari() ? (
     <div style={installShellStyle} role="presentation">
       <section className="plugInstallModal" role="dialog" aria-modal="false" aria-labelledby="plug-install-title" aria-describedby="plug-install-message">
-        <div className="plugInstallTop"><span className="plugInstallMark">13</span><span className="plugInstallTag">ITERATION 13 · SERVICE STUDIO</span><button type="button" className="plugInstallClose" aria-label="Close install prompt" onClick={dismissInstall}>×</button></div>
-        <div className="plugInstallKicker">YOUR SERVICE STUDIO APP</div>
-        <h2 id="plug-install-title">Iteration 13.<br/><em>One tap away.</em></h2>
-        <p id="plug-install-message">Install Iteration 13 on your device for quick access to the service menu, your demo requests and the local account view.</p>
-        {installHelpOpen ? (
-          <div className="plugInstallSteps" role="status" aria-live="polite">
-            {installPlatform === "ios" ? (
-              <>
-                <strong>Add Iteration 13 from Safari</strong>
-                <p>Open this page in <b>Safari</b>, tap <b>Share</b>, choose <b>Add to Home Screen</b>, then tap <b>Add</b>.</p>
-              </>
-            ) : installPlatform === "android" ? (
-              <>
-                <strong>Add Iteration 13 from Chrome</strong>
-                <p>In Chrome, tap the <b>⋮ menu</b> and choose <b>Install app</b> or <b>Add to Home screen</b>. The wording depends on your Chrome version.</p>
-              </>
-            ) : (
-              <>
-                <strong>Install Iteration 13 from your browser</strong>
-                <p>In Chrome or Edge, open the browser menu and choose <b>Install Iteration 13</b> or <b>Install page as app</b>, if offered.</p>
-              </>
-            )}
-            <button type="button" className="plugInstallPrimary" onClick={dismissInstall}>Got it</button>
-          </div>
-        ) : (
-          <>
-            <div className="plugInstallModalBenefits"><span><b>01</b><strong>Quick access</strong><small>Open Iteration 13 from your home screen.</small></span><span><b>02</b><strong>Your requests</strong><small>Return to your demo requests and account view.</small></span><span><b>03</b><strong>Private by account</strong><small>Keep your demo requests on this device.</small></span></div>
-            <button type="button" className="plugInstallPrimary" onClick={() => void install()}>Install Iteration 13 →</button>
-            <button type="button" className="plugInstallSecondary" onClick={dismissInstall}>Not now</button>
-          </>
-        )}
-        <p className="plugInstallFootnote">No app-store search needed. Your browser will guide the installation.</p>
+        <div className="plugInstallTop"><span className="plugInstallMark">13</span><span className="plugInstallTag">ITERATION 13 · SERVICE STUDIO</span><button type="button" className="plugInstallClose" aria-label="Close install guidance" onClick={dismissInstall}>×</button></div>
+        <div className="plugInstallKicker">IPHONE & IPAD</div>
+        <h2 id="plug-install-title">Add to Home Screen.</h2>
+        <p id="plug-install-message">In Safari, tap <b>Share</b>, choose <b>Add to Home Screen</b>, then tap <b>Add</b>. Open the new Home Screen icon to launch the installed app.</p>
+        <button type="button" className="plugInstallPrimary" onClick={dismissInstall}>Continue on the website</button>
       </section>
     </div>
-  ) : installState === "embedded" ? (
+) : installState === "embedded" ? (
     <div style={embeddedInstallStyle} role="alertdialog" aria-modal="true" aria-labelledby="plug-embedded-title" aria-describedby="plug-embedded-message">
       <div className="pwaInstallInfo" style={{...installShellStyle, position: "relative", left: "auto", right: "auto", bottom: "auto", width: "100%", maxWidth: 520, margin: 0}}>
         <div>
@@ -348,7 +326,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   return <>
     {offline && <div className="offlineBanner" role="status" aria-live="polite"><span aria-hidden="true">⚡</span> Offline · The service demo saves orders and admin edits locally on this device. Firebase-backed routes need a connection.</div>}
     {!offline && reconnecting && <div className="offlineBanner reconnectingBanner" role="status" aria-live="polite"><span aria-hidden="true">↻</span> Reconnected · Iteration 13 can reach the network again. Local demo data remains on this device.</div>}
-    {!environment().standalone && installState !== "embedded" && (
+    {!environment().standalone && installState !== "embedded" && (canInstall || canShowManualInstall) && (
       <button
         type="button"
         className="plugPwaInstallButton"
@@ -357,13 +335,13 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
             void install();
             return;
           }
-          const env = environment();
-          setInstallPlatform(env.ios ? "ios" : env.android ? "android" : "other");
-          setInstallHelpOpen(true);
-          setInstallState("native");
+          if (isIosSafari()) {
+            setInstallHelpOpen(true);
+            setInstallState("native");
+          }
         }}
       >
-        Install Iteration 13 ↓
+        {canInstall ? "Install Iteration 13 ↓" : "Add to Home Screen ↓"}
       </button>
     )}
     {installCard}
