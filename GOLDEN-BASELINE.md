@@ -10,6 +10,8 @@ The stable recovery branch `golden/iteration13-service-studio` is intended to po
 
 ## What is protected
 
+- The mandatory [PWA Installation Lock](./docs/PWA-INSTALLATION-LOCK.md): install behavior is frozen during routine adaptation, and every clone must retain its automated regression guard. Never promote or copy a generic desktop/Android install explainer.
+
 - Customer-first service catalogue → request form → My account journey.
 - Local demo data model and honest local-only wording.
 - Admin demo CRUD for sample services, announcements and request statuses.
