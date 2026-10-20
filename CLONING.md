@@ -11,14 +11,24 @@ Before starting, record the current approved baseline from [GOLDEN-BASELINE.md](
 3. Clone only after reading this file and the current source implementation. Never reuse another business's Firebase project, secrets, private data, service-worker configuration or deployment target.
 
 ## 2. Preserve installation before changing identity
-Before touching icons or PWA metadata, inspect these exact files and assets in the source and target:
+
+**Installation is frozen during ordinary project adaptation.** Treat it as infrastructure, not branding. For a new project's icon, colors, typography, layout or copy, change artwork and metadata only; do not rewrite `layout.tsx`, `pwa-register.tsx`, event names, prompt timing, service-worker behavior or install visibility.
+
+Inspect these exact files and assets in the source and target:
 - `src/app/layout.tsx` — metadata, manifest declaration, early `beforeinstallprompt` capture and embedded-browser detection.
-- `src/app/pwa-register.tsx` — retained prompt, branded install click, iOS/Android fallback guidance, embedded-browser handoff, service-worker registration and update behavior.
+- `src/app/pwa-register.tsx` — retained one-shot event, branded install click, iOS Safari guide, embedded-browser handoff, service-worker registration and update behavior.
 - `src/app/manifest.ts` and `public/manifest.webmanifest` — inspect both and verify which one is actually served; do not assume one overrides the other.
 - `public/iteration13-icon.svg`, `public/iphone-install.svg`, `public/sw.js`, `src/app/iphone-install/page.tsx`, and `scripts/verify-identity.mjs`.
 - `package.json` and the actual build output.
 
-The installation baseline is a working feature. Do not rewrite it while performing a branding reset.
+### Non-negotiable install behavior
+1. When `beforeinstallprompt` fires, capture and retain the event; call its native `prompt()` directly from the user's branded install click.
+2. On desktop/Android, show the install CTA only while that retained native prompt is available. No custom modal, generic Chrome/Edge menu explainer, fake prompt or dead install button when the event is absent.
+3. On iOS Safari only, provide concise Share → Add to Home Screen guidance. Do not use that manual fallback on desktop/Android.
+4. Keep the blocking embedded-browser handoff and the iPhone guide with its referenced assets.
+5. `npm run verify:identity` checks the protected install invariants as well as project identity. Run it, lint and build after adaptation; inspect the actual served manifest/icons. Physical Chrome/Android and iPhone/Safari QA remains required before claiming device installation works.
+
+The installation baseline is a working feature. Do not rewrite it while performing a branding reset. If a future product brief explicitly requires different installation behavior, isolate the change and verify it before promoting it to the reusable foundation.
 
 ## 3. Research current icon and install requirements
 Use current primary documentation and inspect the actual rendered/served files before making a change:
