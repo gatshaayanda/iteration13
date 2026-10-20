@@ -54,6 +54,24 @@ const installGuidePath = path.join(root, "src/app/iphone-install/page.tsx");
 if (!fs.existsSync(installGuidePath)) failures.push("iPhone installation guide route missing");
 else if (!fs.readFileSync(installGuidePath, "utf8").includes("https://youtu.be/et2_1AcBYlg")) failures.push("iPhone installation guide: walkthrough link missing");
 if (!fs.existsSync(path.join(root, "public/iphone-install.svg"))) failures.push("iPhone installation illustration missing");
+// Protect the install journey across the entire UI, not only pwa-register.tsx.
+// Branding/visual changes must never reintroduce a fake or dead-end desktop install screen.
+function walkUiSource(dir) {
+  const files = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) files.push(...walkUiSource(full));
+    else if (/\\.(?:ts|tsx|js|jsx)$/.test(entry.name)) files.push(full);
+  }
+  return files;
+}
+const forbiddenInstallCopy = /If your browser provides a native install prompt|Chrome install option|If neither option appears, Chrome has not marked this site installable|In Chrome, open the .*menu and choose Install app or Add to Home screen|open the Chrome menu and choose Install app|Continue on the website.{0,80}(?:Chrome|browser menu)/i;
+for (const file of walkUiSource(path.join(root, "src"))) {
+  if (forbiddenInstallCopy.test(fs.readFileSync(file, "utf8"))) {
+    failures.push(path.relative(root, file).replaceAll(path.sep, "/") + ": forbidden generic desktop/Android install fallback copy returned");
+  }
+}
+
 if (failures.length) {
   console.error("IDENTITY VERIFICATION FAILED");
   failures.forEach(failure => console.error(" - " + failure));

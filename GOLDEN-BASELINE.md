@@ -16,6 +16,7 @@ The stable recovery branch `golden/iteration13-service-studio` is intended to po
 - Customer account workspace, request-specific local conversations, checklist and notes.
 - PWA install prompt capture and click-to-prompt behavior; embedded-browser handoff; iPhone Safari installation guide.
 - Install flow is frozen during visual/identity work: no generic desktop/Android install explainer, no fake prompt, and no dead install CTA. Desktop/Android show the CTA only while a retained native `beforeinstallprompt` event is available; iOS Safari alone gets manual Share → Add to Home Screen guidance.
+- Regression guard: the identity/build verifier scans all active UI source files and fails if generic desktop/Android install copy or a Chrome-menu fallback reappears. Never relax or narrow this check just to make a build pass.
 - Service-worker cache namespace, offline shell, update/refresh behavior and fallbacks.
 - Responsive layout, legible text, keyboard focus, reduced-motion behavior and accessible feedback.
 - Existing UploadThing setup and Firebase configuration/rules/data: do not change without explicit permission.

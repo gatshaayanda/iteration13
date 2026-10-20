@@ -35,6 +35,13 @@ Iteration 13 is the reusable, customer-first PWA prototype and candidate foundat
 - Preserve the PWA pattern lab at `/patterns`, the iPhone installation guide at `/iphone-install`, and the existing offline guide.
 
 ## Installation — protected, do-not-touch-by-default behavior
+
+### Regression stop rule — install UI is not up for redesign
+- Never add a desktop/Android install explainer, browser-menu walkthrough, fake prompt, fallback modal, or “Continue on the website” install screen. That exact class of regression is prohibited.
+- The only desktop/Android install UI is the branded CTA shown while a real, retained `beforeinstallprompt` event is available; its click must call the event's `prompt()` immediately. If the event is absent, show no install CTA. iOS Safari alone may show the Share → Add to Home Screen guide.
+- For branding work, edit icon files and identity metadata only. Do not edit `src/app/pwa-register.tsx`, the early capture script in `src/app/layout.tsx`, or install visibility/event handling unless the product owner explicitly requests an install-mechanics change.
+- The identity verifier must scan all active UI source files for forbidden generic install copy, not just the primary PWA component. A check that passes only because it scans one file is insufficient.
+- If a user sees install UI that is absent from source, inspect the actual deployed commit and service-worker cache version first. Bump the app's cache namespace when a stale shell must be retired; do not rewrite a working prompt to mask stale deployment/cache state.
 **The install flow is a protected foundation primitive, not a design component.** For branding, icon, color, typography, layout, copy, catalogue or account work, do not edit the install runtime or its event flow. Change only the relevant icon assets and metadata references. Any install-mechanics change requires an explicit product requirement, a focused diff, checks, and browser QA.
 
 - Preserve the early `beforeinstallprompt` capture in `src/app/layout.tsx`, the retained one-shot event, the `iteration13-open-install` click event, and the user-initiated call to the native browser prompt in `src/app/pwa-register.tsx`.

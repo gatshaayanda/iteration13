@@ -30,6 +30,16 @@ Inspect these exact files and assets in the source and target:
 
 The installation baseline is a working feature. Do not rewrite it while performing a branding reset. If a future product brief explicitly requires different installation behavior, isolate the change and verify it before promoting it to the reusable foundation.
 
+
+### Regression prevention — mandatory for every clone
+The install flow is a frozen infrastructure boundary. Do not “improve” or restyle it by replacing the native prompt with instructions. The following are release-blocking regressions on desktop/Android: copy such as “If your browser provides a native install prompt”, “Chrome install option”, or instructions to use the Chrome/Edge menu; any install explainer shown when no native event exists; a dead install button; or a custom install modal that replaces the native prompt. Do not add these in a new project either.
+
+- Keep one install controller and one retained event. The branded button must invoke the retained event's `prompt()` directly from its click.
+- Show the desktop/Android button only while the retained native event exists. When it is unavailable, let the website work normally without inventing a fallback.
+- Restrict manual Share → Add to Home Screen guidance to iOS Safari.
+- Make `verify:identity` scan the full active UI source tree for forbidden install copy and assert the native event/click contract. The build must fail if that copy returns.
+- When the unwanted screen appears only on a live site but is absent from current source, compare the deployment SHA and service-worker cache namespace before touching install code. Retire stale app-shell caches through the normal versioned service-worker activation path.
+
 ## 3. Research current icon and install requirements
 Use current primary documentation and inspect the actual rendered/served files before making a change:
 - MDN Web App Manifest: https://developer.mozilla.org/en-US/docs/Web/Manifest
