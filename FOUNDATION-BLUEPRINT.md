@@ -39,12 +39,13 @@ Iteration 13 is a **candidate reusable, mobile-first PWA foundation** demonstrat
 ## Protected invariants — do not casually rewrite
 
 1. Do not remove or change the early install capture in `layout.tsx`, the `iteration13-open-install` event, retained one-shot event, or the explicit click that calls the native browser prompt in `pwa-register.tsx`.
-2. Do not fake an install prompt or turn the branded install CTA into a no-op. Keep the embedded-browser blocking handoff and iPhone Safari guide.
-3. Do not change manifest/icon paths without checking both manifest sources and the final served manifest/assets.
-4. Keep service-worker cache names scoped to Iteration 13. Bump the shell cache version for a shell/routing policy change; keep offline fallback, update detection and refresh action.
-5. Remote Firebase Messaging is optional to the demo's shell. Its import failure must not prevent service-worker offline handlers from registering. Do not change Firebase project settings/rules/data as part of a UI task.
-6. Do not claim local writes reached a server. A local change should only be shown as saved if localStorage accepted the write.
-7. Keep mobile-first layout, visible focus, readable touch targets, status announcements and reduced-motion support.
+2. The native browser prompt is authoritative. On desktop/Android, show the branded install CTA only while the retained `beforeinstallprompt` event is available; never substitute a custom modal/menu explainer or leave a dead button. Manual Share → Add to Home Screen guidance is for iOS Safari only.
+3. Do not fake an install prompt or turn the branded install CTA into a no-op. Keep the embedded-browser blocking handoff and iPhone Safari guide.
+4. Do not change manifest/icon paths without checking both manifest sources and the final served manifest/assets.
+5. Keep service-worker cache names scoped to Iteration 13. Bump the shell cache version for a shell/routing policy change; keep offline fallback, update detection and refresh action.
+6. Remote Firebase Messaging is optional to the demo's shell. Its import failure must not prevent service-worker offline handlers from registering. Do not change Firebase project settings/rules/data as part of a UI task.
+7. Do not claim local writes reached a server. A local change should only be shown as saved if localStorage accepted the write.
+8. Keep mobile-first layout, visible focus, readable touch targets, status announcements and reduced-motion support.
 
 ## How to extend it safely
 
