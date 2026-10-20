@@ -15,6 +15,7 @@ The stable recovery branch `golden/iteration13-service-studio` is intended to po
 - Admin demo CRUD for sample services, announcements and request statuses.
 - Customer account workspace, request-specific local conversations, checklist and notes.
 - PWA install prompt capture and click-to-prompt behavior; embedded-browser handoff; iPhone Safari installation guide.
+- Install flow is frozen during visual/identity work: no generic desktop/Android install explainer, no fake prompt, and no dead install CTA. Desktop/Android show the CTA only while a retained native `beforeinstallprompt` event is available; iOS Safari alone gets manual Share → Add to Home Screen guidance.
 - Service-worker cache namespace, offline shell, update/refresh behavior and fallbacks.
 - Responsive layout, legible text, keyboard focus, reduced-motion behavior and accessible feedback.
 - Existing UploadThing setup and Firebase configuration/rules/data: do not change without explicit permission.
@@ -27,6 +28,7 @@ The stable recovery branch `golden/iteration13-service-studio` is intended to po
 3. If a change regresses behavior, inspect the diff and return only the affected files/behavior to the known-good baseline; do not discard unrelated improvements.
 4. Do not modify the golden branch as part of ordinary feature work. Promote a new baseline only after the product owner approves it and relevant checks pass.
 5. A commit or branch is not proof of a green build or successful deployment. Report GitHub checks, Vercel state, browser/device QA and offline QA separately.
+6. Do not promote an install-flow change to the golden branch until identity/install invariant checks and the available build checks pass. Branding-only changes must not edit the install runtime.
 
 ## New-project adaptation contract
 
