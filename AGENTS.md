@@ -2,11 +2,12 @@
 
 ## Fast handoff for future implementation chats
 - **Golden baseline:** [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md) records protected behavior, recovery policy and new-project adaptation steps. Do not casually move or develop on the golden reference branch.
+- **Installation lock:** [docs/PWA-INSTALLATION-LOCK.md](./docs/PWA-INSTALLATION-LOCK.md) is mandatory before any PWA/install change and must be carried into every clone. Installation behavior is frozen during routine identity, styling and feature work.
 - **Cloning default:** this repository now supersedes The Plug as the default starting point for new customer-first PWA projects in this portfolio, unless the product owner explicitly chooses another foundation. Existing projects must be inspected and improved in place.
 - **Mandatory first read:** [START-HERE.md](./START-HERE.md). Every new implementation chat must start there and follow its reading order; never ask the product owner which docs to inspect.
 - Then read FOUNDATION-BLUEPRINT.md, README.md, and CLONING.md as directed by START-HERE. These files serve different purposes; do not substitute chat summaries for them.
 - Read CHAT-WIDGET-RESEARCH.md before adding a chat helper. The current deterministic adaptation lives in src/app/ServiceGuide.tsx; that file separates the Sparkle Legacy reference from research-backed recommendations.
-- Before claiming a fix is complete, run the repository's available checks, inspect their actual output, and verify the exact commit/deployment state. A GitHub edit or merge alone is not a build verification.
+- Before claiming a fix is complete, run the repository's available checks, inspect their actual output, and verify the exact commit/deployment state. A GitHub edit or merge alone is not a build verification. Never weaken or remove install regression checks to make a build pass.
 - README is the customer/admin demo walkthrough. Do not assume an earlier conversation summary is newer than the repository.
 ## Purpose
 Iteration 13 is the reusable, customer-first PWA prototype and candidate foundation for future projects. It demonstrates responsive customer journeys, browser-local demo workflows, installation, iPhone guidance, offline behavior, and staff/admin patterns. The service catalogue is sample content, not a real business offering.
