@@ -69,6 +69,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   const [installHelpOpen, setInstallHelpOpen] = useState(false);
   const [canInstall, setCanInstall] = useState(false);
   const [canShowManualInstall, setCanShowManualInstall] = useState(false);
+  const [installCardDismissed, setInstallCardDismissed] = useState(false);
   const embeddedActionRef = useRef<HTMLButtonElement | null>(null);
   const reloadForUpdate = useRef(false);
 
@@ -117,6 +118,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       event.preventDefault();
       const prompt = event as InstallPromptEvent;
       installPromptRef.current = prompt;
+      setInstallCardDismissed(false);
       setCanInstall(true);
       // Retain the one-shot native event for the user's explicit Install click.
       // Do not interrupt page load with a second, custom install screen.
@@ -314,7 +316,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       <div className="pwaInstallInfo" style={{...installShellStyle, position: "relative", left: "auto", right: "auto", bottom: "auto", width: "100%", maxWidth: 520, margin: 0}}>
         <div>
           <strong id="plug-embedded-title"><span aria-hidden="true">🌐 </span>OPEN ITERATION 13 IN YOUR BROWSER</strong>
-          <span id="plug-embedded-message">{embeddedAndroid ? <>Tap below to open Iteration 13 in Chrome. Then open the <b>⋮ menu</b> and choose <b>Install app</b>.</> : <>Iteration 13 opened inside another app. Use that app’s menu to open this page in your browser, then look for <b>Install app</b> in the browser menu.</>}</span>
+          <span id="plug-embedded-message">{embeddedAndroid ? <>Open Iteration 13 in Chrome to continue. Chrome will offer its own installation action when the app is eligible.</> : <>Iteration 13 opened inside another app. Open this page in your browser to continue.</>}</span>
         </div>
         <div className="pwaInstallActions" style={{display:"flex",justifyContent:"flex-end"}}>
           <button ref={embeddedActionRef} type="button" style={{background:"#0866FF",color:"#fff"}} onClick={openBrowser}>{embeddedAndroid ? "OPEN IN CHROME" : "OPEN IN BROWSER"}</button>
@@ -326,11 +328,14 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   return <>
     {offline && <div className="offlineBanner" role="status" aria-live="polite"><span aria-hidden="true">⚡</span> Offline · The service demo saves orders and admin edits locally on this device. Firebase-backed routes need a connection.</div>}
     {!offline && reconnecting && <div className="offlineBanner reconnectingBanner" role="status" aria-live="polite"><span aria-hidden="true">↻</span> Reconnected · Iteration 13 can reach the network again. Local demo data remains on this device.</div>}
-    {!environment().standalone && installState !== "embedded" && (canInstall || canShowManualInstall) && (
-      <button
-        type="button"
-        className="plugPwaInstallButton"
-        onClick={() => {
+    {!environment().standalone && installState !== "embedded" && (canInstall || canShowManualInstall) && !installCardDismissed && (
+      <aside className="i13-install-card" aria-label="Install Iteration 13">
+        <div className="i13-install-brand">
+          <span className="i13-install-mark" aria-hidden="true">13</span>
+          <span><strong>ITERATION 13</strong><small>SERVICE STUDIO</small></span>
+        </div>
+        <button className="i13-install-close" type="button" aria-label="Dismiss install prompt" onClick={() => setInstallCardDismissed(true)}>×</button>
+        <button className="i13-install-action" type="button" onClick={() => {
           if (installPromptRef.current) {
             void install();
             return;
@@ -339,10 +344,8 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
             setInstallHelpOpen(true);
             setInstallState("native");
           }
-        }}
-      >
-        {canInstall ? "Install Iteration 13 ↓" : "Add to Home Screen ↓"}
-      </button>
+        }}>{canInstall ? "Install Iteration 13" : "Add to Home Screen"} <span aria-hidden="true">↗</span></button>
+      </aside>
     )}
     {installCard}
     {updateReady && <div className="pwaUpdate" role="status" aria-live="polite"><div><strong>Iteration 13 update is ready</strong><span>Refresh when you are ready.</span></div><button type="button" className="button buttonPrimary" onClick={applyUpdate}>Refresh</button></div>}
