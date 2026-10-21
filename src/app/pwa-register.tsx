@@ -269,6 +269,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
 
   function dismissInstall() {
     rememberDismissal();
+    setInstallCardDismissed(true);
     setInstallHelpOpen(false);
     setInstallState("hidden");
   }
