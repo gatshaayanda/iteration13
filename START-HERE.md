@@ -19,12 +19,13 @@ Do not stop after reading only one file. These documents have different purposes
 ### Existing Iteration 13 project
 1. Establish current branch, latest commit, working-tree state, recent changes and failing checks.
 2. Read the four documents above in the relevant scope; inspect only the implementation related to the task.
-3. Preserve the install/PWA baseline, customer journey, service-worker/cache namespace, local demo data shape and UploadThing configuration unless the brief explicitly calls for changing them.
-4. Implement the requested end-to-end behavior, including its customer and admin sides, validation, empty/error/success states, mobile layout and truthful offline behavior.
-5. Run `npm ci`, `npm run verify:identity`, `npm run lint` and `npm run build` where an execution environment is available. If a check cannot be run, say so and use an available CI/deployment signal; never infer a passing build from a successful GitHub edit.
-6. If a build fails, get the actual error log, fix the first failure, rerun checks, and repeat until green. Do not guess fixes or ask the product owner to debug logs that the agent can access.
-7. Push to `main` when implementation/pushing is authorized. Confirm the exact commit on `main`, check the resulting production deployment status, and distinguish code pushed, build passed and deployment verified.
-8. Hand off a concise QA checklist only after a successful build/deployment; include any unverified device/offline steps.
+3. **Installation is a locked foundation capability.** Before editing anything that could affect it, read [docs/PWA-INSTALLATION-LOCK.md](./docs/PWA-INSTALLATION-LOCK.md). Preserve the current approved runtime and all install invariants. If installation is reported broken, follow the lock's recovery sequence; never add a replacement modal, duplicate event listener, generic browser-menu fallback, or speculative prompt fix.
+4. Preserve the customer journey, service-worker/cache namespace, local demo data shape and UploadThing configuration unless the brief explicitly calls for changing them.
+5. Implement the requested end-to-end behavior, including its customer and admin sides, validation, empty/error/success states, mobile layout and truthful offline behavior.
+6. Run `npm ci`, `npm run verify:identity`, `npm run lint` and `npm run build` where an execution environment is available. If a check cannot be run, say so and use an available CI/deployment signal; never infer a passing build from a successful GitHub edit.
+7. If a build fails, get the actual error log, fix the first failure, rerun checks, and repeat until green. Do not guess fixes or ask the product owner to debug logs that the agent can access.
+8. Push to `main` when implementation/pushing is authorized. Confirm the exact commit on `main`, check the resulting production deployment status, and distinguish code pushed, build passed and deployment verified.
+9. Hand off a concise QA checklist only after a successful build/deployment; include any unverified device/offline steps.
 
 ### New project cloned/adapted from a foundation
 For a new app, use Iteration 13 as the default foundation unless the product owner explicitly chooses another source. Read `CLONING.md` and `FOUNDATION-BLUEPRINT.md`, inspect the actual target brief/repository, research the target product, and reset identity/infrastructure before building. For an existing app, inspect and improve that repository in place; never reclone it just to start work.

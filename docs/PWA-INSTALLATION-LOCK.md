@@ -37,6 +37,19 @@ These are release blockers:
 
 The golden branch remains a recovery snapshot. Do not move it during ordinary work; promote a new golden baseline only after explicit owner review.
 
+## If installation breaks in a clone — mandatory recovery sequence
+
+Do not respond to a missing install card or unexpected install screen by immediately rewriting the prompt logic or adding a new modal.
+
+1. **Stop unrelated edits.** Confirm the target repo, branch, latest commit, clean/dirty working tree, and exact deployed commit. Do not infer that a GitHub push reached production.
+2. **Inspect the whole path:** `src/app/layout.tsx` (early capture), `src/app/pwa-register.tsx` (one controller and click-to-prompt), install CSS, both manifest representations, metadata/icons, `public/sw.js`, cache version, and `scripts/verify-identity.mjs`.
+3. **Find the first failure.** Check whether the browser emitted `beforeinstallprompt`, whether the event was retained, whether the branded click calls its native `prompt()`, whether the card is suppressed/dismissed/standalone, and whether stale service-worker assets are being served. Treat browser eligibility and device behavior as separate from source correctness.
+4. **Compare before changing behavior.** Use the approved compact card/native prompt in `gatshaayanda/africhiko` as the UX reference and Iteration 13's implementation as the clone source, including its iOS Safari guidance and embedded-browser handoff. Revert accidental runtime drift to the last known-good implementation rather than layering on a second listener or fallback.
+5. **Guard the repair.** Add or correct an automated invariant for the failure, without deleting or weakening existing checks. Run `npm run verify:identity`, `npm run lint`, and `npm run build`; inspect the built/served manifest and asset URLs.
+6. **Report honestly.** State commit and checks, deployment state, and whether Chromium/iOS device testing actually occurred. If a physical device is unavailable, list it as outstanding QA.
+
+This sequence is mandatory for every clone and every new implementation chat. A broken install flow is a protected-infrastructure regression, not permission to redesign installation.
+
 
 ---
 
