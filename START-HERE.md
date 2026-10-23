@@ -14,6 +14,19 @@
 
 Do not stop after reading only one file. These documents have different purposes and are designed to be used together.
 
+## Mandatory evidence-led diagnosis and release gate
+
+Use this gate for every project and every implementation chat; do not assume an earlier chat summary or a user's suspected cause is the current repository truth.
+
+1. **Separate observation from explanation.** Capture the reported behavior and any known device/browser, deployed URL/version, route, and reproduction steps. Treat verified real-device success as behavior to preserve. Do not turn a symptom or a hypothesis into an assumed root cause.
+2. **Diagnose before editing.** Inspect the actual deployed commit/status, current source, recent commits, relevant tests and browser behavior. Reproduce where possible. Identify the first proven failure and the smallest scope that can explain it. If no defect is evidenced, explain the findings rather than changing unrelated code.
+3. **Mark protected and out-of-scope surfaces.** Use `AGENTS.md`, the installation lock and the task brief to identify protected behavior. Do not touch unrelated installation, authentication, service-worker/offline, persistence, upload or navigation behavior without a demonstrated dependency or explicit authorization.
+4. **Review the diff before release.** Compare every changed file with the requested scope and approved baseline. Investigate every unexpected protected-file change. Stop the release until it is removed or supported by clear evidence and authorization.
+5. **Verify, then report each result separately.** Run relevant checks and inspect their real output; inspect CI and deployment state when available. Distinguish code/commit, push/merge, tests/builds, production deployment, and physical-browser/device/offline QA. Never infer one from another.
+6. **Unexpected behavior means stop and diagnose.** Fix the first proven failure; do not pile on speculative changes. Keep related work in one reviewed commit where practical, and never force-push or rewrite history without authorization.
+
+Continue with the task only after these gates are satisfied. The installation mechanism remains protected by the dedicated PWA installation lock.
+
 ## Required workflow
 
 ### Existing Iteration 13 project
