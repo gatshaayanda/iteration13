@@ -20,6 +20,20 @@ Iteration 13 is the reusable, customer-first PWA prototype and candidate foundat
 - Preserve successful behavior. Prefer focused changes over rewrites. Never claim a test, deployment, device test, offline write or Firebase workflow passed without evidence.
 - When authorized, push changes to `main`. The user handles Vercel deployments unless explicitly delegated.
 
+## Evidence-led change and regression-prevention protocol
+
+Apply this protocol to every feature, bug report, visual complaint, install issue, and project adaptation. It is a default for every project cloned from this foundation.
+
+1. **Observed behavior beats assumptions.** A product owner's report that a feature works on a real device is evidence to preserve and verify in context—not an invitation to rewrite it. Record what was observed, on which version/device/path when known, separately from any suspected cause.
+2. **A complaint starts diagnosis, not automatic repair.** Before changing code, compare the deployed version/commit with the current source and recent commit history. Reproduce or inspect the relevant browser/device behavior when possible. Identify the first proven failure and the smallest affected surface; do not treat a proposed cause as a fact.
+3. **Protect unrelated functionality by default.** Define the task's scope and mark protected/working behavior before editing. A product-card task does not authorize install, authentication, service-worker, offline, persistence, upload, or routing changes unless evidence demonstrates a dependency or the product owner explicitly authorizes them.
+4. **Review the proposed diff before pushing.** Inspect changed files and behavior against the task and approved baseline. Check protected files, event lifecycles, identity/configuration, and side effects. Any unexplained protected-file change is a stop-release condition: revert or justify it with evidence before continuing.
+5. **Verify the actual result.** Run focused tests and the available type/lint/build/CI checks; inspect their actual outputs. Check the deployed commit and status when accessible. Report separately: code changed and commit created; changes pushed/merged; checks actually run and results; deployment status; and browser/device/offline QA still required. A commit, green CI, or successful push is not proof of live deployment or real-device behavior.
+6. **Unexpected result: stop and find the first failure.** Do not stack speculative fixes. Compare source, commit, deployment/cache state, protected implementation and browser evidence; repair the first proven cause, then rerun relevant checks.
+7. **Keep the release focused.** Bundle related changes into one reviewed commit where practical. Never force-push or rewrite history without explicit authorization. The product owner handles Vercel deployment unless they delegate it.
+
+These rules complement—not replace—the PWA installation lock and other project-specific protected contracts. Preserve known-good installation and chatbot behavior unless an explicit authorized task and evidence require a narrowly scoped change.
+
 ## Reusable product principles
 - Customer action first. Make the next step obvious, reduce unnecessary navigation, and keep copy concise.
 - Mobile-first, accessible, legible UI; WCAG 2.2 AA contrast is the baseline. Verify keyboard focus, narrow layouts, empty/error/loading states and touch targets.

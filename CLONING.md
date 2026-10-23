@@ -40,6 +40,19 @@ The install flow is a frozen infrastructure boundary. Do not “improve” or re
 - Make `verify:identity` scan the full active UI source tree for forbidden install copy and assert the native event/click contract. The build must fail if that copy returns.
 - When the unwanted screen appears only on a live site but is absent from current source, compare the deployment SHA and service-worker cache namespace before touching install code. Retire stale app-shell caches through the normal versioned service-worker activation path.
 
+## Evidence-led diagnosis and regression prevention — mandatory for every clone
+
+Carry this workflow into every target project's `AGENTS.md` and use it for all future maintenance, not just cloning:
+
+1. **Observed behavior beats assumptions.** Preserve and verify functionality the product owner reports working on real devices. Record observed symptoms separately from a suspected cause.
+2. **Complaint means diagnose first.** Compare the deployed version/commit, source, recent commit history, relevant checks and actual browser/device behavior before deciding a defect exists. Reproduce where possible and identify the first proven failure before editing.
+3. **Protect unrelated functionality.** Define the requested scope and list protected surfaces. Do not change installation, authentication, service worker/offline behavior, persistence, uploads or other unrelated systems unless evidence shows a dependency or the product owner explicitly authorizes it.
+4. **Review the complete diff before pushing.** Compare changed files against the task and approved baseline. An unexplained change to protected behavior blocks release until resolved.
+5. **Verify and report honestly.** Inspect actual test/CI outputs and deployment status. Report code/commit, push/merge, checks, deployment, and remaining real-browser/device/offline QA as separate facts.
+6. **Stop on surprises.** Diagnose the first failure; avoid speculative stacked fixes. Bundle related work into one reviewed commit where practical. Never force-push or rewrite history without explicit authorization.
+
+Apply these principles alongside the mandatory PWA installation lock. A product-specific task such as changing catalogue cards is not permission to redesign installation or authentication.
+
 ## 3. Research current icon and install requirements
 Use current primary documentation and inspect the actual rendered/served files before making a change:
 - MDN Web App Manifest: https://developer.mozilla.org/en-US/docs/Web/Manifest
