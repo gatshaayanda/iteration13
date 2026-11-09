@@ -2201,7 +2201,7 @@ button.plugProductAction{width:100%;align-items:center;background:transparent;bo
 .serviceDemo .sd-showcase-footer{
   display:flex;align-items:center;justify-content:space-between;gap:14px;
   margin-top:18px;padding:16px;border-radius:12px;
-  background:#171b22;color:#f7f8fb;
+  background:#030914;border-top:1px solid #1c3454;color:#f7f8fb;
 }
 .serviceDemo .sd-showcase-footer .sd-owner-entry{
   min-width:min(100%,310px);opacity:1;cursor:default;
