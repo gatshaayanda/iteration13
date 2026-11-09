@@ -56,6 +56,7 @@ export default function ReceiptDocument({ businessName, accentColor, receiptProf
   const receiptNumber = order.receiptNo || "REQ-" + order.id;
   const brand = businessName.trim() || receiptProfile?.legalName?.trim() || "Your Business";
   const registeredName = receiptProfile?.legalName?.trim();
+  const showRegisteredName = Boolean(registeredName && registeredName.toLowerCase() !== "your business" && registeredName.toLowerCase() !== brand.toLowerCase());
   const printReceipt = (event: React.MouseEvent<HTMLButtonElement>) => {
     const current = event.currentTarget.closest("details");
     if (!current) return;
@@ -74,7 +75,7 @@ export default function ReceiptDocument({ businessName, accentColor, receiptProf
         <div><strong>{brand}</strong><small>Customer receipt &amp; job record</small></div>
         <span className="sd-receipt-state">{paymentState}</span>
       </header>
-      {registeredName && registeredName.toLowerCase() !== brand.toLowerCase() ? <p className="sd-receipt-registered">Registered name: {registeredName}</p> : null}
+      {showRegisteredName ? <p className="sd-receipt-registered">Registered name: {registeredName}</p> : null}
       <div className="sd-receipt-heading"><span>{paid > 0 ? "PAYMENT RECORD" : "REQUEST RECORD"}</span><h2>{paymentState === "Paid in full" ? "Paid in full" : paymentState === "Partially paid" ? "Part payment" : "Payment outstanding"}</h2><p>{paymentState === "Paid in full" ? "The recorded demo balance is settled." : paymentState === "Partially paid" ? "A payment has been recorded; the remaining balance is shown below." : "This request is recorded. No payment has been recorded."}</p></div>
       <dl className="sd-receipt-meta">
         <div><dt>Record number</dt><dd>{receiptNumber}</dd></div>
