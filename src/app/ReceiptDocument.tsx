@@ -37,6 +37,11 @@ type Props = {
 };
 
 const money = (amount: number) => "P" + amount.toLocaleString("en-BW", { maximumFractionDigits: 2 });
+const accentInk = (hex: string) => {
+  const values = hex.match(/[0-9a-f]{2}/gi)?.map(value => parseInt(value, 16) / 255) || [0.3, 0.3, 0.3];
+  const luminance = values.map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4).reduce((sum, value, index) => sum + value * [0.2126, 0.7152, 0.0722][index], 0);
+  return luminance > 0.179 ? "#111827" : "#ffffff";
+};
 const dateLabel = (value?: string) => {
   if (!value) return "Not recorded";
   const date = new Date(value);
@@ -63,7 +68,7 @@ export default function ReceiptDocument({ businessName, accentColor, receiptProf
 
   return <details className="sd-receipt">
     <summary>Receipt / payment record · {receiptNumber}</summary>
-    <div className="sd-receipt-paper" style={{ "--receipt-accent": accentColor } as CSSProperties}>
+    <div className="sd-receipt-paper" style={{ "--receipt-accent": accentColor, "--receipt-accent-ink": accentInk(accentColor) } as CSSProperties}>
       <header className="sd-receipt-brand">
         <span className="sd-receipt-mark" aria-hidden="true">{brand.slice(0, 1).toUpperCase()}</span>
         <div><strong>{brand}</strong><small>Customer receipt &amp; job record</small></div>
