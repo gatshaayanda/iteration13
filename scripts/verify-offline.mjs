@@ -17,8 +17,8 @@ check(sw.includes('"images.unsplash.com"') && sw.includes('"utfs.io"') && sw.inc
 check(sw.includes("const MEDIA_LIMIT = 40"), "media cache must have a bounded entry limit");
 check(sw.includes('cache.match(request)') && sw.includes('return cached || Response.error()'), "media and navigation fetches must retain an offline fallback");
 check(page.includes('type: "CACHE_MEDIA"') && page.includes("data.services.map") && page.includes("data.announcementImage"), "Store service and announcement media must be prepared for offline use");
-check(page.includes('window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))'), "customer/admin demo changes must be synchronously saved before success feedback");
-check(account.includes("if (!online || !navigator.onLine)") && account.includes("text message"), "offline account messaging must stay available while uploads are blocked");
+check(page.includes('window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data))'), "customer/admin demo changes must be synchronously saved before success feedback");
+check(account.includes("if (!online || !navigator.onLine)") && account.includes("Upload"), "offline account messaging must stay available while uploads are blocked");
 check(offline.includes("not queued for server delivery") && offline.includes("let its images and videos finish loading"), "offline guidance must explain preparation and non-sync boundaries");
 
 if (failures.length) {
