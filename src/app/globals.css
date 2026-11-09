@@ -2081,3 +2081,14 @@ button.plugProductAction{width:100%;align-items:center;background:transparent;bo
   .sd-receipt-paper{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;border-top:5px solid var(--receipt-accent)!important;border-radius:0!important;box-shadow:none!important}
   .sd-receipt-download{display:none!important}
 }
+
+/* Neutralize legacy navy cards inside secondary owner panels as well. */
+.serviceDemo .sd-admin .sd-capacity-grid article,.serviceDemo .sd-admin .sd-performance-grid article,.serviceDemo .sd-admin .sd-showcase-preview-grid article,.serviceDemo .sd-admin .sd-owner-notes,.serviceDemo .sd-admin .sd-admin-empty{background:#f7f8f5!important;border:1px solid #e1e6df!important;color:#202923}
+.serviceDemo .sd-admin .sd-capacity-grid article strong,.serviceDemo .sd-admin .sd-performance-grid article strong,.serviceDemo .sd-admin .sd-showcase-preview-grid article strong{color:#202923}
+.serviceDemo .sd-admin .sd-capacity-grid article span,.serviceDemo .sd-admin .sd-performance-grid article span,.serviceDemo .sd-admin .sd-performance-grid article small,.serviceDemo .sd-admin .sd-showcase-preview-grid article p{color:#59645c}
+.serviceDemo .sd-admin .sd-showcase-preview-head{background:#f0f2ed;border:1px solid #e1e6df;color:#202923}
+.serviceDemo .sd-admin .sd-admin-thread-message{background:#fff;border:1px solid #e1e6df;color:#202923}
+.serviceDemo .sd-admin .sd-admin-thread-message>small{color:#68736a}
+.serviceDemo .sd-admin .sd-admin-thread-message a{color:var(--studio-accent-text,#2458a6)}
+.serviceDemo .sd-admin .sd-owner-notes textarea{background:#fff;color:#202923;border-color:#cfd7ce}
+.serviceDemo .sd-receipt-paper{-webkit-print-color-adjust:exact;print-color-adjust:exact}
