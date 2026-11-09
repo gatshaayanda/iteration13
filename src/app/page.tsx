@@ -251,7 +251,16 @@ export default function Home() {
     commitData(current => ({ ...current, orders: current.orders.map(item => item.id === id ? { ...item, paymentStatus: "Paid (demo)", paidAmount: item.price, paidAt: now, receiptNo } : item), events: [{ id: "EV-"+Date.now().toString(36), kind: "payment", label: "Demo payment recorded · "+order.serviceName, at: now, test: order.isTest }, ...(current.events || [])] }), "Demo payment recorded. Receipt is available in this job record; no money moved.");
   }
 
-  function assignPromoReward() {\n    const normalized = promoAssignEmail.trim().toLowerCase();\n    if (!normalized || !normalized.includes("@")) { setNotice("Enter a valid customer email for this promotion."); return; }\n    const existing = (data.discountClaims || []).find(item => item.email.toLowerCase() === normalized && item.status === "Available");\n    if (existing) { setNotice("This customer already has an unused discount code: " + existing.code); return; }\n    const code = "PROMO-" + Math.random().toString(36).slice(2,7).toUpperCase();\n    const claim: DiscountClaim = { id: "DISC-" + Date.now().toString(36), email: normalized, code, amount: data.discountAmount || 10, lapTime: 0, createdAt: new Date().toISOString(), status: "Available" };\n    if (commitData(current => ({ ...current, discountClaims: [claim, ...(current.discountClaims || [])], events: [{ id: "EV-" + Date.now().toString(36), kind: "reward", label: "Promotional discount assigned · " + money(claim.amount), at: new Date().toISOString() }, ...(current.events || [])] }), "Promotional discount assigned to " + normalized + ": " + code)) setPromoAssignEmail("");\n  }\n  function replyToOrder(id: string) {
+  function assignPromoReward() {
+    const normalized = promoAssignEmail.trim().toLowerCase();
+    if (!normalized || !normalized.includes("@")) { setNotice("Enter a valid customer email for this promotion."); return; }
+    const existing = (data.discountClaims || []).find(item => item.email.toLowerCase() === normalized && item.status === "Available");
+    if (existing) { setNotice("This customer already has an unused discount code: " + existing.code); return; }
+    const code = "PROMO-" + Math.random().toString(36).slice(2,7).toUpperCase();
+    const claim: DiscountClaim = { id: "DISC-" + Date.now().toString(36), email: normalized, code, amount: data.discountAmount || 10, lapTime: 0, createdAt: new Date().toISOString(), status: "Available" };
+    if (commitData(current => ({ ...current, discountClaims: [claim, ...(current.discountClaims || [])], events: [{ id: "EV-" + Date.now().toString(36), kind: "reward", label: "Promotional discount assigned · " + money(claim.amount), at: new Date().toISOString() }, ...(current.events || [])] }), "Promotional discount assigned to " + normalized + ": " + code)) setPromoAssignEmail("");
+  }
+  function replyToOrder(id: string) {
     const text = (adminReplyDrafts[id] || "").trim();
     if (!text) { setNotice("Write a reply before sending it."); return; }
     const message: AccountMessage = { id: "MSG-" + Date.now().toString(36), from: "studio", text, createdAt: new Date().toISOString() };
