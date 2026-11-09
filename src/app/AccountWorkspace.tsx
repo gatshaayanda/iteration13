@@ -8,11 +8,13 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
 export type AccountAttachment = { name: string; url: string; type: string; size: number };
 export type AccountMessage = { id: string; from: "customer" | "studio"; text: string; createdAt: string; attachment?: AccountAttachment };
-export type WorkspaceOrder = { id: string; serviceId: string; serviceName: string; price: number; dueDate: string; customerName: string; email: string; brief: string; status: string; createdAt: string; messages?: AccountMessage[] };
+export type WorkspaceOrder = { id: string; serviceId: string; serviceName: string; price: number; originalPrice?: number; discountAmount?: number; discountCode?: string; dueDate: string; customerName: string; email: string; brief: string; status: string; createdAt: string; messages?: AccountMessage[] };
 
+type DiscountClaim = { id: string; email: string; code: string; amount: number; lapTime: number; createdAt: string; status: "Available" | "Redeemed" };
 type Props = {
   businessName: string;
   orders: WorkspaceOrder[];
+  discountClaims: DiscountClaim[];
   email: string;
   setEmail: (email: string) => void;
   online: boolean;
@@ -27,7 +29,7 @@ const prettyDate = (value: string) => {
   catch { return value; }
 };
 
-export default function AccountWorkspace({ businessName, orders, email, setEmail, online, announcement, onBrowse, onUpdateOrder }: Props) {
+export default function AccountWorkspace({ businessName, orders, discountClaims, email, setEmail, online, announcement, onBrowse, onUpdateOrder }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [uploadingOrder, setUploadingOrder] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -110,9 +112,9 @@ export default function AccountWorkspace({ businessName, orders, email, setEmail
       <span className="sd-kicker">{businessName.toUpperCase()} / CUSTOMER ACCOUNT</span>
       <h1>Your projects.<br/><em>All here.</em></h1>
       <p>Track requests, share files, and keep project messages together. This prototype stores account activity in this browser, not in a shared customer account.</p>
-      <button className="sd-button sd-outline" onClick={onBrowse}>← Back to services</button>
+      <button className="sd-button sd-outline" onClick={onBrowse}>＋ Make another request</button>
     </div>
-    <div className="sd-account-content">
+    <div className="sd-account-content"><section className="sd-account-rewards"><div><span className="sd-kicker">CUSTOMER REWARDS</span><h2>Your racing discounts</h2><p>Earn a discount with a clean lap on the Store landing page. Codes are linked to this email and can be used once.</p></div>{discountClaims.filter(claim=>claim.email.toLowerCase()===email.trim().toLowerCase()).length ? discountClaims.filter(claim=>claim.email.toLowerCase()===email.trim().toLowerCase()).map(claim=><article key={claim.id}><strong>{claim.code}</strong><b>{money(claim.amount)} off</b><span>{claim.status}</span></article>) : <p>No discount codes for this email yet. <a href="#racing-rewards">Play the racing game ↗</a></p>}</section>
       <div className="sd-account-filter"><label>Find your requests by email<input type="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="The email used on your order" autoComplete="email" /></label><span>{filteredOrders.length} {filteredOrders.length === 1 ? "project" : "projects"} found</span></div>
       <div className="sd-account-stats"><article><span>Active projects</span><strong>{openOrders}</strong><small>Not completed or declined</small></article><article><span>Conversation</span><strong>{totalMessages}</strong><small>Saved local messages</small></article><article><span>Shared files</span><strong>{fileCount}</strong><small>Attachments in your threads</small></article></div>
       {filteredOrders.length === 0 ? <div className="sd-empty"><span>↗</span><h2>Your next project starts here.</h2><p>No matching requests on this browser yet. Use the same browser and email you entered when submitting a service request.</p><button className="sd-button sd-primary" onClick={onBrowse}>Browse services →</button></div> : <div className="sd-orders">{filteredOrders.map(order => {
@@ -120,7 +122,7 @@ export default function AccountWorkspace({ businessName, orders, email, setEmail
         const expanded = openThread === order.id;
         return <article className="sd-order-card sd-workspace-order" key={order.id}>
           <div className="sd-order-card-top"><span>{order.id}</span><b>{order.status}</b></div>
-          <div className="sd-order-card-main"><div><h2>{order.serviceName}</h2><p>Requested timeline: <strong>{order.dueDate}</strong></p><p>{order.brief || "No extra brief added."}</p><small>Submitted {prettyDate(order.createdAt)}</small></div><strong className="sd-order-price">{money(order.price)}</strong></div>
+          <div className="sd-order-card-main"><div><h2>{order.serviceName}</h2><p>Requested timeline: <strong>{order.dueDate}</strong></p><p>{order.brief || "No extra brief added."}</p>{order.discountAmount ? <p className="sd-account-discount">Racing reward · {money(order.discountAmount)} off (regular {money(order.originalPrice || order.price + order.discountAmount)})</p> : null}<small>Submitted {prettyDate(order.createdAt)}</small></div><strong className="sd-order-price">{money(order.price)}</strong></div>
           <div className="sd-workspace-meta"><span>{messages.length} {messages.length === 1 ? "message" : "messages"}</span><span>{messages.filter(message => message.from === "studio").length ? "Studio replied" : "Awaiting studio reply"}</span><button className="sd-small-button" onClick={() => setOpenThread(expanded ? null : order.id)}>{expanded ? "Close conversation" : "Messages & files →"}</button></div>
           {expanded && <div className="sd-thread">
             <div className="sd-thread-heading"><div><span className="sd-kicker">PROJECT / CONVERSATION</span><h3>Talk about {order.serviceName}</h3></div><span className="sd-local-pill">LOCAL DEMO</span></div>
