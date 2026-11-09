@@ -15,7 +15,7 @@ check(sw.includes('event.respondWith(cacheMediaRequest(request, event))'), "appr
 check(sw.includes('event.data?.type === "CACHE_MEDIA"'), "service worker must accept the page's current media list");
 check(sw.includes('"images.unsplash.com"') && sw.includes('"utfs.io"') && sw.includes('"ufs.sh"'), "media cache must be restricted to the supported image/upload hosts");
 check(sw.includes("const MEDIA_LIMIT = 40"), "media cache must have a bounded entry limit");
-check(sw.includes('cache.match(request)') && sw.includes('return cached || Response.error()'), "media and navigation fetches must retain an offline fallback");
+check(sw.includes('if (cached) return cached') && sw.includes('return Response.error()'), "media and navigation fetches must retain an offline fallback");
 check(page.includes('type: "CACHE_MEDIA"') && page.includes("data.services.map") && page.includes("data.announcementImage"), "Store service and announcement media must be prepared for offline use");
 check(page.includes('window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data))'), "customer/admin demo changes must be synchronously saved before success feedback");
 check(account.includes("if (!online || !navigator.onLine)") && account.includes("Upload"), "offline account messaging must stay available while uploads are blocked");
