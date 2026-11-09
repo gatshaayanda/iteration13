@@ -67,7 +67,7 @@ export default function RacingWarmup({ embedded = false, startExpanded = false, 
     setSpeed(0); setLapTime(0); setBestLap(null); setLap(1); setNos(100); setBoostActive(false);
     setCountdown(3); phaseRef.current = start ? "countdown" : "ready"; setPhase(start ? "countdown" : "ready");
   }, []);
-  const startRace = useCallback(() => reset(true), [reset]);
+  const startRace = useCallback(() => { if (embedded && !rewardEmail.trim()) { notify("Enter your email before starting so a clean lap can be credited."); return; } reset(true); }, [reset, embedded, rewardEmail, notify]);
   const pauseRace = useCallback(() => {
     if (phaseRef.current === "running") {
       controlsRef.current = { steer: 0, accelerate: false, brake: false, boost: false };
@@ -399,8 +399,8 @@ export default function RacingWarmup({ embedded = false, startExpanded = false, 
         race.lapTime += dt;
         const lapNow = Math.floor(race.progress) + 1;
         if (lapNow > race.lap) {
+          if (!race.lapInvalid && rewardedLap.current < race.lap) { rewardedLap.current = race.lap; if (rewardEmail.trim()) rewardCallback.current?.(rewardEmail, race.lapTime); }
           if (!race.lapInvalid && (race.bestLap === null || race.lapTime < race.bestLap)) {
-            if (rewardedLap.current < race.lap) { rewardedLap.current = race.lap; if (rewardEmail.trim()) rewardCallback.current?.(rewardEmail, race.lapTime); }
             race.bestLap = race.lapTime;
             setBestLap(race.lapTime);
             notify("New personal best lap!", "success");
