@@ -142,6 +142,26 @@ export default function Home() {
   }, [data, ready]);
 
   useEffect(() => {
+    if (!ready || !("serviceWorker" in navigator)) return;
+    const mediaUrls = [
+      ...data.services.map(service => service.media),
+      data.announcementImage || "",
+      ...data.orders.flatMap(order => (order.messages || []).map(message => message.attachment?.url || "")),
+    ].filter((url): url is string => typeof url === "string" && /^https:\/\//i.test(url));
+    const prepareOfflineMedia = () => {
+      navigator.serviceWorker.controller?.postMessage({ type: "CACHE_MEDIA", urls: mediaUrls });
+    };
+    prepareOfflineMedia();
+    navigator.serviceWorker.addEventListener("controllerchange", prepareOfflineMedia);
+    void navigator.serviceWorker.ready.then(registration => {
+      (navigator.serviceWorker.controller || registration.active)?.postMessage({ type: "CACHE_MEDIA", urls: mediaUrls });
+    }).catch(() => {
+      // Local demo actions remain available even when the browser blocks service workers.
+    });
+    return () => navigator.serviceWorker.removeEventListener("controllerchange", prepareOfflineMedia);
+  }, [data.services, data.announcementImage, data.orders, ready]);
+
+  useEffect(() => {
     if (!notice) return;
     const duration = /^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? 6500 : 4200;
     const timeout = window.setTimeout(() => setNotice(current => current === notice ? "" : current), duration);
