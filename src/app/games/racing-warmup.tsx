@@ -103,8 +103,6 @@ export default function RacingWarmup({ embedded = false, startExpanded = false, 
         race.steering += (controls.steer - race.steering) * steerEase;
         const steering = race.steering;
         const t = wrap(race.progress, 1);
-        const trackTurn = getTrackTurn(trackRef.current!, t, .006);
-        const bend = clamp(Math.abs(trackTurn) * 28, 0, 1);
         const upcomingTurn = getTrackTurn(trackRef.current!, t + .018, .006);
         const upcomingBend = clamp(Math.abs(upcomingTurn) * 28, 0, 1);
         const speedRatio = race.speed / 230;
