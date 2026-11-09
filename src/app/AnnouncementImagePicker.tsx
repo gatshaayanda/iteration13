@@ -69,16 +69,6 @@ export default function AnnouncementImagePicker({ value, online, onChange, onUpl
     }
   }
 
-  function applyUrl(candidate: string) {
-    try {
-      const parsed = new URL(candidate.trim());
-      if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported protocol");
-      onChange(parsed.toString());
-      setMessage("Image URL applied. Publish the announcement to show it in the Store.");
-    } catch {
-      setMessage("Enter a complete image URL beginning with https:// or http://.");
-    }
-  }
 
   return (
     <fieldset className="sd-announcement-image-picker" disabled={isUploading}>
