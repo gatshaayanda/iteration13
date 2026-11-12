@@ -141,3 +141,8 @@ Use current primary guidance when applying or updating this standard. The follow
 - UK Government, [Notification banner](https://design-system.service.gov.uk/components/notification-banner/): persistent, contextual notification pattern for important messages.
 
 When a cited page changes or is unavailable, re-check the current guidance rather than treating this source list as immutable. This document is the canonical portfolio policy; project-specific AGENTS files should link to it and record only their local implementation decisions.
+
+
+## 8. Guided movement, motion and signalers
+
+Use motion to clarify state changes and make the product feel responsive—not to decorate every surface. Keep transitions short and tied to real user actions. Show clear pressed, selected, expanded, saved and completed states. Provide concise labels and next-step signifiers at the point they are needed. A short guided path may introduce Store, request, optional reward and Briefcase, but never block free exploration or force a game before ordering. Toasts may acknowledge low-consequence actions; durable outcomes remain visible in records and account history. Respect reduced-motion preferences; no critical information may depend on animation. Avoid auto-advancing carousels, flashing urgency, fake progress and forced walkthroughs.
