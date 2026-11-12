@@ -3332,3 +3332,32 @@ h1 em,
 .serviceDemo .sd-capacity-scale-labels span:nth-child(2){text-align:center}
 .serviceDemo .sd-capacity-scale-labels span:last-child{text-align:right}
 .serviceDemo .sd-capacity-scale-note{color:#000!important;font-size:.7rem;font-weight:750}
+
+
+/* Capacity comparison: the filled portion represents the measured local footprint, not the full allowance. */
+.serviceDemo .sd-capacity-scale{height:18px;background:#fff!important;border:2px solid #000!important}
+.serviceDemo .sd-capacity-scale-fill{
+  height:100%;min-width:2px;max-width:100%;
+  background:#000!important;border-radius:999px;
+}
+.serviceDemo .sd-capacity-scale-labels{
+  display:flex!important;justify-content:space-between!important;
+  gap:10px;color:#000!important;font-size:.7rem;font-weight:850;
+}
+.serviceDemo .sd-capacity-comparison{display:grid;gap:7px}
+.serviceDemo .sd-capacity-comparison-labels{
+  display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;
+  color:#000;font-size:.75rem;font-weight:850;
+}
+.serviceDemo .sd-capacity-comparison-labels strong{color:#000!important}
+.serviceDemo .sd-local-analytics-columns .sd-local-footprint-card,
+.serviceDemo .sd-local-analytics-columns .sd-firebase-capacity-card{
+  background:#fff!important;color:#000!important;border:2px solid #000!important;
+}
+.serviceDemo .sd-local-analytics-columns :is(.sd-local-footprint-card,.sd-firebase-capacity-card) :is(.sd-kicker,strong,p,small,.sd-local-pill,.sd-capacity-scale-note){
+  color:#000!important;opacity:1!important;text-shadow:none!important;
+}
+.serviceDemo .sd-local-analytics-columns .sd-local-pill{
+  background:#fff!important;border:1px solid #000!important;padding:6px 8px;font-weight:850;
+}
+.serviceDemo .sd-local-activity-feed{background:#fff!important;color:#000!important;border:2px solid #000!important}
