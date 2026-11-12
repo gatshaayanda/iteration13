@@ -509,6 +509,7 @@ export default function Home() {
             <div className="sd-identity-step-heading"><span>03 / YOUR FIRST CUSTOMER OFFER</span><strong id="sd-first-service-title">Create your first service</strong><p>Add at least one service before opening your business space. You can add, edit, hide or remove more later.</p></div>
             <div className="sd-identity-service-fields">
               <label>Service name<input value={serviceName} onChange={event => setServiceName(event.target.value)} maxLength={80} required placeholder="e.g. Website design, Consultation, Haircut" /></label>
+              <label>Industry / line of business<input value={serviceIndustry} onChange={event => setServiceIndustry(event.target.value)} maxLength={80} required placeholder="e.g. Beauty & wellness, automotive, retail" /></label>
               <label>Price ({businessCurrency})<input type="number" min="0" step="0.01" value={servicePrice} onChange={event => setServicePrice(event.target.value)} required /></label>
               <label>Description <span className="sd-identity-optional">Optional</span><textarea rows={3} value={serviceDescription} onChange={event => setServiceDescription(event.target.value)} placeholder="Explain what the customer receives." /></label>
               <ServiceMediaPicker value={serviceMedia} type="image" allowVideo={false} online={online} onChange={(url, type) => { setServiceMedia(url); setServiceMediaType(type); }} onUploadingChange={setServiceMediaUploading} />
