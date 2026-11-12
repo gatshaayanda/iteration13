@@ -52,6 +52,16 @@ The public storefront's footer logo is the discreet owner-entry affordance; do n
 The WashRide reference means compact, app-like composition—not simply a smaller type scale. Keep the hero short enough to reveal useful content/actions early, use a strong but contained visual, compress redundant proof chips and decorative whitespace, and make the service catalogue visible without a long marketing scroll. Apply the same compactness to all inner workspaces.
 
 
+## First-run business identity — portfolio-wide default
+
+For any Admin Hub / Business OS product that is not being adapted from a close industry-specific app with an established onboarding journey, begin with identity—not exploration. Ask for a real or fictional business name (example: **Metsi Wellness**) and a brand palette of **one to three colours maximum**. Preview the result as one coupled identity across **Store · Account · Briefcase** and update all three instantly. Only after this should the visitor be invited to explore the Store and the rest of Iteration 13.
+
+Use the proposition **“Your business in your pocket.”** Supporting copy: “Example: Metsi Wellness. Use a real or fictional name. Your Store, Account and Briefcase rebrand together instantly.” The owner workspace should be introduced with **“ADMIN HUB / PRIVATE BRIEFCASE”**, repeat the proposition, provide a local-time greeting, then show a compact and actionable overview of owner operations, customer requests and money.
+
+This is a default onboarding and product-comprehension sequence, not permission to replace a target app's proven industry-specific onboarding. For an existing app or a close industry match, preserve its established entry journey and apply the same identity coupling, restrained palette and contrast rules within it.
+
+The full contract is in [BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md](./BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md).
+
 ## 4A. Iteration 13 product standard — Store + Briefcase + Login
 
 Iteration 13 is the live product demonstration of a small-business operating system, not merely a 13Studio services landing page. The complete customer journey and owner workflow must read as one product:
