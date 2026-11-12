@@ -46,8 +46,8 @@ This is a prototype control surface, not a secure admin boundary. Do not enter r
 
 - Orders, service edits, announcements and statuses are stored in this browser's `localStorage`; customer and admin views share the same local data on the same browser profile.
 - Data is not shared with other devices, sent to a business, or synchronized to Firebase.
-- Visit the homepage while online first so the service worker can cache the app shell. Then switch the device/browser offline and reload the homepage. Confirm the app shell opens, submit a sample request, and use the bottom **Admin demo** entry to change its status. Return to **My account** and confirm the status is reflected.
-- External preview images/videos may need a connection; if an asset is unavailable, the service card should fall back to its local visual placeholder. Offline success means local demo state persists on this device, not that external media is downloaded.
+- Visit the homepage while online and allow the service worker to finish installing; then reload once while online. Switch the device/browser offline and reload the homepage. Confirm the app shell opens, submit a sample request, and use the bottom **Admin demo** entry to change its status. Return to **My account** and confirm the status is reflected.
+- The service worker caches the app shell and offline fallback, uses network-first navigation with a cached-page/home/offline fallback, and keeps private routes and API responses out of the public page cache. Eligible service images from supported hosts may be retained only when a readable response exposes a size within the 4 MB per-image limit (24 image entries maximum). Video streaming, opaque/oversized images and other external assets need internet; service cards should use their local visual placeholder when media is unavailable. Browser storage can be evicted, so this is best-effort offline support—not a guaranteed download or backup.
 - If local storage is blocked or full, the app should show a notice; do not interpret a local save notice as server synchronization.
 
 ## Installation — protected behavior
