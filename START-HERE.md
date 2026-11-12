@@ -86,3 +86,8 @@ Before building/adapting any customer account, read the **Customer account works
 
 
 For one-word staff/admin login work, follow the **One-word staff/admin access** section in `docs/ADMIN-HUB-APP-FACTORY-SOP.md`: one access-word field at the UI, server-side validation, real expiring authorization, and no invented email/username or auth infrastructure.
+
+
+## First-run customer offer and owner readability
+
+After business name and one-to-three brand colours, require a first service listing (name and Pula price; description and image optional) before opening the generic Business OS demo. Reuse the same service record and UploadThing media workflow as the owner CRUD. Show a branded placeholder when the owner skips the image. Preview the listing alongside the coupled Store · Account · Briefcase identity. Admin metric labels and supporting explanations must remain at least 14 CSS px and clearly readable against their card backgrounds; never show numbers without readable labels.
