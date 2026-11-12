@@ -444,6 +444,13 @@ export default function Home() {
             <article><span>02 / CUSTOMER</span><strong>Account</strong><p>Follow requests and find your receipts.</p><b style={{ color: themeColor }}>My Account ↗</b></article>
             <article><span>03 / OWNER</span><strong>Briefcase</strong><p>Manage customers, work and money.</p><b style={{ background: themeColor }}>Open Briefcase ↗</b></article>
           </div>
+          <div className="sd-identity-service-preview" aria-live="polite">
+            <span>FIRST STORE LISTING</span>
+            <div className="sd-identity-service-preview-card">
+              {serviceMedia ? <img src={serviceMedia} alt="First service image preview" /> : <div className="sd-identity-service-placeholder" style={{background:themeColor,color:accentInk(themeColor)}}><strong>{serviceName.trim() ? serviceName.trim().slice(0,1).toUpperCase() : "＋"}</strong><small>BRANDED PLACEHOLDER</small></div>}
+              <div><strong>{serviceName.trim() || "Your first service"}</strong><b>{money(Number(servicePrice)||0)}</b><p>{serviceDescription.trim() || "Your service description will appear here."}</p></div>
+            </div>
+          </div>
           <div className="sd-identity-preview-footer"><span>YOUR BRAND PALETTE</span><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div><small>One identity · three connected areas</small></div>
         </div>
       </div>
