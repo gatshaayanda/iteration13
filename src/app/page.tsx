@@ -405,6 +405,9 @@ export default function Home() {
       return total;
     } catch { return null; }
   }, [data, ownerNotes, businessName, brandColors, businessCurrency]);
+  const firebaseCapacityBytes = 25 * 1024 * 1024 * 1024;
+  const localCapacityPercent = localStorageBytes === null ? null : Math.min(100, (localStorageBytes / firebaseCapacityBytes) * 100);
+  const localCapacityPercentLabel = localCapacityPercent === null ? "Unavailable" : localCapacityPercent < 0.000001 ? "<0.000001%" : `${localCapacityPercent.toFixed(6)}%`;
   const localEvents = data.events || [];
   const recordedVisits = Math.max(data.views || 0, localEvents.filter(event => event.kind === "visit").length);
   const serviceSelections = localEvents.filter(event => event.kind === "service").length;
@@ -688,8 +691,8 @@ export default function Home() {
     <article><strong>{data.orders.length.toLocaleString()}</strong><span>Enquiries saved on this device</span></article>
   </div>
   <div className="sd-local-analytics-columns">
-    <article><span className="sd-kicker">LOCAL DATA FOOTPRINT</span><strong>{formatLocalBytes(localStorageBytes)}</strong><p>Approximate size of this app&apos;s saved browser data, including business setup, notes and demo records. It is not Firebase storage usage.</p></article>
-    <article className="sd-firebase-capacity-card"><span className="sd-kicker">ADMIN OS / FIREBASE CAPACITY</span><strong>25 GB / month</strong><p>Monthly Firebase cloud capacity maintained by the Admin Hub code. Firebase is not connected to this prototype, so live reads, writes, bandwidth and storage usage are not measured here.</p><div className="sd-capacity-scale" role="img" aria-label="Monthly capacity reference scale from zero to 25 gigabytes; live usage is not measured"><div className="sd-capacity-scale-fill" /></div><div className="sd-capacity-scale-labels"><span>0%</span><span>50%</span><span>100% · 25 GB</span></div><small className="sd-capacity-scale-note">Full monthly capacity reference · not a usage reading</small><span className="sd-local-pill">Capacity reference · live usage not measured</span></article>
+    <article className="sd-local-footprint-card"><span className="sd-kicker">LOCAL DATA FOOTPRINT</span><strong>{formatLocalBytes(localStorageBytes)}</strong><p>Approximate saved data measured in this browser, including business setup, notes and demo records.</p><span className="sd-local-pill">Measured locally · this device</span></article>
+    <article className="sd-firebase-capacity-card"><span className="sd-kicker">ADMIN OS / FIREBASE MONTHLY CAPACITY</span><strong>25 GB / month</strong><p>Compare this browser&apos;s saved data with the monthly cloud capacity maintained by the Admin Hub.</p><div className="sd-capacity-comparison"><div className="sd-capacity-comparison-labels"><strong>{formatLocalBytes(localStorageBytes)} used locally</strong><strong>{localCapacityPercentLabel} of capacity</strong></div><div className="sd-capacity-scale" role="img" aria-label={localCapacityPercent === null ? "Local data size unavailable; monthly Firebase capacity is 25 gigabytes" : `${formatLocalBytes(localStorageBytes)} local data, ${localCapacityPercentLabel} of the 25 gigabyte monthly Admin OS Firebase capacity`}><div className="sd-capacity-scale-fill" style={{ width: `${localCapacityPercent ?? 0}%` }} /></div><div className="sd-capacity-scale-labels"><span>0 GB</span><span>25 GB monthly capacity</span></div></div><small className="sd-capacity-scale-note">This is a local-data-to-capacity comparison, not measured Firebase consumption. Firebase is not connected to this prototype.</small></article>
   </div>
   <div className="sd-local-activity-feed">
     <div className="sd-local-activity-heading"><div><span className="sd-kicker">RECENT RECORDED WORK</span><h3>Activity trail</h3></div><span>{recentLocalEvents.length} latest events</span></div>
