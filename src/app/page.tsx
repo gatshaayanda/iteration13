@@ -553,15 +553,15 @@ export default function Home() {
               <p className="sd-identity-placeholder-note">No image is required. Leave media empty to use a clean branded service placeholder in your Store.</p>
             </div>
           </section>
-          <button type="button" className="sd-identity-continue" onClick={() => completeBusinessIdentity()} disabled={!ready || serviceMediaUploading}>{serviceMediaUploading ? "Uploading service image…" : identityEditing ? "Save business setup" : "Open my Briefcase"} <span>↗</span></button>
-          <p className="sd-identity-local-note">Demo setup · saved in this browser only. This does not publish a live website or sync across devices.</p>{identityEditing && <button type="button" className="sd-small-button" onClick={() => { setIdentityEditing(false); setIdentityServiceId(null); setIdentityComplete(true); }}>Cancel editing</button>}
+          <button type="button" className="sd-identity-continue" onClick={() => completeBusinessIdentity()} disabled={!ready || serviceMediaUploading}>{serviceMediaUploading ? "Uploading service image…" : identityEditing ? "Save business setup" : "Create my Business OS"} <span>↗</span></button>
+          <p className="sd-identity-local-note">Save your setup on this device, then explore the working Store, customer Account and owner Briefcase. Nothing syncs across devices.</p>{identityEditing && <button type="button" className="sd-small-button" onClick={() => { setIdentityEditing(false); setIdentityServiceId(null); setIdentityComplete(true); }}>Cancel editing</button>}
         </div>
         <div className="sd-identity-live-preview" aria-label="Live preview of your Store, Account and Briefcase">
           <div className="sd-identity-preview-brand" style={{ background: themeColor }}><span>{(businessName.trim() || "Your Business").slice(0,2).toUpperCase()}</span><div><strong>{businessName.trim() || "Your Business"}</strong><small>Your business in your pocket.</small></div></div>
           <div className="sd-identity-preview-grid">
-            <article><span>01 / CUSTOMER</span><strong>Store</strong><p>Explore services and make a request.</p><b style={{ background: themeColor }}>Explore Store ↗</b></article>
-            <article><span>02 / CUSTOMER</span><strong>Account</strong><p>Follow requests and find your receipts.</p><b style={{ color: themeColor }}>My Account ↗</b></article>
-            <article><span>03 / OWNER</span><strong>Briefcase</strong><p>Manage customers, work and money.</p><b style={{ background: themeColor }}>Open Briefcase ↗</b></article>
+            <article><span>01 / CUSTOMER</span><strong>Store</strong><p>Explore services and make a request.</p><button type="button" style={{ background: themeColor }} onClick={() => { setView("shop"); completeBusinessIdentity(); }}>Build &amp; open Store ↗</button></article>
+            <article><span>02 / CUSTOMER</span><strong>Account</strong><p>Follow requests and find your receipts.</p><button type="button" style={{ color: themeColor }} onClick={() => { setView("account"); completeBusinessIdentity(); }}>Build &amp; open Account ↗</button></article>
+            <article><span>03 / OWNER</span><strong>Briefcase</strong><p>Manage customers, work and money.</p><button type="button" style={{ background: themeColor }} onClick={() => { setView("login"); completeBusinessIdentity(); }}>Build &amp; open Briefcase ↗</button></article>
           </div>
           <div className="sd-identity-service-preview" aria-live="polite">
             <span>FIRST STORE LISTING</span>
