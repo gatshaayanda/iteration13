@@ -16,6 +16,7 @@ check(sw.includes('response.type !== "opaque"') && sw.includes("declaredSize > 0
 check(sw.includes("private|no-store") && sw.includes("cache-control"), "private/no-store HTML must not be cached");
 check(sw.includes('url.pathname.startsWith("/api/")') && sw.includes("const isPrivate ="), "API and private routes must remain outside public page caching");
 check(sw.includes('event.data?.type === "CACHE_MEDIA"'), "service worker must accept the page's current media list");
+check(sw.includes('event.data?.type === "SKIP_WAITING"') && !sw.includes("await self.skipWaiting()"), "updates must wait for the user's explicit refresh action");
 check(sw.includes('"images.unsplash.com"') && sw.includes('"utfs.io"') && sw.includes('"ufs.sh"'), "media cache must be restricted to the supported image/upload hosts");
 check(sw.includes("const MEDIA_LIMIT = 24") && sw.includes("const MEDIA_MAX_BYTES = 4 * 1024 * 1024"), "media cache must enforce 24 entries and a 4 MB per-image limit");
 check(sw.includes('if (cached) return cached') && sw.includes('return Response.error()'), "media and navigation fetches must retain an offline fallback");

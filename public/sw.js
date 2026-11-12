@@ -64,8 +64,8 @@ const APP_SHELL = ["/", "/offline", "/patterns", "/iphone-install", "/iphone-ins
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
     await precacheShell();
-    // Install the new routing/cache policy immediately; the page is not force-reloaded.
-    await self.skipWaiting();
+    // Keep updates waiting until the user chooses Refresh in the app's update notice.
+    // First installation still activates normally because there is no prior controller.
   })());
 });
 
