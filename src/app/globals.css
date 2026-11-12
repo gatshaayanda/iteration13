@@ -3323,3 +3323,12 @@ h1 em,
 .serviceDemo .sd-local-activity-feed li time{font-size:.78rem!important;font-weight:650!important}
 .serviceDemo .sd-local-activity-feed .sd-activity-dot{border:1px solid #000}
 .serviceDemo .sd-local-analytics-boundary{color:#fff!important}
+
+.serviceDemo .sd-local-analytics-columns article .sd-local-pill{
+  justify-self:start;padding:6px 8px;background:#fff!important;
+  border:1px solid #000!important;border-radius:6px;font-size:.68rem;font-weight:850;
+}
+.serviceDemo .sd-capacity-scale-labels{display:grid;grid-template-columns:1fr 1fr 1fr}
+.serviceDemo .sd-capacity-scale-labels span:nth-child(2){text-align:center}
+.serviceDemo .sd-capacity-scale-labels span:last-child{text-align:right}
+.serviceDemo .sd-capacity-scale-note{color:#000!important;font-size:.7rem;font-weight:750}
