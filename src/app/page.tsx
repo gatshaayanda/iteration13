@@ -46,6 +46,11 @@ const accentText = (hex: string) => {
   return "#" + rgb.map(value => value.toString(16).padStart(2, "0")).join("");
 };
 const localDate = () => { const now = new Date(); return [now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-"); };
+const brandColorOptions = [
+  { color: "#2458e8", label: "Cobalt" }, { color: "#16866a", label: "Emerald" },
+  { color: "#b7791f", label: "Amber" }, { color: "#c04467", label: "Rose" },
+  { color: "#6b4ed6", label: "Violet" }, { color: "#202b3c", label: "Midnight" },
+];
 
 export default function Home() {
   const [data, setData] = useState<DemoData>(emptyData);
@@ -85,8 +90,14 @@ export default function Home() {
   const [pendingConfirm, setPendingConfirm] = useState<{ kind: "delete-service" | "reset-demo"; serviceId?: string; serviceName?: string } | null>(null);
   const [ownerNotes, setOwnerNotes] = useState("");
   const [notesReady, setNotesReady] = useState(false);
-  const [themeColor, setThemeColor] = useState("#4f8cff");
+  const [brandColors, setBrandColors] = useState<string[]>(["#2458e8"]);
+  const themeColor = brandColors[0] || "#2458e8";
+  const secondaryColor = brandColors[1] || themeColor;
+  const highlightColor = brandColors[2] || secondaryColor;
   const [themeReady, setThemeReady] = useState(false);
+  const [identityReady, setIdentityReady] = useState(false);
+  const [identityComplete, setIdentityComplete] = useState(false);
+  const [customBrandColor, setCustomBrandColor] = useState("#2458e8");
   const [businessName, setBusinessName] = useState("Your Business");
   const [businessNameReady, setBusinessNameReady] = useState(false);
 
@@ -106,18 +117,31 @@ export default function Home() {
 
   useEffect(() => {
     try {
+      const savedPalette = window.localStorage.getItem("iteration13:business-palette:v1");
       const savedTheme = window.localStorage.getItem("iteration13:store-theme:v1");
-      if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setThemeColor(savedTheme);
-    } catch { /* theme remains at the accessible default */ }
+      if (savedPalette) {
+        const parsed = JSON.parse(savedPalette);
+        if (Array.isArray(parsed)) {
+          const valid = [...new Set(parsed.filter((value): value is string => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value)))].slice(0, 3);
+          if (valid.length) setBrandColors(valid);
+        }
+      } else if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setBrandColors([savedTheme]);
+      setIdentityComplete(window.localStorage.getItem("iteration13:identity-complete:v1") === "true");
+    } catch { /* identity remains at the accessible default */ }
     setThemeReady(true);
+    setIdentityReady(true);
   }, []);
 
   useEffect(() => {
     document.documentElement.style.setProperty("--studio-accent", themeColor);
+    document.documentElement.style.setProperty("--studio-accent-secondary", secondaryColor);
+    document.documentElement.style.setProperty("--studio-accent-highlight", highlightColor);
     if (!themeReady) return;
-    try { window.localStorage.setItem("iteration13:store-theme:v1", themeColor); }
-    catch { setNotice("Theme could not be saved on this device."); }
-  }, [themeColor, themeReady]);
+    try {
+      window.localStorage.setItem("iteration13:business-palette:v1", JSON.stringify(brandColors));
+      window.localStorage.setItem("iteration13:store-theme:v1", themeColor);
+    } catch { setNotice("Brand colours could not be saved on this device."); }
+  }, [brandColors, themeColor, secondaryColor, highlightColor, themeReady]);
 
   useEffect(() => {
     try { setOwnerNotes(window.localStorage.getItem("iteration13:owner-notes:v1") || ""); }
@@ -232,6 +256,33 @@ export default function Home() {
   }
 
   const activeServices = data.services.filter(service => service.active);
+  const currentHour = new Date().getHours();
+  const ownerGreeting = currentHour < 12 ? "Good morning" : currentHour < 17 ? "Good afternoon" : "Good evening";
+  function toggleBrandColor(color: string) {
+    setBrandColors(current => current.includes(color)
+      ? current.length > 1 ? current.filter(item => item !== color) : current
+      : current.length < 3 ? [...current, color] : current);
+  }
+  function addCustomBrandColor() {
+    setBrandColors(current => current.includes(customBrandColor)
+      ? current
+      : current.length < 3 ? [...current, customBrandColor] : [...current.slice(0, 2), customBrandColor]);
+  }
+  function completeBusinessIdentity() {
+    const name = businessName.trim();
+    if (!name) { setNotice("Enter your business name to continue."); return; }
+    try {
+      window.localStorage.setItem("iteration13:business-name:v1", name.slice(0, 48));
+      window.localStorage.setItem("iteration13:business-palette:v1", JSON.stringify(brandColors.slice(0, 3)));
+      window.localStorage.setItem("iteration13:store-theme:v1", themeColor);
+      window.localStorage.setItem("iteration13:identity-complete:v1", "true");
+      setBusinessName(name.slice(0, 48));
+      setIdentityComplete(true);
+      setNotice("Your business identity is saved on this device. Store, Account and Briefcase now share it.");
+    } catch {
+      setNotice("Your identity could not be saved on this device. Check browser storage and try again.");
+    }
+  }
   const paidTotal = data.orders.reduce((sum, order) => sum + (order.paidAmount || 0), 0);
   const completedUnpaid = data.orders.filter(order => order.status === "Completed").reduce((sum, order) => sum + Math.max(0, order.price - (order.paidAmount || 0)), 0);
   
@@ -347,7 +398,37 @@ export default function Home() {
     if (commitData(current => ({ ...current, orders: current.orders.map(order => order.id === id ? { ...order, messages: [...(order.messages || []), message] } : order) }), "Studio reply saved to this browser's demo thread.")) setAdminReplyDrafts(current => ({ ...current, [id]: "" }));
   }
 
-  return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--studio-accent-ink": accentInk(themeColor), "--studio-accent-text": accentText(themeColor) } as React.CSSProperties}>
+  return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--studio-accent-secondary": secondaryColor, "--studio-accent-highlight": highlightColor, "--studio-accent-ink": accentInk(themeColor), "--studio-accent-text": accentText(themeColor) } as React.CSSProperties}>
+    {!identityReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete ? <section className="sd-identity-onboarding">
+      <div className="sd-identity-onboarding-top"><span>13STUDIO / BUSINESS OS</span><span>FIRST · YOUR BUSINESS IDENTITY</span></div>
+      <div className="sd-identity-onboarding-layout">
+        <div className="sd-identity-onboarding-copy">
+          <span className="sd-kicker">LIVE BUSINESS IDENTITY</span>
+          <h1>Your business <em>in your pocket.</em></h1>
+          <p>Start by making this space yours. Your Store, Account and Briefcase will share the same business name and brand colours.</p>
+          <label className="sd-identity-name-label">Business name
+            <input value={businessName} onChange={event => setBusinessName(event.target.value.slice(0, 48))} maxLength={48} autoComplete="organization" placeholder="Example: Metsi Wellness" />
+          </label>
+          <small className="sd-identity-helper">Example: Metsi Wellness. Use a real or fictional name. Your Store, Account and Briefcase rebrand together instantly.</small>
+          <div className="sd-identity-palette">
+            <div><strong>Choose your brand colours</strong><span>{brandColors.length} of 3 selected · choose one, two or three</span></div>
+            <div className="sd-identity-swatches">{brandColorOptions.map(option => <button key={option.color} type="button" className={brandColors.includes(option.color) ? "is-selected" : ""} style={{ "--swatch": option.color } as React.CSSProperties} aria-label={option.label} aria-pressed={brandColors.includes(option.color)} onClick={() => toggleBrandColor(option.color)}><span>{brandColors.includes(option.color) ? "✓" : "+"}</span><small>{option.label}</small></button>)}</div>
+            <label className="sd-custom-colour">Custom colour <input aria-label="Choose a custom brand colour" type="color" value={customBrandColor} onChange={event => setCustomBrandColor(event.target.value)} /><button type="button" onClick={addCustomBrandColor}>{brandColors.includes(customBrandColor) ? "Already selected" : brandColors.length === 3 ? "Replace highlight" : "Add colour"}</button></label>
+          </div>
+          <button type="button" className="sd-identity-continue" onClick={completeBusinessIdentity}>Create my business space <span>↗</span></button>
+          <p className="sd-identity-local-note">Demo setup · saved in this browser only. This does not publish a live website or sync across devices.</p>
+        </div>
+        <div className="sd-identity-live-preview" aria-label="Live preview of your Store, Account and Briefcase">
+          <div className="sd-identity-preview-brand" style={{ background: themeColor }}><span>{(businessName.trim() || "Your Business").slice(0,2).toUpperCase()}</span><div><strong>{businessName.trim() || "Your Business"}</strong><small>Your business in your pocket.</small></div></div>
+          <div className="sd-identity-preview-grid">
+            <article><span>01 / CUSTOMER</span><strong>Store</strong><p>Explore services and make a request.</p><b style={{ background: themeColor }}>Explore Store ↗</b></article>
+            <article><span>02 / CUSTOMER</span><strong>Account</strong><p>Follow requests and find your receipts.</p><b style={{ color: themeColor }}>My Account ↗</b></article>
+            <article><span>03 / OWNER</span><strong>Briefcase</strong><p>Manage customers, work and money.</p><b style={{ background: themeColor }}>Open Briefcase ↗</b></article>
+          </div>
+          <div className="sd-identity-preview-footer"><span>YOUR BRAND PALETTE</span><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div><small>One identity · three connected areas</small></div>
+        </div>
+      </div>
+    </section> : <>
     <div className="sd-topline"><div className="sd-wrap"><span>13STUDIO <i className="sd-topline-divider">/</i> BUSINESS OS DEMO</span><span className={online ? "sd-connect" : "sd-connect is-offline"}><i />{online ? "Demo ready" : "Offline · local demo"}</span></div></div>
     <header className="sd-header"><div className="sd-wrap sd-nav"><button className="sd-brand" onClick={() => { setView("shop"); setNotice(""); window.scrollTo({top:0,behavior:"smooth"}); }} aria-label="Back to services"><span className="sd-logo">{(businessName.trim() || "YB").slice(0,2).toUpperCase()}</span><span><strong>{businessName || "Your Business"}</strong><small>STORE</small></span></button><nav aria-label="Main navigation"><button onClick={() => { setView("shop"); setNotice(""); }}>Store</button><button onClick={() => { setView("account"); setNotice(""); }}>Account <span className="sd-count">{data.orders.length}</span></button><button onClick={requestAdminLogin}>Login</button></nav></div></header>
     {(view === "shop" || view === "account" || view === "login") && <nav className="sd-mobile-nav" aria-label="Quick navigation">
@@ -385,15 +466,7 @@ export default function Home() {
             <span><b>1,000+</b><small>Busy-day interactions</small></span>
             <span><b>24/7</b><small>Store access</small></span>
           </div>
-          <section className="sd-quick-theme" aria-label="Choose business colour">
-            <strong>Store colour</strong>
-            <button type="button" className={themeColor==="#4f8cff"?"is-selected":""} aria-label="Blue" aria-pressed={themeColor==="#4f8cff"} style={{background:"#4f8cff"}} onClick={()=>setThemeColor("#4f8cff")}/>
-            <button type="button" className={themeColor==="#16866a"?"is-selected":""} aria-label="Emerald" aria-pressed={themeColor==="#16866a"} style={{background:"#16866a"}} onClick={()=>setThemeColor("#16866a")}/>
-            <button type="button" className={themeColor==="#b7791f"?"is-selected":""} aria-label="Amber" aria-pressed={themeColor==="#b7791f"} style={{background:"#b7791f"}} onClick={()=>setThemeColor("#b7791f")}/>
-            <button type="button" className={themeColor==="#c04467"?"is-selected":""} aria-label="Rose" aria-pressed={themeColor==="#c04467"} style={{background:"#c04467"}} onClick={()=>setThemeColor("#c04467")}/>
-            <label>Custom <input aria-label="Choose custom business colour" type="color" value={themeColor} onChange={event=>setThemeColor(event.target.value)}/></label>
-            <span className="sd-theme-saved">Saved on this device</span>
-          </section>
+          <section className="sd-store-identity-strip"><span>BUSINESS IDENTITY</span><strong>{businessName}</strong><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div><small>Store · Account · Briefcase</small></section>
         </div>
       </section>
       {(data.announcement.trim() || data.announcementImage) && <section className="sd-announcement"><div className="sd-wrap"><span><span aria-hidden="true">📣</span> STUDIO NOTE / SPECIAL</span>{data.announcementImage && <img className="sd-announcement-thumb" src={data.announcementImage} alt={data.announcement.slice(0, 120) || "Announcement image"} loading="lazy" />}<p>{data.announcement}</p></div></section>}
@@ -410,14 +483,14 @@ export default function Home() {
 
     {view === "login" && <section className="sd-admin sd-wrap"><div className="sd-admin-panel sd-admin-login-card" style={{maxWidth:480,margin:"clamp(28px,8vh,84px) auto",padding:24}}><span className="sd-kicker">13STUDIO / OWNER ACCESS</span><h1 style={{fontSize:"clamp(1.8rem,5vw,2.5rem)",margin:"8px 0"}}>Open your <em>Briefcase.</em></h1><p className="sd-admin-help">This prototype uses one shared demo word. The real client system will be configured with the authentication methods the business chooses.</p><form className="sd-admin-form" onSubmit={submitAdminLogin}><label>Demo access word<input type="password" autoComplete="off" value={adminPassphrase} onChange={event=>setAdminPassphrase(event.target.value)} placeholder="Enter access word" required /></label><button className="sd-button sd-primary" type="submit">Continue to admin →</button></form><p className="sd-admin-help" style={{marginTop:12}}>Demo word: <strong>admin</strong>. This client-side gate is for demonstration only; it does not protect real data.</p><button className="sd-button sd-outline" type="button" onClick={()=>{setView("shop");setNotice("");}}>← Back to Store</button></div></section>}
 
-    {view === "admin" && adminUnlocked && <section className="sd-admin sd-wrap" data-admin-current={adminTab}><div className="sd-os-heading"><div><span className="sd-kicker">ADMIN HUB / PRIVATE BRIEFCASE</span><h1>{businessName.trim() || "Your Business"}</h1><p>Owner operations · customer requests · money</p></div><span className="sd-os-status">LOCAL DEMO</span></div><section className="sd-business-identity" data-admin-tab="store" aria-label="Business identity">
+    {view === "admin" && adminUnlocked && <section className="sd-admin sd-wrap" data-admin-current={adminTab}><div className="sd-os-heading"><div><span className="sd-kicker">ADMIN HUB / PRIVATE BRIEFCASE</span><small className="sd-owner-greeting">{ownerGreeting}</small><h1>Your business in your pocket.</h1><p><strong>{businessName.trim() || "Your Business"}</strong> · Owner operations · customer requests · money</p></div><span className="sd-os-status">LOCAL DEMO</span></div><section className="sd-business-identity" data-admin-tab="store" aria-label="Business identity">
   <div className="sd-business-identity-fields">
     <label>Business name<input value={businessName} onChange={event => setBusinessName(event.target.value.slice(0, 48))} maxLength={48} autoComplete="organization" /></label>
     <small>Example: Metsi Wellness. Use a real or fictional name. Your Store, Account and Briefcase rebrand together instantly.</small>
   </div>
   <div className="sd-business-identity-preview" style={{borderColor:themeColor}}><span className="sd-kicker">LIVE BUSINESS IDENTITY</span><strong>{businessName.trim() || "Your Business"}</strong><small>Store · Account · Briefcase</small></div>
 </section>
-<div className="sd-theme-control" aria-label="Active business colour"><div><strong>Store colour applied</strong><small>Your Store selection carries through this entire workspace. Change it once in the Store.</small></div><span aria-label={"Active colour "+themeColor} style={{display:"inline-block",width:28,height:28,borderRadius:"50%",background:themeColor,border:"2px solid #fff",boxShadow:"0 0 0 1px #777"}} /></div><nav className="sd-os-nav" aria-label="Business OS sections"><button type="button" aria-pressed={adminTab==="today"} onClick={()=>setAdminTab("today")}>Today</button><button type="button" aria-pressed={adminTab==="work"} onClick={()=>setAdminTab("work")}>Customers &amp; jobs</button><button type="button" aria-pressed={adminTab==="money"} onClick={()=>setAdminTab("money")}>Money</button><button type="button" aria-pressed={adminTab==="store"} onClick={()=>setAdminTab("store")}>Store design</button><button type="button" aria-pressed={adminTab==="notes"} onClick={()=>setAdminTab("notes")}>My Notes</button><button type="button" aria-pressed={adminTab==="insights"} onClick={()=>setAdminTab("insights")}>Insights</button></nav><div className="sd-admin-head"><div><span className="sd-kicker">OPERATIONS / LOCAL DEMO</span><h2>Today at a glance</h2><p>Review work, customer activity and money. Changes stay on this device.</p></div><div className="sd-admin-head-actions"><button className="sd-button sd-outline" onClick={() => setView("shop")}>View storefront ↗</button><button className="sd-button sd-outline" onClick={() => setView("account")}>Customer account ↗</button></div></div><div className="sd-stats" id="admin-today" data-admin-tab="today"><article><span>Submitted requests</span><strong>{data.orders.length}</strong><small>{data.views > 0 ? Math.round(data.orders.length / data.views * 100) : 0}% visit-to-request rate</small></article><article><span>New requests</span><strong>{statusCounts["New request"] || 0}</strong><small>{data.orders.length ? Math.round((statusCounts["New request"] || 0) / data.orders.length * 100) : 0}% of requests</small></article><article><span>Menu services</span><strong>{data.services.length}</strong><small>{data.services.length ? Math.round(activeServices.length / data.services.length * 100) : 0}% visible</small></article><article><span>Customer emails</span><strong>{new Set(data.orders.map(order => order.email.toLowerCase())).size}</strong><small>{data.orders.length ? Math.round(new Set(data.orders.map(order => order.email.toLowerCase())).size / data.orders.length * 100) : 0}% unique emails per request count</small></article><article><span>Store visits this demo</span><strong>{data.views}</strong><small>Local browser count · not unique visitors</small></article></div><section className="sd-admin-panel sd-finance-panel" id="admin-finance" data-admin-tab="money"><div className="sd-discount-admin"><div className="sd-panel-head"><div><span className="sd-kicker">CUSTOMER REWARDS</span><h3>Lap reward promotion</h3><p className="sd-admin-help">Edit the offer customers see beside the racing game. Changes stay in this browser demo.</p></div><span className="sd-local-pill">OWNER CONTROLLED</span></div><div className="sd-reward-editor"><label>Promotion headline<input maxLength={80} value={rewardTitleDraft} onChange={event=>setRewardTitleDraft(event.target.value)} placeholder="Take a quick lap." /></label><label>Customer announcement<textarea rows={3} maxLength={280} value={rewardDescriptionDraft} onChange={event=>setRewardDescriptionDraft(event.target.value)} placeholder="Tell customers what the reward is and how to earn it." /></label><label>Discount awarded for a clean lap · pula<input type="number" min="0.01" max="5000" step="0.01" value={rewardDiscountDraft} onChange={event=>setRewardDiscountDraft(event.target.value)} /></label><AnnouncementImagePicker value={rewardImageDraft} online={online} onChange={setRewardImageDraft} onUploadingChange={setRewardImageUploading} /><div className="sd-reward-admin-actions"><button className="sd-small-button" type="button" disabled={rewardImageUploading} onClick={()=>{const amount=Number(rewardDiscountDraft);if(!rewardTitleDraft.trim()||!rewardDescriptionDraft.trim()){setNotice("Add a promotion headline and customer announcement first.");return;}if(!Number.isFinite(amount)||amount<=0||amount>5000){setNotice("Enter a discount between P0.01 and P5,000.");return;}commitData(current=>({...current,rewardTitle:rewardTitleDraft.trim(),rewardDescription:rewardDescriptionDraft.trim(),rewardImage:rewardImageDraft.trim(),discountAmount:amount,rewardActive:true}),"Lap reward promotion published on this device.");}}>Save &amp; publish reward</button><button className="sd-small-button" type="button" onClick={()=>commitData(current=>({...current,rewardActive:false}),"Lap reward hidden from the customer Store.")}>Hide reward</button><button className="sd-small-button" type="button" onClick={()=>{setRewardTitleDraft("");setRewardDescriptionDraft("");setRewardImageDraft("");setRewardDiscountDraft("10");commitData(current=>({...current,rewardTitle:"",rewardDescription:"",rewardImage:"",discountAmount:10,rewardActive:false}),"Lap reward promotion removed from this device.");}}>Remove promotion</button></div><div className="sd-reward-preview"><span>STORE PREVIEW</span><div>{rewardImageDraft?<img src={rewardImageDraft} alt="Lap reward thumbnail preview"/>:<span className="sd-reward-preview-fallback">🏁</span>}<section><strong>{rewardTitleDraft||"Your promotion headline"}</strong><p>{rewardDescriptionDraft||"Your customer announcement will appear here."}</p><b>P{Number(rewardDiscountDraft)>0?Number(rewardDiscountDraft).toFixed(2):"—"} OFF</b></section></div><small>{data.rewardActive===false?"Currently hidden":"Currently published"} · save to apply edits</small></div></div><label>Customer email for a direct promotion<input type="email" value={promoAssignEmail} onChange={event=>setPromoAssignEmail(event.target.value)} placeholder="customer@example.com" /></label><button className="sd-small-button" type="button" onClick={assignPromoReward}>Assign discount to customer →</button><div className="sd-discount-claims">{(data.discountClaims || []).length ? (data.discountClaims || []).slice(0,8).map(claim=><article key={claim.id}><strong>{claim.code}</strong><span>{claim.email}</span><b>{money(claim.amount)} · {claim.status}</b></article>) : <p className="sd-admin-empty">No racing rewards earned yet.</p>}</div></div>
+<div className="sd-theme-control sd-palette-control" aria-label="Business brand colours"><div><strong>Brand palette · {brandColors.length} of 3 colours</strong><small>One to three brand colours shared by Store, Account, Briefcase and receipts.</small></div><div className="sd-admin-palette-swatches">{brandColorOptions.map(option => <button key={option.color} type="button" className={brandColors.includes(option.color) ? "is-selected" : ""} style={{ "--swatch": option.color } as React.CSSProperties} aria-label={option.label} aria-pressed={brandColors.includes(option.color)} onClick={() => toggleBrandColor(option.color)}>{brandColors.includes(option.color) ? "✓" : "+"}</button>)}<label title="Choose a custom brand colour"><input type="color" value={customBrandColor} onChange={event=>setCustomBrandColor(event.target.value)} aria-label="Custom brand colour"/><button type="button" onClick={addCustomBrandColor}>Add</button></label></div></div><nav className="sd-os-nav" aria-label="Business OS sections"><button type="button" aria-pressed={adminTab==="today"} onClick={()=>setAdminTab("today")}>Today</button><button type="button" aria-pressed={adminTab==="work"} onClick={()=>setAdminTab("work")}>Customers &amp; jobs</button><button type="button" aria-pressed={adminTab==="money"} onClick={()=>setAdminTab("money")}>Money</button><button type="button" aria-pressed={adminTab==="store"} onClick={()=>setAdminTab("store")}>Store design</button><button type="button" aria-pressed={adminTab==="notes"} onClick={()=>setAdminTab("notes")}>My Notes</button><button type="button" aria-pressed={adminTab==="insights"} onClick={()=>setAdminTab("insights")}>Insights</button></nav><div className="sd-admin-head"><div><span className="sd-kicker">OPERATIONS / LOCAL DEMO</span><h2>Today at a glance</h2><p>Review work, customer activity and money. Changes stay on this device.</p></div><div className="sd-admin-head-actions"><button className="sd-button sd-outline" onClick={() => setView("shop")}>View storefront ↗</button><button className="sd-button sd-outline" onClick={() => setView("account")}>Customer account ↗</button></div></div><div className="sd-stats" id="admin-today" data-admin-tab="today"><article><span>Submitted requests</span><strong>{data.orders.length}</strong><small>{data.views > 0 ? Math.round(data.orders.length / data.views * 100) : 0}% visit-to-request rate</small></article><article><span>New requests</span><strong>{statusCounts["New request"] || 0}</strong><small>{data.orders.length ? Math.round((statusCounts["New request"] || 0) / data.orders.length * 100) : 0}% of requests</small></article><article><span>Menu services</span><strong>{data.services.length}</strong><small>{data.services.length ? Math.round(activeServices.length / data.services.length * 100) : 0}% visible</small></article><article><span>Customer emails</span><strong>{new Set(data.orders.map(order => order.email.toLowerCase())).size}</strong><small>{data.orders.length ? Math.round(new Set(data.orders.map(order => order.email.toLowerCase())).size / data.orders.length * 100) : 0}% unique emails per request count</small></article><article><span>Store visits this demo</span><strong>{data.views}</strong><small>Local browser count · not unique visitors</small></article></div><section className="sd-admin-panel sd-finance-panel" id="admin-finance" data-admin-tab="money"><div className="sd-discount-admin"><div className="sd-panel-head"><div><span className="sd-kicker">CUSTOMER REWARDS</span><h3>Lap reward promotion</h3><p className="sd-admin-help">Edit the offer customers see beside the racing game. Changes stay in this browser demo.</p></div><span className="sd-local-pill">OWNER CONTROLLED</span></div><div className="sd-reward-editor"><label>Promotion headline<input maxLength={80} value={rewardTitleDraft} onChange={event=>setRewardTitleDraft(event.target.value)} placeholder="Take a quick lap." /></label><label>Customer announcement<textarea rows={3} maxLength={280} value={rewardDescriptionDraft} onChange={event=>setRewardDescriptionDraft(event.target.value)} placeholder="Tell customers what the reward is and how to earn it." /></label><label>Discount awarded for a clean lap · pula<input type="number" min="0.01" max="5000" step="0.01" value={rewardDiscountDraft} onChange={event=>setRewardDiscountDraft(event.target.value)} /></label><AnnouncementImagePicker value={rewardImageDraft} online={online} onChange={setRewardImageDraft} onUploadingChange={setRewardImageUploading} /><div className="sd-reward-admin-actions"><button className="sd-small-button" type="button" disabled={rewardImageUploading} onClick={()=>{const amount=Number(rewardDiscountDraft);if(!rewardTitleDraft.trim()||!rewardDescriptionDraft.trim()){setNotice("Add a promotion headline and customer announcement first.");return;}if(!Number.isFinite(amount)||amount<=0||amount>5000){setNotice("Enter a discount between P0.01 and P5,000.");return;}commitData(current=>({...current,rewardTitle:rewardTitleDraft.trim(),rewardDescription:rewardDescriptionDraft.trim(),rewardImage:rewardImageDraft.trim(),discountAmount:amount,rewardActive:true}),"Lap reward promotion published on this device.");}}>Save &amp; publish reward</button><button className="sd-small-button" type="button" onClick={()=>commitData(current=>({...current,rewardActive:false}),"Lap reward hidden from the customer Store.")}>Hide reward</button><button className="sd-small-button" type="button" onClick={()=>{setRewardTitleDraft("");setRewardDescriptionDraft("");setRewardImageDraft("");setRewardDiscountDraft("10");commitData(current=>({...current,rewardTitle:"",rewardDescription:"",rewardImage:"",discountAmount:10,rewardActive:false}),"Lap reward promotion removed from this device.");}}>Remove promotion</button></div><div className="sd-reward-preview"><span>STORE PREVIEW</span><div>{rewardImageDraft?<img src={rewardImageDraft} alt="Lap reward thumbnail preview"/>:<span className="sd-reward-preview-fallback">🏁</span>}<section><strong>{rewardTitleDraft||"Your promotion headline"}</strong><p>{rewardDescriptionDraft||"Your customer announcement will appear here."}</p><b>P{Number(rewardDiscountDraft)>0?Number(rewardDiscountDraft).toFixed(2):"—"} OFF</b></section></div><small>{data.rewardActive===false?"Currently hidden":"Currently published"} · save to apply edits</small></div></div><label>Customer email for a direct promotion<input type="email" value={promoAssignEmail} onChange={event=>setPromoAssignEmail(event.target.value)} placeholder="customer@example.com" /></label><button className="sd-small-button" type="button" onClick={assignPromoReward}>Assign discount to customer →</button><div className="sd-discount-claims">{(data.discountClaims || []).length ? (data.discountClaims || []).slice(0,8).map(claim=><article key={claim.id}><strong>{claim.code}</strong><span>{claim.email}</span><b>{money(claim.amount)} · {claim.status}</b></article>) : <p className="sd-admin-empty">No racing rewards earned yet.</p>}</div></div>
 <div className="sd-panel-head"><div><span className="sd-kicker">FINANCE / LOCAL DEMO LEDGER</span><h2>Money &amp; receipts</h2></div><span className="sd-local-pill">SIMULATED RECORDS</span></div>
 <div className="sd-finance-metrics"><article><small>Payments received</small><strong>{money(paidTotal)}</strong></article><article><small>Completed value</small><strong>{money(completedValue)}</strong></article><article><small>Projected · accepted / active</small><strong>{money(projectedValue)}</strong></article><article><small>Requested value · excluding declined</small><strong>{money(requestedValue)}</strong></article><article><small>Completed · unpaid</small><strong>{money(completedUnpaid)}</strong></article></div>
 <p className="sd-admin-help">Paid totals include only payments recorded in this demo. Completed-unpaid and active pipeline are estimates, not cash received.</p>
@@ -445,5 +518,6 @@ export default function Home() {
     <footer className="sd-footer"><div className="sd-wrap sd-footer-inner"><button className="sd-brand sd-owner-entry" onClick={() => { requestAdminLogin(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label={`Open ${businessName || "Your Business"} owner Briefcase`}><span className="sd-briefcase-mark" aria-hidden="true">💼</span><span className="sd-owner-entry-copy"><strong>13Studio</strong><small>OPEN OWNER BRIEFCASE</small><em>{businessName || "Your Business"}</em></span><span className="sd-owner-entry-arrow" aria-hidden="true">↗</span></button><p>Built to be explored online and offline.</p><div><button onClick={() => { setView("account"); setNotice(""); }}>My account</button><Link href="/patterns">PWA pattern lab</Link></div></div></footer>
     {pendingConfirm && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-confirm-title" aria-describedby="sd-confirm-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-confirm-title">{pendingConfirm.kind === "reset-demo" ? "Reset demo data?" : `Delete ${pendingConfirm.serviceName || "this service"}?`}</h2><p id="sd-confirm-description">{pendingConfirm.kind === "reset-demo" ? "This clears local requests, service edits and the announcement, restoring the starter examples on this device." : "This removes the service from this browser demo. Existing requests keep their saved service name and price."}</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep it</button><button type="button" className="sd-button sd-primary" onClick={() => { const action = pendingConfirm; setPendingConfirm(null); if (action.kind === "reset-demo") { if (commitData(() => ({ ...emptyData, views: data.views }), "Demo data reset on this device.")) { setAnnouncementDraft(""); setAnnouncementImageDraft(""); resetServiceForm(); } } else if (action.serviceId) { if (commitData(current => ({ ...current, services: current.services.filter(item => item.id !== action.serviceId) }), `${action.serviceName || "Service"} deleted from this demo.`) && editingId === action.serviceId) resetServiceForm(); } }}>Confirm</button></div></section></div>}
     {notice && <div className="sd-toast-region"><div className={"sd-toast" + (/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? " is-error" : " is-success")} role={/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? "alert" : "status"}><span className="sd-toast-mark" aria-hidden="true">{/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? "!" : "✓"}</span><p>{notice}</p><button type="button" aria-label="Dismiss message" onClick={() => setNotice("")}>×</button></div></div>}
+    </>}
   </main>;
 }
