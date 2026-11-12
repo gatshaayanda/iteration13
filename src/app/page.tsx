@@ -430,7 +430,7 @@ export default function Home() {
               <label>Service name<input value={serviceName} onChange={event => setServiceName(event.target.value)} maxLength={80} required placeholder="e.g. Website design, Consultation, Haircut" /></label>
               <label>Price in Pula<input type="number" min="0" step="0.01" value={servicePrice} onChange={event => setServicePrice(event.target.value)} required /></label>
               <label>Description <span className="sd-identity-optional">Optional</span><textarea rows={3} value={serviceDescription} onChange={event => setServiceDescription(event.target.value)} placeholder="Explain what the customer receives." /></label>
-              <ServiceMediaPicker value={serviceMedia} type="image" online={online} onChange={(url, type) => { setServiceMedia(url); setServiceMediaType(type); }} onUploadingChange={setServiceMediaUploading} />
+              <ServiceMediaPicker value={serviceMedia} type="image" allowVideo={false} online={online} onChange={(url, type) => { setServiceMedia(url); setServiceMediaType(type); }} onUploadingChange={setServiceMediaUploading} />
               <p className="sd-identity-placeholder-note">No image is required. Leave media empty to use a clean branded service placeholder in your Store.</p>
             </div>
           </section>
