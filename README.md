@@ -31,11 +31,13 @@ Use the one-word **Login** entry or the discreet 13Studio footer logo to open th
 - Choose whether a clean lap in the embedded Big Brothers Racing 3D warm-up awards P10 or P20 off. The customer enters an email, earns a one-use code on a clean lap, and can redeem it against a Store request. Owners can also assign a promotion directly to a customer email.
 - Switch between Today, Customers & jobs, Money, Store design, My Notes and Insights tabs instead of scrolling through one long owner page.
 - Configure the business details and tax references shown on prototype receipts for the business's own record-keeping setup.
-- Review a local event trail tied to demo visits, requests, completed jobs and payments. Vercel Analytics and Speed Insights are included at application level; Firebase Analytics and private Vercel dashboard data are not connected.
-- See summary counts for requests, statuses, services, customer emails and demo visits.
+- Review local operational analytics: browser-recorded Store visits, service selections, Account opens, saved enquiries and a recent activity trail. These counts describe only activity recorded in the current browser profile; they are not shared public-visitor analytics.
+- See the approximate size of the app's `iteration13:` browser-local data separately from the BoardSignal 25 GB Firebase reference ceiling. Firebase is not connected in this prototype, so Firebase reads, writes, bandwidth and storage usage are not measured or displayed as live consumption.
+- Vercel Analytics and Speed Insights are included at application level; Firebase Analytics and private Vercel dashboard data are not connected.
+- See summary counts for requests, statuses, services, customer emails and recorded demo visits.
 - Change the Store's accent colour using vivid presets or a custom colour picker; the chosen colour is used as an accent on neutral, readable surfaces across the Store, Briefcase and receipts.
 - Keep private My Notes in this browser.
-- Review the BoardSignal 25 GB capacity reference and illustrative busy-day scenario.
+- Review the BoardSignal 25 GB capacity reference as a future Firebase-connected operating ceiling, not as a current usage meter.
 - Reset the local sample data for another walkthrough.
 
 This is a prototype control surface, not a secure admin boundary. Do not enter real customer data.
