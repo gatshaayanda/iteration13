@@ -113,3 +113,12 @@ Practical conclusion: a small coherent brand palette helps maintain recognition 
 - Elliot, A. J. & Maier, M. A. (2014), [Color Psychology: Effects of Perceiving Color on Psychological Functioning in Humans](https://doi.org/10.1146/annurev-psych-010213-115035), *Annual Review of Psychology*, 65, 95–120.
 - Cyr, D., Head, M. & Larios, H. (2010), [The impact of colour on Website appeal and users' cognitive processes](https://doi.org/10.1016/j.ijhcs.2010.04.002), *International Journal of Human-Computer Studies*.
 - Moshagen, M. & Thielsch, M. T. (2015), [Linking objective design factors with subjective aesthetics: structure and colour of websites](https://doi.org/10.1016/j.chb.2015.05.038), *Computers in Human Behavior*.
+
+
+## 5. Iteration13 is the briefcase product
+
+Iteration13 must be understood as a business operating system that fits in a pocket—not a theme picker attached to a generic storefront. The briefcase is the central metaphor and recurring brand mark. It represents the owner's set of keys to their business: customers, jobs, money, records, store presentation, insights and working notes.
+
+The guided first-run experience should make this model tangible: choose the business currency and pricing context, shape the brand identity and first customer offer, preview Store · Account · Briefcase together, then explore the Store, try a request, play the optional short reward game and open the owner Briefcase. Explain each Briefcase area in plain language. Teach by doing rather than presenting a long tutorial.
+
+The base remains editable and reusable. A visitor should understand that this is a working example they can personalise and refine; niche-specific deployments can then be cloned and adapted without making Iteration13 itself niche-specific. Currency is the business's pricing denomination; do not add visitor-side currency switching or automatic conversion.
