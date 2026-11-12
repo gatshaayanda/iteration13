@@ -415,8 +415,6 @@ export default function Home() {
   const firebaseCapacityBytes = 25 * 1024 * 1024 * 1024;
   const localCapacityPercent = localStorageBytes === null ? null : Math.min(100, (localStorageBytes / firebaseCapacityBytes) * 100);
   const localCapacityPercentLabel = localCapacityPercent === null ? "Unavailable" : localCapacityPercent < 0.000001 ? "<0.000001%" : `${localCapacityPercent.toFixed(6)}%`;
-  const lowestPricedService = activeServices.filter(service => Number.isFinite(service.price) && service.price >= 0).sort((a, b) => a.price - b.price)[0];
-  const estimatedPayloadBytes = estimatedRecordKb * 1024;
   const estimatedRecordsInAdminTarget = Math.floor(firebaseCapacityBytes / estimatedPayloadBytes);
   const hobbyMonthlyInvocations = 1_000_000;
   const hobbyMonthlyActiveCpuSeconds = 4 * 60 * 60;
