@@ -3113,3 +3113,35 @@ h1 em,
  .serviceDemo .sd-header nav button{min-height:40px;padding:8px 9px;font-size:12px}
  .serviceDemo .sd-header .sd-brand{min-width:0}
 }
+
+/* Customer account: compact app workspace, not a second marketing landing page. */
+.sd-account-inside{max-width:1120px;padding:14px 0 44px}
+.sd-account-masthead{padding:9px 13px;border-radius:12px}
+.sd-account-brand-mark{width:36px;height:36px;border-radius:10px}
+.sd-account-welcome-compact{align-items:center;flex-direction:row;gap:18px;margin:10px 0 14px;padding:15px 18px;border-radius:13px;box-shadow:none}
+.sd-account-welcome-compact .sd-account-welcome-copy{max-width:720px}
+.sd-account-welcome-compact h1{margin:5px 0;font-size:clamp(1.35rem,3vw,1.9rem);line-height:1.15;letter-spacing:-.035em}
+.sd-account-welcome-compact p{font-size:.88rem;line-height:1.45}
+.sd-account-welcome-compact .sd-kicker{font-size:.68rem}
+.sd-account-welcome-compact .sd-account-store-link{min-height:42px;white-space:nowrap}
+.sd-account-workspace{padding:15px;border-radius:14px;box-shadow:none}
+.sd-account-section-heading{margin-bottom:12px}
+.sd-account-section-heading h2{font-size:1.25rem}
+.sd-account-lookup{padding:12px;border-radius:11px}
+.sd-account-lookup-row input{min-height:44px}
+.sd-account-summary{margin:10px 0;gap:8px}
+.sd-account-summary article{padding:11px;border-radius:10px}
+.sd-account-orders{gap:9px;margin-top:10px}
+.sd-account-order{padding:14px;border-radius:12px}
+.sd-account-order-main{padding:10px 0 5px}
+.sd-account-order-main h3{font-size:1.05rem}
+.sd-account-detail,.sd-account-brief{font-size:.84rem}
+.sd-account-rewards,.sd-account-announcement{margin-top:10px;padding:13px;border-radius:11px}
+@media(max-width:640px){
+ .sd-account-inside{padding:10px 0 32px}
+ .sd-account-masthead{padding:8px 10px}
+ .sd-account-welcome-compact{align-items:stretch;flex-direction:column;gap:10px;margin:9px 0 11px;padding:14px}
+ .sd-account-welcome-compact h1{font-size:1.45rem}
+ .sd-account-welcome-compact .sd-account-store-link{width:100%}
+ .sd-account-workspace{padding:11px}
+}
