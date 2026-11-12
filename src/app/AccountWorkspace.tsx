@@ -26,7 +26,7 @@ type Props = {
   onUpdateOrder: (orderId: string, update: (order: WorkspaceOrder) => WorkspaceOrder, notice: string) => void;
 };
 
-const getBusinessCurrency = () => { if (typeof window === "undefined") return "BWP"; try { return window.localStorage.getItem("iteration13:business-currency:v1") || "BWP"; } catch { return "BWP"; } };
+const getBusinessCurrency = () => { if (typeof window === "undefined") return "USD"; try { return window.localStorage.getItem("iteration13:business-currency:v1") || "USD"; } catch { return "USD"; } };
 const money = (amount: number) => new Intl.NumberFormat("en", { style: "currency", currency: getBusinessCurrency(), maximumFractionDigits: 2 }).format(amount);
 const prettyDate = (value: string) => {
   try { return new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }); }
