@@ -26,6 +26,7 @@ type Props = {
   onUpdateOrder: (orderId: string, update: (order: WorkspaceOrder) => WorkspaceOrder, notice: string) => void;
   children?: ReactNode;
   requestForm?: ReactNode;
+  onNewRequest: () => void;
 };
 
 const getBusinessCurrency = () => { if (typeof window === "undefined") return "BWP"; try { return window.localStorage.getItem("iteration13:business-currency:v1") || "BWP"; } catch { return "BWP"; } };
@@ -34,7 +35,7 @@ const prettyDate = (value: string) => { try { return new Date(value).toLocaleStr
 const deadlineAt = (value: string) => new Date(`${value}T23:59:59`).getTime();
 const countdownLabel = (value: string, now: number) => { const delta = deadlineAt(value) - now; if (!Number.isFinite(delta)) return "Date not set"; if (delta < 0) return "Target date passed"; const totalMinutes = Math.floor(delta / 60000); const days = Math.floor(totalMinutes / 1440); const hours = Math.floor((totalMinutes % 1440) / 60); const minutes = totalMinutes % 60; return [days ? `${days}d` : "", `${hours}h`, `${minutes}m`].filter(Boolean).join(" "); };
 
-export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm }: Props) {
+export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm, onNewRequest }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [uploadingOrder, setUploadingOrder] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -135,9 +136,10 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
       <button className="sd-account-store-link" onClick={onBrowse}>← Back to the Store</button>
     </div>
 
+    <nav className="sd-account-actions" aria-label="Customer account sections"><button type="button" onClick={() => document.getElementById("account-overview")?.scrollIntoView({behavior:"smooth",block:"start"})}>⌂ <span>Overview</span></button><button type="button" onClick={() => document.getElementById("account-requests")?.scrollIntoView({behavior:"smooth",block:"start"})}>▤ <span>My requests</span></button><button type="button" onClick={() => { if(filteredOrders[0]) setOpenThread(filteredOrders[0].id); window.setTimeout(() => document.getElementById("account-messages")?.scrollIntoView({behavior:"smooth",block:"start"}),80); }}>✉ <span>Messages</span></button><button type="button" onClick={() => document.getElementById("account-receipts")?.scrollIntoView({behavior:"smooth",block:"start"})}>▧ <span>Receipts</span></button><button type="button" onClick={() => document.getElementById("account-rewards")?.scrollIntoView({behavior:"smooth",block:"start"})}>✦ <span>Rewards</span></button><button type="button" className="is-primary" onClick={onNewRequest}>＋ <span>New request</span></button></nav>
     {requestForm}
 
-    <div className="sd-account-workspace">
+    <div className="sd-account-workspace" id="account-overview">
       <div className="sd-account-section-heading">
         <div><span className="sd-kicker">YOUR ACTIVITY</span><h2>Requests & updates</h2></div>
         <span className="sd-account-local-tag">YOUR ACTIVITY</span>
@@ -174,7 +176,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
         <h3>No requests found for that email.</h3>
         <p>Check the spelling, or return to the Store to send a new product / service request using this email.</p>
         <button className="sd-button sd-primary" onClick={onBrowse}>Browse products / services</button>
-      </div> : <div className="sd-account-orders">
+      </div> : <div className="sd-account-orders" id="account-requests">
         {filteredOrders.map(order => {
           const messages = order.messages || [];
           const expanded = openThread === order.id;
@@ -194,8 +196,8 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
               <span>{messages.length} {messages.length === 1 ? "message" : "messages"} · {studioReplies ? "Business replied" : "Awaiting reply"}</span>
               <button className="sd-account-secondary-action" type="button" aria-expanded={expanded} onClick={() => setOpenThread(expanded ? null : order.id)}>{expanded ? "Close conversation" : "Open conversation →"}</button>
             </div>
-            <ReceiptDocument businessName={businessName} accentColor={accentColor} receiptProfile={receiptProfile} order={order} />
-            {expanded && <section className="sd-account-conversation" aria-label={`Conversation for ${order.serviceName}`}>
+            <div id="account-receipts"><ReceiptDocument businessName={businessName} accentColor={accentColor} receiptProfile={receiptProfile} order={order} /></div>
+            {expanded && <section className="sd-account-conversation" id="account-messages" aria-label={`Conversation for ${order.serviceName}`}>
               <div className="sd-account-conversation-heading"><div><span className="sd-kicker">REQUEST CONVERSATION</span><h4>{order.serviceName}</h4></div><span className="sd-account-local-tag">LOCAL THREAD</span></div>
               <p className="sd-account-demo-explainer">Messages are saved in this browser and appear in the business Admin demo on this device. They are not emailed or sent to a remote team.</p>
               <div className="sd-account-messages" aria-live="polite">{messages.length ? messages.map(message => <article key={message.id} className={`sd-account-message is-${message.from}`}><div><strong>{message.from === "customer" ? "You" : businessName}</strong><time>{prettyDate(message.createdAt)}</time></div>{message.text && <p>{message.text}</p>}{message.attachment && <a href={message.attachment.url} target="_blank" rel="noreferrer">↗ {message.attachment.name} · Open attachment</a>}</article>) : <p className="sd-account-message-empty">No messages yet. Send a question to start the conversation in this demo.</p>}</div>
@@ -209,7 +211,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
         })}
       </div>}
 
-      {matchingRewards.length > 0 && <section className="sd-account-rewards">
+      {matchingRewards.length > 0 && <section className="sd-account-rewards" id="account-rewards">
         <div><span className="sd-kicker">STORE REWARDS</span><h2>Your discounts</h2><p>Rewards earned in the Store are linked to this email.</p></div>
         <div className="sd-account-reward-list">{matchingRewards.map(claim => <article key={claim.id}><strong>{claim.code}</strong><b>{money(claim.amount)} off</b><span>{claim.status}</span></article>)}</div>
       </section>}
