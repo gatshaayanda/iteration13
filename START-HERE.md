@@ -91,3 +91,7 @@ For one-word staff/admin login work, follow the **One-word staff/admin access** 
 ## First-run customer offer and owner readability
 
 After business name and one-to-three brand colours, require a first service listing (name and Pula price; description and image optional) before opening the generic Business OS demo. Reuse the same service record and UploadThing media workflow as the owner CRUD. Show a branded placeholder when the owner skips the image. Preview the listing alongside the coupled Store · Account · Briefcase identity. Admin metric labels and supporting explanations must remain at least 14 CSS px and clearly readable against their card backgrounds; never show numbers without readable labels.
+
+
+## Iteration13 product identity and first-use journey
+Iteration13 is a reusable Business Operating System built around the metaphor **a briefcase in your pocket**. First-run guidance should show how identity connects Store, Account and Briefcase, then let visitors explore the customer Store, try a request, play the optional short reward game and open the owner's Briefcase. Explain Today, Customers & Jobs, Money, Store Design, My Notes and Insights in plain language. Keep the base generic and editable; niche-specific refinements belong in their own clones. The business chooses its pricing currency during setup; do not add visitor currency switching or automatic conversion.
