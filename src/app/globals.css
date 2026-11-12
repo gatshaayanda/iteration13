@@ -3496,7 +3496,7 @@ h1 em,
 .sd-live-work-heading h4{margin:5px 0;font-size:clamp(18px,2vw,23px);color:#fff}
 .sd-live-work-heading p{margin:0;color:#d1d5db;font-size:13px;line-height:1.5}
 .sd-live-local-tag{flex:0 0 auto;padding:7px 10px;border-radius:999px;background:#263449;color:#fff;font-size:11px;font-weight:800;letter-spacing:.04em}
-.sd-live-work-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.sd-live-work-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 .sd-live-work-grid article{display:grid;gap:5px;min-width:0;padding:14px;border:1px solid #39465a;border-radius:12px;background:#1b2738}
 .sd-live-work-grid article>span{font-size:20px}
 .sd-live-work-grid article>strong{font-size:clamp(24px,3vw,34px);line-height:1.05;font-variant-numeric:tabular-nums;color:#fff}
