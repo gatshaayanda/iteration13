@@ -160,7 +160,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
 
       {normalizedEmail && <section className="sd-account-notifications" aria-labelledby="account-updates-title">
         <div className="sd-account-notifications-head"><div><span className="sd-kicker">NOTIFICATION CENTRE</span><h3 id="account-updates-title">Your updates</h3></div><span>{accountUpdates.length} {accountUpdates.length === 1 ? "update" : "updates"}</span></div>
-        {accountUpdates.length ? <ol>{accountUpdates.map(update => <li key={update.id}><span className={update.kind === "message" ? "is-message" : "is-status"} aria-hidden="true">{update.kind === "message" ? "✉" : "↗"}</span><div><strong>{update.title}</strong><p>{update.detail}</p>{update.createdAt && <time>{prettyDate(update.createdAt)}</time>}</div></li>)}</ol> : <p className="sd-account-notification-empty">No request updates yet. Status changes and business replies will appear here when they are saved in this browser.</p>}
+        {accountUpdates.length ? <ol>{nextDeadlineOrder && <li key="deadline-countdown"><span className="is-status" aria-hidden="true">◷</span><div><strong>Deadline countdown · {nextDeadlineOrder.serviceName}</strong><p>Requested date in {countdownLabel(nextDeadlineOrder.dueDate, clockNow)}.</p></div></li>}{accountUpdates.map(update => <li key={update.id}><span className={update.kind === "message" ? "is-message" : "is-status"} aria-hidden="true">{update.kind === "message" ? "✉" : "↗"}</span><div><strong>{update.title}</strong><p>{update.detail}</p>{update.createdAt && <time>{prettyDate(update.createdAt)}</time>}</div></li>)}</ol> : <p className="sd-account-notification-empty">No request updates yet. Status changes and business replies will appear here when they are saved in this browser.</p>}
         <div className="sd-account-test-notification"><div><strong>Example reminder</strong><p>{nextDeadlineOrder ? `${nextDeadlineOrder.serviceName} · target date in ${countdownLabel(nextDeadlineOrder.dueDate, clockNow)}.` : "A message can include a live countdown to your requested date."}</p>{testNotificationState && <small role="status">{testNotificationState}</small>}</div><button type="button" onClick={sendTestNotification}>Send test notification</button></div><p className="sd-account-notification-boundary">The test sends immediately to this device. Automatic deadline reminders require an active notification service and a scheduled backend.</p>
       </section>}
 
@@ -183,9 +183,9 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
             <div className="sd-account-order-top"><span>REQUEST · {order.id}</span><b>{order.status}</b></div>
             <div className="sd-account-order-main">
               <div><h3>{order.serviceName}</h3><p className="sd-account-order-date">Sent {prettyDate(order.createdAt)}</p></div>
-              <strong className="sd-account-order-price">{money(order.price)}</strong>
+              <strong className="sd-account-order-price">{order.serviceItems?.some(item => item.price === 0) ? "Quote required" : money(order.price)}</strong>
             </div>
-            {order.serviceItems?.length ? <p className="sd-account-detail"><strong>Selected:</strong> {order.serviceItems.map(item => item.name).join(", ")}</p> : null}
+            {order.serviceItems?.length ? <p className="sd-account-detail"><strong>Selected:</strong> {order.serviceItems.map(item => `${item.name} · ${item.price > 0 ? money(item.price) : "price to be confirmed"}`).join(", ")}</p> : null}
             {order.whatsapp ? <p className="sd-account-detail"><strong>WhatsApp:</strong> {order.whatsapp}</p> : null}
             <p className="sd-account-detail"><strong>Requested date:</strong> {order.dueDate}</p><div className="sd-account-deadline"><span>Time until target date</span><strong>{countdownLabel(order.dueDate, clockNow)}</strong></div>
             {order.brief && <p className="sd-account-brief">{order.brief}</p>}
