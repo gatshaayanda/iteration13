@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Iteration 13 | Service Studio",
-  "short_name": "Iteration 13",
-  "description": "A mobile-first service-order demo with customer requests, local admin tools, installation guidance and offline-aware behavior.",
+  "name": "Iteration13 | Your Business in Your Pocket",
+  "short_name": "Iteration13",
+  "description": "Your business in your pocket: a connected Store, customer Account and private owner Briefcase.",
   "categories": [
     "business",
     "productivity"
