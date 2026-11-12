@@ -3182,3 +3182,9 @@ h1 em,
 .sd-account .sd-account-request-form .sd-enquiry-services{margin:10px 0}
 .sd-account .sd-account-request-form .sd-form-two{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:560px){.sd-account .sd-account-request-form .sd-order-form{padding:11px}.sd-account .sd-account-request-form .sd-form-two{grid-template-columns:1fr}}
+
+.sd-admin-quote{display:grid;gap:8px;margin:10px 0;padding:12px;border:1px solid #e2c98b;border-radius:10px;background:#fffaf0}
+.sd-admin-quote>strong{font-size:13px;color:#654b18}
+.sd-admin-quote label{display:grid;gap:5px;font-size:12px;font-weight:750}
+.sd-admin-quote input{min-height:40px;padding:8px 10px;border:1px solid #d7c9a8;border-radius:8px;background:#fff;color:#172033}
+.sd-admin-quote button{justify-self:start}
