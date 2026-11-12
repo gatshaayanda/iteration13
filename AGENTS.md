@@ -165,3 +165,12 @@ Run `npm run verify:identity`, `npm run lint`, and `npm run build` when the avai
 - When adapting to a real production app, replace local-only account state with a verified authenticated data path, enforce ownership and staff authorization at the server/security-rule boundary, and connect messages/notifications to a real team inbox only when the backend and delivery path are implemented and tested. Do not weaken security rules or expose all requests to make the UI work.
 - Keep optional account extras and their data collection proportionate. Gamification should be playful and project-specific, never a misleading health, performance or customer-worth score. Journal privacy and retention must be stated truthfully.
 - Verify customer-created messages/files are visible to the authorized staff workflow, staff replies/status changes return to the correct customer view, invalid/oversized files fail clearly, and offline text/local-state behavior is distinct from online upload or remote delivery. Update `README.md` and `CLONING.md` with any project-specific limits.
+
+
+## First-run Business OS setup — minimum viable customer offer
+
+- In the generic Iteration 13 Business OS onboarding, after business name and one-to-three brand colours, require the owner to create at least one service/product listing before entering the demo workspace. Require a name and price; description and image are optional.
+- Reuse the existing UploadThing service media picker for optional images and show a clear branded placeholder when no image is supplied. Respect upload size, connectivity, progress, error and success states. Do not fake a completed upload.
+- Preview the first listing in the Store identity preview. Save it into the same service collection used by the existing customer Store and owner service CRUD; do not create a separate onboarding-only record.
+- Start a fresh demo with an empty catalogue rather than irrelevant inherited sample services. Existing saved demo catalogues must remain intact.
+- Owner dashboard labels and explanatory text must be readable, with a 14 CSS px minimum for supporting copy and metric labels. Never let metric numbers remain visible while their labels/explanations disappear. Maintain strong contrast against each card surface.
