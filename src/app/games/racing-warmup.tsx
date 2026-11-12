@@ -394,6 +394,18 @@ export default function RacingWarmup({ embedded = false, startExpanded = false, 
         // lap, but never takes the car away from the player or resets their inputs.
 
         race.elapsed += dt;
+        if (embedded && rewardEnabled && rewardedLap.current === 0 && race.elapsed >= sprintDuration) {
+          rewardedLap.current = 1;
+          controlsRef.current = { steer: 0, accelerate: false, brake: false, boost: false };
+          if (!race.lapInvalid && rewardEmail.trim()) {
+            rewardCallback.current?.(rewardEmail, race.elapsed);
+            notify("Sprint complete · discount unlocked!", "success");
+          } else {
+            notify("Sprint complete, but the run left the track. Try again for the reward.", "error");
+          }
+          phaseRef.current = "finished";
+          setPhase("finished");
+        }
         race.lapTime += dt;
         const lapNow = Math.floor(race.progress) + 1;
         if (lapNow > race.lap) {
