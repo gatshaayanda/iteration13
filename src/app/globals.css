@@ -3172,3 +3172,13 @@ h1 em,
 .sd-custom-request-items>strong{font-size:13px}
 .sd-custom-request-items>div{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .sd-custom-request-items button{border:0;background:transparent;color:#a13d3d;font-weight:750}
+
+/* Request completion lives inside the Customer Account and stays compact. */
+.sd-account .sd-account-request-form{margin:0 0 14px;padding:0;background:transparent}
+.sd-account .sd-account-request-form .sd-order-grid{display:block;max-width:none;padding:0}
+.sd-account .sd-account-request-form .sd-order-copy{display:none}
+.sd-account .sd-account-request-form .sd-order-form{width:100%;max-width:none;margin:0;padding:14px;border:1px solid #e0e6ee;border-radius:13px;box-shadow:none}
+.sd-account .sd-account-request-form .sd-form-heading{margin-bottom:10px}
+.sd-account .sd-account-request-form .sd-enquiry-services{margin:10px 0}
+.sd-account .sd-account-request-form .sd-form-two{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:560px){.sd-account .sd-account-request-form .sd-order-form{padding:11px}.sd-account .sd-account-request-form .sd-form-two{grid-template-columns:1fr}}
