@@ -9,8 +9,9 @@ The first guided action should help a business owner recognise their own busines
 
 1. **Business name.** Ask for a real or fictional name. Example: **Metsi Wellness**.
 2. **Brand colours.** Let the owner select one, two or three colours maximum. One or two is a complete choice; never imply that three are required.
-3. **Coupled preview.** Show **Store · Account · Briefcase** together and update the business name and selected palette across all three immediately.
-4. **Explore.** Once identity is established, invite the owner to explore the Store, customer journey and owner workspace.
+3. **First service.** Require at least one real service/product listing with a name and price in Pula before continuing. Description is optional. Offer an optional image upload or URL and a clean branded placeholder when no image is supplied. Reuse the established UploadThing media workflow and its truthful upload limits/states.
+4. **Coupled preview.** Show **Store · Account · Briefcase** and the first service listing together; update the business name, selected palette and service preview immediately.
+5. **Explore.** Once identity and the first customer offer are established, invite the owner to explore the Store, customer journey and owner workspace.
 
 Shared proposition: **“Your business in your pocket.”**
 
@@ -88,11 +89,15 @@ Practical conclusion: a small coherent brand palette helps maintain recognition 
 - [ ] Example name “Metsi Wellness” is available as helper/example copy, not forced demo identity.
 - [ ] Owner can choose one, two or three brand colours; the UI prevents a fourth.
 - [ ] One-colour and two-colour palettes look complete and intentional.
+- [ ] At least one service is required before the initial business space can be created.
+- [ ] First service requires a name and Pula price; description and media are optional.
+- [ ] Image upload/URL works through the existing UploadThing workflow; an omitted image displays a branded placeholder.
 - [ ] Store, Account and Briefcase update together when name or palette changes.
 - [ ] Owner Briefcase is labelled “ADMIN HUB / PRIVATE BRIEFCASE”.
 - [ ] Owner proposition is “Your business in your pocket.”
 - [ ] Greeting reflects the owner's local time and does not hide operational priorities.
 - [ ] Owner overview presents real operations, customer requests and money—not fabricated activity.
+- [ ] Owner dashboard metric labels and supporting explanations are readable at a minimum of 14 CSS px, not visually lost beneath large numbers.
 - [ ] Every real text/surface/control pairing meets WCAG AA contrast.
 - [ ] Colour is never the sole status or action cue.
 - [ ] The palette remains coherent in receipts, account, charts, forms and mobile navigation.
