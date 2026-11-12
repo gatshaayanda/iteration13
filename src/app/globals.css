@@ -2746,3 +2746,34 @@ h1 em,
  .serviceDemo .sd-stats article{padding:12px}
  .serviceDemo .sd-stats article span,.serviceDemo .sd-stats article small{font-size:14px!important}
 }
+
+/* Iteration13: the briefcase is the product identity, not a generic store template. */
+.sd-journey-guide{margin:clamp(26px,4vw,48px) auto;padding:clamp(18px,3vw,28px);border:1px solid #d9e1ed;border-radius:22px;background:linear-gradient(145deg,#f8fbff,#eef3fb);color:#172033}
+.sd-journey-guide-heading{max-width:660px;margin-bottom:20px}
+.sd-journey-guide-heading h2{margin:7px 0;font-size:clamp(1.35rem,3vw,2rem);letter-spacing:-.035em}
+.sd-journey-guide-heading p,.sd-journey-guide-steps small{color:#45556b;line-height:1.55}
+.sd-journey-guide-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.sd-journey-guide-steps article{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:170px;padding:16px;border:1px solid #d7dfeb;border-radius:16px;background:#fff;box-shadow:0 5px 16px rgba(22,39,67,.05)}
+.sd-journey-guide-steps article>span{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#14233b;color:#fff;font-size:13px;font-weight:900}
+.sd-journey-guide-steps article strong{font-size:15px;color:#172033}
+.sd-journey-guide-steps article small{font-size:14px;flex:1}
+.sd-journey-guide-steps article button{min-height:40px;padding:8px 12px;border:0;border-radius:10px;background:#e9effa;color:#173d86;font-weight:800;cursor:pointer}
+.sd-journey-guide-steps article button:hover{background:#dbe7fa;transform:translateY(-1px)}
+.sd-briefcase-guide{margin:18px 0;padding:16px 18px;border:1px solid #d9e1ed;border-radius:16px;background:#f5f8fd;color:#172033}
+.sd-briefcase-guide .sd-kicker{color:#34445a}
+.sd-briefcase-guide p{margin:7px 0 0;color:#45556b;line-height:1.55}
+.sd-device-mark{display:grid;place-items:center;width:76px;height:76px;border-radius:20px;background:#fff;color:#14233b;font-size:2.5rem;box-shadow:0 12px 30px rgba(0,0,0,.16)}
+.sd-logo,.sd-briefcase-mark{display:grid;place-items:center;background:#14233b;color:#fff;border-radius:12px}
+.sd-logo{font-size:0!important}
+.sd-logo:before{content:"";width:24px;height:24px;background:center/contain no-repeat url("/iteration13-icon.svg")}
+.sd-briefcase-mark{font-size:0!important}
+.sd-briefcase-mark:before{content:"";width:28px;height:28px;background:center/contain no-repeat url("/iteration13-icon.svg")}
+.sd-toast{animation:sd-toast-in .22s ease-out both}
+.sd-service-card,.sd-admin-panel,.sd-journey-guide-steps article{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.sd-service-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(18,34,58,.12)}
+.sd-os-nav button{transition:background .16s ease,color .16s ease,transform .16s ease}
+.sd-os-nav button:active,.sd-journey-guide-steps button:active{transform:scale(.98)}
+@keyframes sd-toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.sd-journey-guide-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.sd-journey-guide{padding:16px;border-radius:17px}.sd-journey-guide-steps{grid-template-columns:minmax(0,1fr)}.sd-journey-guide-steps article{min-height:0}.sd-briefcase-guide{padding:14px}}
+@media(prefers-reduced-motion:reduce){.sd-toast,.sd-service-card,.sd-admin-panel,.sd-journey-guide-steps article,.sd-os-nav button{animation:none!important;transition:none!important;scroll-behavior:auto!important}.sd-service-card:hover,.sd-journey-guide-steps article button:hover{transform:none!important}}
