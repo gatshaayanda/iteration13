@@ -44,9 +44,9 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
   const openOrders = filteredOrders.filter(order => !["Completed", "Declined"].includes(order.status)).length;
   const fileCount = filteredOrders.reduce((total, order) => total + (order.messages || []).filter(message => Boolean(message.attachment)).length, 0);
   const accountUpdates = useMemo(() => filteredOrders.flatMap(order => [
-    { id: order.id + ":status", title: order.serviceName + " · " + order.status, detail: order.status === "New request" ? "Your request has been received on this device and is awaiting review." : "Current request status", createdAt: order.createdAt, kind: "status" as const },
+    { id: order.id + ":status", title: order.serviceName + " · " + order.status, detail: order.status === "New request" ? "Your request has been received on this device and is awaiting review." : "Current request status", kind: "status" as const },
     ...(order.messages || []).filter(message => message.from === "studio").map(message => ({ id: message.id, title: "Message from " + businessName, detail: message.text || (message.attachment ? "A file was shared with your request." : "A new request message is available."), createdAt: message.createdAt, kind: "message" as const }))
-  ]).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 6), [filteredOrders, businessName]);
+  ]).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()).slice(0, 6), [filteredOrders, businessName]);
   const monogram = businessName.trim().split(/\\s+/).slice(0, 2).map(part => part[0]).join("").toUpperCase() || "B";
 
   const { startUpload, isUploading } = useUploadThing("fileUploader", {
@@ -128,7 +128,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
 
       {normalizedEmail && <section className="sd-account-notifications" aria-labelledby="account-updates-title">
         <div className="sd-account-notifications-head"><div><span className="sd-kicker">NOTIFICATION CENTRE</span><h3 id="account-updates-title">Your updates</h3></div><span>{accountUpdates.length} {accountUpdates.length === 1 ? "update" : "updates"}</span></div>
-        {accountUpdates.length ? <ol>{accountUpdates.map(update => <li key={update.id}><span className={update.kind === "message" ? "is-message" : "is-status"} aria-hidden="true">{update.kind === "message" ? "✉" : "↗"}</span><div><strong>{update.title}</strong><p>{update.detail}</p><time>{prettyDate(update.createdAt)}</time></div></li>)}</ol> : <p className="sd-account-notification-empty">No request updates yet. Status changes and business replies will appear here when they are saved in this browser.</p>}
+        {accountUpdates.length ? <ol>{accountUpdates.map(update => <li key={update.id}><span className={update.kind === "message" ? "is-message" : "is-status"} aria-hidden="true">{update.kind === "message" ? "✉" : "↗"}</span><div><strong>{update.title}</strong><p>{update.detail}</p>{update.createdAt && <time>{prettyDate(update.createdAt)}</time>}</div></li>)}</ol> : <p className="sd-account-notification-empty">No request updates yet. Status changes and business replies will appear here when they are saved in this browser.</p>}
         <p className="sd-account-notification-boundary">In-app updates only in this demo. Push and email delivery are not connected.</p>
       </section>}
 
