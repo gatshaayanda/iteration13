@@ -38,6 +38,7 @@ Use the one-word **Login** entry or the discreet 13Studio footer logo to open th
 - Change the Store's accent colour using vivid presets or a custom colour picker; the chosen colour is used as an accent on neutral, readable surfaces across the Store, Briefcase and receipts.
 - Keep private My Notes in this browser.
 - Review the BoardSignal 25 GB capacity reference as a future Firebase-connected operating ceiling, not as a current usage meter.
+- Review the infrastructure flow showing the current browser-local demo and the planned Vercel Functions → Firestore path (Johannesburg database region; Cape Town is Vercel's listed South African compute region). The interactive payload calculator is an explicitly illustrative 25 GB workload model, not a tested server limit, live telemetry or revenue forecast.
 - Reset the local sample data for another walkthrough.
 
 This is a prototype control surface, not a secure admin boundary. Do not enter real customer data.
