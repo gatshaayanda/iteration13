@@ -95,7 +95,7 @@ export default function Home() {
   const [rewardImageUploading, setRewardImageUploading] = useState(false);
   const [adminReplyDrafts, setAdminReplyDrafts] = useState<Record<string, string>>({});
   const [paymentDrafts, setPaymentDrafts] = useState<Record<string, string>>({});
-  const [pendingConfirm, setPendingConfirm] = useState<{ kind: "delete-service" | "reset-demo"; serviceId?: string; serviceName?: string } | null>(null);
+  const [pendingConfirm, setPendingConfirm] = useState<{ kind: "delete-service" | "reset-demo" | "overwrite-business"; serviceId?: string; serviceName?: string } | null>(null);
   const [ownerNotes, setOwnerNotes] = useState("");
   const [notesReady, setNotesReady] = useState(false);
   const [brandColors, setBrandColors] = useState<string[]>(["#2458e8"]);
@@ -123,10 +123,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!businessNameReady) return;
+    if (!businessNameReady || !identityComplete) return;
     try { window.localStorage.setItem("iteration13:business-name:v1", businessName.trim().slice(0, 48) || "Your Business"); }
     catch { setNotice("Business name could not be saved on this device."); }
-  }, [businessName, businessNameReady]);
+  }, [businessName, businessNameReady, identityComplete]);
 
   useEffect(() => {
     try { const savedCurrency = window.localStorage.getItem(CURRENCY_KEY); if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency); } catch { /* default to USD */ }
@@ -153,12 +153,12 @@ export default function Home() {
     document.documentElement.style.setProperty("--studio-accent", themeColor);
     document.documentElement.style.setProperty("--studio-accent-secondary", secondaryColor);
     document.documentElement.style.setProperty("--studio-accent-highlight", highlightColor);
-    if (!themeReady) return;
+    if (!themeReady || !identityComplete) return;
     try {
       window.localStorage.setItem("iteration13:business-palette:v1", JSON.stringify(brandColors));
       window.localStorage.setItem("iteration13:store-theme:v1", themeColor);
     } catch { setNotice("Brand colours could not be saved on this device."); }
-  }, [brandColors, themeColor, secondaryColor, highlightColor, themeReady]);
+  }, [brandColors, themeColor, secondaryColor, highlightColor, themeReady, identityComplete]);
 
   useEffect(() => {
     try { setOwnerNotes(window.localStorage.getItem("iteration13:owner-notes:v1") || ""); }
@@ -324,7 +324,11 @@ export default function Home() {
     setIdentityComplete(true);
     setNotice(`Loaded ${businessName.trim() || "your previous business"} from this browser. You can continue where you left off.`);
   }
-  function completeBusinessIdentity() {
+  function completeBusinessIdentity(confirmedOverwrite = false) {
+    if (hasPreviousSetup && !identityEditing && !confirmedOverwrite) {
+      setPendingConfirm({ kind: "overwrite-business" });
+      return;
+    }
     const name = businessName.trim();
     const firstServiceName = serviceName.trim();
     const firstServicePrice = Number(servicePrice);
@@ -340,7 +344,7 @@ export default function Home() {
     const nextServices = identityEditing && identityServiceId
       ? data.services.map(item => item.id === identityServiceId ? firstService : item)
       : [firstService];
-    const nextData = { ...data, services: nextServices };
+    const nextData = identityEditing ? { ...data, services: nextServices } : { ...emptyData, services: nextServices, views: data.views };
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextData));
       window.localStorage.setItem("iteration13:business-name:v1", name.slice(0, 48));
@@ -348,6 +352,11 @@ export default function Home() {
       window.localStorage.setItem("iteration13:store-theme:v1", themeColor);
       window.localStorage.setItem(CURRENCY_KEY, businessCurrency);
       window.localStorage.setItem("iteration13:identity-complete:v1", "true");
+      if (!identityEditing && confirmedOverwrite) {
+        window.localStorage.removeItem("iteration13:owner-notes:v1");
+        window.localStorage.removeItem("iteration13:account-extras:v1");
+        setOwnerNotes("");
+      }
       setData(nextData);
       setBusinessName(name.slice(0, 48));
       setIdentityComplete(true);
@@ -486,7 +495,7 @@ export default function Home() {
           <article className="sd-identity-choice-card is-primary"><span>01 / START FRESH</span><h2>Create a new business</h2><p>Enter a new business name, choose your brand colours, set your currency and add the first service and its industry.</p><button type="button" onClick={startNewBusinessSetup}>Create new business <b aria-hidden="true">↗</b></button></article>
           <article className="sd-identity-choice-card"><span>02 / RETURN TO A SETUP</span><h2>Load previous setup</h2>{hasPreviousSetup ? <><div className="sd-identity-saved-preview"><strong>{businessName.trim() || "Your saved business"}</strong><small>{data.services.length} saved service{data.services.length === 1 ? "" : "s"} · {businessCurrency} · this browser</small><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div></div><p>Restore the business identity and local demo storefront saved on this device.</p><button type="button" onClick={loadPreviousBusinessSetup}>Load {businessName.trim() || "previous setup"} <b aria-hidden="true">↗</b></button></> : <><p>No previous business setup has been saved in this browser yet. Create one first and it will be available here next time.</p><button type="button" disabled>Nothing to load yet</button></>}</article>
         </div>
-        <p className="sd-identity-choice-footnote">Previous setups are currently available from this browser. Cloud-based profile saving and loading will be added once the dedicated Iteration13 database is configured.</p>
+        <p className="sd-identity-choice-footnote">One business is saved on this device. Load it whenever you return, or create a new one and confirm before replacing it.</p>
       </div>
     </section> : !identityComplete ? <section className="sd-identity-onboarding">
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "EDIT YOUR BUSINESS SETUP" : "YOUR BRIEFCASE STARTS HERE"}</span></div>
@@ -622,7 +631,7 @@ export default function Home() {
 
     <ServiceGuide view={view === "admin" ? "admin" : view === "account" ? "account" : "shop"} services={data.services} requestCount={data.orders.length} onChooseService={beginOrder} onOpenAccount={() => { setView("account"); setNotice(""); }} onOpenAdmin={openAdminGuide} onOpenStorefront={() => { setView("shop"); setNotice(""); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
     <section className="sd-handoff-card sd-wrap" aria-label="Continue with Admin Hub"><div><span className="sd-kicker">WHEN YOU ARE READY / YOUR NEXT STEP</span><h2>Make this business yours.</h2><p>Your name, colours, currency and services can go with you. Continue to Admin Hub to request a tailored version and discuss the next refinements. Customer names, emails and request details are not included.</p></div><a href={buildAdminHubHandoffUrl()} target="_blank" rel="noreferrer">Request my own version <span aria-hidden="true">↗</span></a></section><footer className="sd-footer"><div className="sd-wrap sd-footer-inner"><button className="sd-brand sd-owner-entry" onClick={() => { requestAdminLogin(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label={`Open ${businessName || "Your Business"} owner Briefcase`}><span className="sd-briefcase-mark" aria-hidden="true">💼</span><span className="sd-owner-entry-copy"><strong>Iteration13</strong><small>TAP TO OPEN THE BRIEFCASE</small><em>{businessName || "Your Business"}</em></span><span className="sd-owner-entry-arrow" aria-hidden="true">↗</span></button><p>Built to be explored online and offline.</p><div><button onClick={() => { setView("account"); setNotice(""); }}>My account</button><Link href="/patterns">PWA pattern lab</Link></div></div></footer>
-    {pendingConfirm && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-confirm-title" aria-describedby="sd-confirm-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-confirm-title">{pendingConfirm.kind === "reset-demo" ? "Reset demo data?" : `Delete ${pendingConfirm.serviceName || "this service"}?`}</h2><p id="sd-confirm-description">{pendingConfirm.kind === "reset-demo" ? "This clears local requests, service edits and the announcement, restoring the starter examples on this device." : "This removes the service from this browser demo. Existing requests keep their saved service name and price."}</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep it</button><button type="button" className="sd-button sd-primary" onClick={() => { const action = pendingConfirm; setPendingConfirm(null); if (action.kind === "reset-demo") { if (commitData(() => ({ ...emptyData, views: data.views }), "Demo data reset on this device.")) { setAnnouncementDraft(""); setAnnouncementImageDraft(""); resetServiceForm(); } } else if (action.serviceId) { if (commitData(current => ({ ...current, services: current.services.filter(item => item.id !== action.serviceId) }), `${action.serviceName || "Service"} deleted from this demo.`) && editingId === action.serviceId) resetServiceForm(); } }}>Confirm</button></div></section></div>}
+    {pendingConfirm && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-confirm-title" aria-describedby="sd-confirm-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-confirm-title">{pendingConfirm.kind === "reset-demo" ? "Reset demo data?" : pendingConfirm.kind === "overwrite-business" ? "Replace the saved business?" : `Delete ${pendingConfirm.serviceName || "this service"}?`}</h2><p id="sd-confirm-description">{pendingConfirm.kind === "reset-demo" ? "This clears local requests, service edits and the announcement, restoring the starter examples on this device." : pendingConfirm.kind === "overwrite-business" ? "This replaces the current business name, colours, currency and services. Its saved customer requests, messages and owner notes on this device will also be cleared. This cannot be undone." : "This removes the service from this browser demo. Existing requests keep their saved service name and price."}</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep it</button><button type="button" className="sd-button sd-primary" onClick={() => { const action = pendingConfirm; setPendingConfirm(null); if (action.kind === "reset-demo") { if (commitData(() => ({ ...emptyData, views: data.views }), "Demo data reset on this device.")) { setAnnouncementDraft(""); setAnnouncementImageDraft(""); resetServiceForm(); } } else if (action.kind === "overwrite-business") { completeBusinessIdentity(true); } else if (action.serviceId) { if (commitData(current => ({ ...current, services: current.services.filter(item => item.id !== action.serviceId) }), `${action.serviceName || "Service"} deleted from this demo.`) && editingId === action.serviceId) resetServiceForm(); } }}>Confirm</button></div></section></div>}
     {notice && <div className="sd-toast-region"><div className={"sd-toast" + (/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? " is-error" : " is-success")} role={/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? "alert" : "status"}><span className="sd-toast-mark" aria-hidden="true">{/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? "!" : "✓"}</span><p>{notice}</p><button type="button" aria-label="Dismiss message" onClick={() => setNotice("")}>×</button></div></div>}
     </>}
   </main>;
