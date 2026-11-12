@@ -724,8 +724,9 @@ export default function Home() {
     </div>
     <div className="sd-infrastructure-footnotes">
       <div><strong>Available around the clock</strong><p>The public site can be reachable 24/7. That does not mean one app server is burning CPU at full power all day: cached content is served by the CDN, while serverless compute runs when invoked.</p></div>
-      <div><strong>Where the machines are</strong><p>Google lists Firestore&apos;s Johannesburg region. Vercel lists Cape Town as its South African compute region; a future deployment could place database work near that region, subject to configuration and plan. Neither connection is active here.</p></div>
+      <div><strong>Where the machines are</strong><p>Google lists Firestore&apos;s Johannesburg region. Vercel Functions default to Washington, D.C. unless configured; Cape Town is its listed South African compute region. A future deployment should deliberately choose the closest supported compute region and test database latency. Neither connection is active here.</p></div>
       <div><strong>Real-world infrastructure</strong><p>Data centres use physical servers, networking, electricity, cooling and backup systems. This prototype has no provider-side energy or live resource telemetry, so it does not invent those measurements.</p></div>
+      <div><strong>Public visitor or owner?</strong><p>Public browsing stays anonymous. A customer becomes an account holder through an explicit account flow; an owner signs in separately. The cloud version must enforce roles at the server and database rules—not trust a browser label. This demo&apos;s owner passphrase is not production authentication.</p></div>
     </div>
   </section>
   <section className="sd-capacity-playground" aria-labelledby="sd-capacity-playground-title">
