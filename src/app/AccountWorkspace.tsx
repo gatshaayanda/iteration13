@@ -9,7 +9,7 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
 export type AccountAttachment = { name: string; url: string; type: string; size: number };
 export type AccountMessage = { id: string; from: "customer" | "studio"; text: string; createdAt: string; attachment?: AccountAttachment };
-export type WorkspaceOrder = { id: string; serviceId: string; serviceName: string; serviceItems?: { id: string; name: string; price: number }[]; whatsapp?: string; notificationOptIn?: boolean; price: number; originalPrice?: number; discountAmount?: number; discountCode?: string; receiptNo?: string; paidAmount?: number; paidAt?: string; paymentStatus?: "Unpaid" | "Partially paid (demo)" | "Paid (demo)"; dueDate: string; customerName: string; email: string; brief: string; status: string; createdAt: string; messages?: AccountMessage[] };
+export type WorkspaceOrder = { id: string; serviceId: string; serviceName: string; serviceItems?: { id: string; name: string; price: number }[]; whatsapp?: string; notificationOptIn?: boolean; price: number; quotedPrice?: number; originalPrice?: number; discountAmount?: number; discountCode?: string; receiptNo?: string; paidAmount?: number; paidAt?: string; paymentStatus?: "Unpaid" | "Partially paid (demo)" | "Paid (demo)"; dueDate: string; customerName: string; email: string; brief: string; status: string; createdAt: string; messages?: AccountMessage[] };
 
 type DiscountClaim = { id: string; email: string; code: string; amount: number; lapTime: number; createdAt: string; status: "Available" | "Redeemed" };
 type Props = {
@@ -183,9 +183,9 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
             <div className="sd-account-order-top"><span>REQUEST · {order.id}</span><b>{order.status}</b></div>
             <div className="sd-account-order-main">
               <div><h3>{order.serviceName}</h3><p className="sd-account-order-date">Sent {prettyDate(order.createdAt)}</p></div>
-              <strong className="sd-account-order-price">{order.serviceItems?.some(item => item.price === 0) ? "Quote required" : money(order.price)}</strong>
+              <strong className="sd-account-order-price">{order.quotedPrice ? money(order.quotedPrice) : order.serviceItems?.some(item => item.price === 0) ? "Quote required" : money(order.price)}</strong>
             </div>
-            {order.serviceItems?.length ? <p className="sd-account-detail"><strong>Selected:</strong> {order.serviceItems.map(item => `${item.name} · ${item.price > 0 ? money(item.price) : "price to be confirmed"}`).join(", ")}</p> : null}
+            {order.serviceItems?.length ? <p className="sd-account-detail"><strong>Selected:</strong> {order.serviceItems.map(item => `${item.name} · ${item.price > 0 ? money(item.price) : order.quotedPrice ? "included in quote" : "price to be confirmed"}`).join(", ")}</p> : null}
             {order.whatsapp ? <p className="sd-account-detail"><strong>WhatsApp:</strong> {order.whatsapp}</p> : null}
             <p className="sd-account-detail"><strong>Requested date:</strong> {order.dueDate}</p><div className="sd-account-deadline"><span>Time until target date</span><strong>{countdownLabel(order.dueDate, clockNow)}</strong></div>
             {order.brief && <p className="sd-account-brief">{order.brief}</p>}
