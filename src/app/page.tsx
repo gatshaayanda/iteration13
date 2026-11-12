@@ -415,7 +415,17 @@ export default function Home() {
             <div className="sd-identity-swatches">{brandColorOptions.map(option => <button key={option.color} type="button" className={brandColors.includes(option.color) ? "is-selected" : ""} style={{ "--swatch": option.color } as React.CSSProperties} aria-label={option.label} aria-pressed={brandColors.includes(option.color)} onClick={() => toggleBrandColor(option.color)}><span>{brandColors.includes(option.color) ? "✓" : "+"}</span><small>{option.label}</small></button>)}</div>
             <label className="sd-custom-colour">Custom colour <input aria-label="Choose a custom brand colour" type="color" value={customBrandColor} onChange={event => setCustomBrandColor(event.target.value)} /><button type="button" onClick={addCustomBrandColor}>{brandColors.includes(customBrandColor) ? "Already selected" : brandColors.length === 3 ? "Replace highlight" : "Add colour"}</button></label>
           </div>
-          <button type="button" className="sd-identity-continue" onClick={completeBusinessIdentity}>Create my business space <span>↗</span></button>
+          <section className="sd-identity-first-service" aria-labelledby="sd-first-service-title">
+            <div className="sd-identity-step-heading"><span>02 / YOUR CUSTOMER OFFER</span><strong id="sd-first-service-title">Create your first service</strong><p>Add at least one service before opening your business space. You can add, edit, hide or remove more later.</p></div>
+            <div className="sd-identity-service-fields">
+              <label>Service name<input value={serviceName} onChange={event => setServiceName(event.target.value)} maxLength={80} required placeholder="e.g. Website design, Consultation, Haircut" /></label>
+              <label>Price in Pula<input type="number" min="0" step="0.01" value={servicePrice} onChange={event => setServicePrice(event.target.value)} required /></label>
+              <label>Description <span className="sd-identity-optional">Optional</span><textarea rows={3} value={serviceDescription} onChange={event => setServiceDescription(event.target.value)} placeholder="Explain what the customer receives." /></label>
+              <ServiceMediaPicker value={serviceMedia} type="image" online={online} onChange={(url, type) => { setServiceMedia(url); setServiceMediaType(type); }} onUploadingChange={setServiceMediaUploading} />
+              <p className="sd-identity-placeholder-note">No image is required. Leave media empty to use a clean branded service placeholder in your Store.</p>
+            </div>
+          </section>
+          <button type="button" className="sd-identity-continue" onClick={completeBusinessIdentity} disabled={!ready || serviceMediaUploading}>{serviceMediaUploading ? "Uploading service image…" : "Create my business space"} <span>↗</span></button>
           <p className="sd-identity-local-note">Demo setup · saved in this browser only. This does not publish a live website or sync across devices.</p>
         </div>
         <div className="sd-identity-live-preview" aria-label="Live preview of your Store, Account and Briefcase">
