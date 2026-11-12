@@ -178,3 +178,8 @@ If the result looks like a generic template, a desktop page squeezed into a phon
 ## How future chats must use this document
 
 Read this file and open `docs/assets/washride-home-reference.jpeg` when planning or reviewing visual work. The image is the canonical visual reference and must be inspected—not merely inferred from this document. For meaningful workflows, also apply `docs/OPERATIONAL-TRANSPARENCY-STANDARD.md`: the visual reference governs how the product feels; the operational standard governs how it communicates genuine work and outcomes. Use it as a reference for mobile composition and finish only where useful. Combine it with the project's own brand, assets, audience, route structure and customer journey. Do not redesign a protected/golden screen or expand the task scope merely because this standard exists. For visual-only tasks, preserve working data flows, authentication, PWA installation, chatbot behavior and other protected functionality.
+
+
+## 9. Iteration13's own product identity
+
+Iteration13 itself is the reusable Business Operating System template. Its central metaphor is a **briefcase in your pocket**: one connected place for a business's public Store and private owner tools. Use the briefcase as the recurring icon/mark and the idea of keys to introduce owner access to customers, work, money, records and controls. The first-run experience should demonstrate customisation, then invite visitors to explore a working customer journey and owner workspace. The base remains generic and editable; niche-specific clones are refined separately.
