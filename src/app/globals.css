@@ -2915,3 +2915,117 @@ h1 em,
  .sd-store-demo-note span{padding:0;border:0}
 }
 @media(prefers-reduced-motion:reduce){.sd-store-home .sd-hero-primary:hover{transform:none}.sd-business-preview-card{transform:none}}
+
+
+/* Customer Account: the same business identity as Store, expressed as a quieter customer workspace. */
+.sd-account-inside{max-width:1120px;padding:24px 0 70px;color:#172033}
+.sd-account-masthead{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 17px;border:1px solid #dce2eb;border-radius:16px;background:#fff}
+.sd-account-brand-lockup{display:flex;align-items:center;gap:11px;min-width:0}
+.sd-account-brand-mark{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:13px;background:var(--account-brand);color:var(--studio-accent-ink,#fff);font-size:.82rem;font-weight:950;letter-spacing:.02em}
+.sd-account-brand-lockup>div{display:grid;gap:3px;min-width:0}
+.sd-account-overline{color:#667386;font-size:.72rem;font-weight:800;overflow-wrap:anywhere}
+.sd-account-brand-lockup strong{font-size:.95rem;color:#172033}
+.sd-account-view-label,.sd-account-local-tag{padding:7px 10px;border:1px solid #dce2eb;border-radius:999px;color:#59677a;font-size:.65rem;font-weight:850;letter-spacing:.08em}
+.sd-account-welcome{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:20px 0 28px;padding:clamp(24px,4vw,42px);border:1px solid #d8e0ec;border-radius:20px;background:radial-gradient(ellipse at 88% 8%,color-mix(in srgb,var(--account-brand) 17%,transparent),transparent 42%),linear-gradient(135deg,#fff,#f3f6fa);box-shadow:0 12px 35px rgba(20,35,59,.05)}
+.sd-account-welcome-copy{max-width:650px}
+.sd-account-welcome .sd-kicker,.sd-account-section-heading .sd-kicker,.sd-account-conversation .sd-kicker,.sd-account-announcement .sd-kicker{color:var(--studio-accent-text,#2458e8)}
+.sd-account-welcome h1{margin:12px 0;font-size:clamp(2.5rem,6vw,4.6rem);line-height:.98;letter-spacing:-.06em;color:#172033}
+.sd-account-welcome h1 em{color:var(--studio-accent-text,#2458e8);font-style:normal}
+.sd-account-welcome p{max-width:530px;margin:0;color:#4c5a6d;font-size:1rem;line-height:1.65}
+.sd-account-store-link{flex:none;min-height:46px;padding:10px 15px;border:1px solid color-mix(in srgb,var(--account-brand) 42%,#9ba8b8);border-radius:11px;background:#fff;color:#172033;font-size:.85rem;font-weight:800;cursor:pointer}
+.sd-account-store-link:hover{border-color:var(--account-brand);background:#f8faff}
+.sd-account-workspace{padding:clamp(17px,3vw,28px);border:1px solid #dce2eb;border-radius:20px;background:#fff;box-shadow:0 14px 38px rgba(20,35,59,.045)}
+.sd-account-section-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.sd-account-section-heading h2{margin:6px 0 0;color:#172033;font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.035em}
+.sd-account-lookup{padding:17px;border:1px solid #e0e5ed;border-radius:14px;background:#f7f9fc}
+.sd-account-lookup>label{display:block;margin-bottom:8px;color:#263448;font-size:.9rem;font-weight:850}
+.sd-account-lookup-row{display:flex;align-items:center;gap:12px}
+.sd-account-lookup-row input{width:100%;min-width:0;min-height:48px;padding:11px 13px;border:1px solid #aeb9c8;border-radius:10px;background:#fff;color:#172033;font:inherit;font-size:.9rem}
+.sd-account-lookup-row input:focus-visible,.sd-account-composer textarea:focus-visible{outline:3px solid color-mix(in srgb,var(--account-brand) 55%,white);outline-offset:2px}
+.sd-account-lookup-row>span{flex:none;color:#536176;font-size:.78rem;font-weight:750}
+.sd-account-lookup>p{margin:8px 0 0;color:#59677a;font-size:.82rem;line-height:1.5}
+.sd-account-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.sd-account-summary article{display:grid;gap:6px;padding:15px;border:1px solid #e0e5ed;border-radius:13px;background:#fff}
+.sd-account-summary article span{color:#5a687b;font-size:.8rem;font-weight:750}
+.sd-account-summary article strong{color:var(--studio-accent-text,#174fc4);font-size:1.8rem;line-height:1.1}
+.sd-account-empty{display:grid;justify-items:center;gap:10px;padding:clamp(28px,5vw,52px) 15px;text-align:center}
+.sd-account-empty-mark{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:color-mix(in srgb,var(--account-brand) 13%,white);color:var(--studio-accent-text,#174fc4);font-size:1.7rem}
+.sd-account-empty h3{margin:3px 0 0;color:#172033;font-size:1.35rem;letter-spacing:-.025em}
+.sd-account-empty p{max-width:430px;margin:0 0 8px;color:#536176;font-size:.9rem;line-height:1.6}
+.sd-account-orders{display:grid;gap:13px;margin-top:15px}
+.sd-account-order{min-width:0;padding:clamp(15px,2.5vw,21px);border:1px solid #dce2eb;border-radius:15px;background:#fff}
+.sd-account-order-top,.sd-account-order-main{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.sd-account-order-top{padding-bottom:12px;border-bottom:1px solid #e8ecf1}
+.sd-account-order-top>span{color:#647186;font-size:.7rem;font-weight:850;letter-spacing:.08em}
+.sd-account-order-top>b{max-width:55%;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--account-brand) 13%,white);color:#263448;font-size:.78rem;text-align:center;overflow-wrap:anywhere}
+.sd-account-order-main{align-items:flex-start;padding:15px 0 8px}
+.sd-account-order-main h3{margin:0;color:#172033;font-size:1.3rem;letter-spacing:-.025em}
+.sd-account-order-date{margin:5px 0 0;color:#647186;font-size:.8rem}
+.sd-account-order-price{flex:none;color:var(--studio-accent-text,#174fc4);font-size:1.1rem}
+.sd-account-detail,.sd-account-brief{margin:7px 0;color:#435166;font-size:.88rem;line-height:1.55;overflow-wrap:anywhere}
+.sd-account-detail strong{color:#263448}
+.sd-account-brief{padding:11px 13px;border-left:3px solid var(--account-brand);border-radius:0 8px 8px 0;background:#f6f8fb}
+.sd-account-reward-line{color:#285f42;font-size:.84rem;font-weight:800}
+.sd-account-order-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:13px;border-top:1px solid #e8ecf1}
+.sd-account-order-actions>span{color:#5c6a7d;font-size:.8rem}
+.sd-account-secondary-action{min-height:42px;padding:9px 13px;border:1px solid color-mix(in srgb,var(--account-brand) 45%,#aab5c4);border-radius:10px;background:#fff;color:#172033;font-size:.83rem;font-weight:850;cursor:pointer}
+.sd-account-secondary-action:hover{background:#f5f8fc;border-color:var(--account-brand)}
+.sd-account-conversation{margin-top:15px;padding:clamp(13px,2.5vw,19px);border:1px solid #dce2eb;border-radius:14px;background:#f7f9fc}
+.sd-account-conversation-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sd-account-conversation-heading h4{margin:5px 0 0;color:#172033;font-size:1.1rem}
+.sd-account-demo-explainer{margin:11px 0;padding:10px 12px;border:1px solid #dce4f0;border-radius:9px;background:#fff;color:#526176;font-size:.82rem;line-height:1.5}
+.sd-account-messages{display:grid;gap:9px;margin:12px 0}
+.sd-account-message,.sd-account-message-empty{padding:12px;border:1px solid #dce2eb;border-radius:11px;background:#fff;color:#253348}
+.sd-account-message.is-studio{border-left:3px solid var(--account-brand)}
+.sd-account-message>div{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.sd-account-message>div strong{font-size:.83rem}
+.sd-account-message time{color:#657287;font-size:.75rem}
+.sd-account-message p{margin:8px 0 0;color:#35445a;font-size:.9rem;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.sd-account-message a{display:inline-block;margin-top:8px;color:#174fc4;font-size:.84rem;text-decoration:underline;overflow-wrap:anywhere}
+.sd-account-message-empty{color:#59677a;font-size:.87rem;line-height:1.5}
+.sd-account-composer{display:grid;gap:11px;padding-top:14px;border-top:1px solid #dce2eb}
+.sd-account-composer>label{display:grid;gap:7px;color:#263448;font-size:.87rem;font-weight:850}
+.sd-account-composer textarea{width:100%;min-height:90px;padding:12px;border:1px solid #aeb9c8;border-radius:10px;background:#fff;color:#172033;font:inherit;font-size:.9rem;resize:vertical}
+.sd-account-composer-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sd-account-attach{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 13px;border:1px solid #aeb9c8;border-radius:10px;background:#fff;color:#263448;font-size:.83rem;font-weight:800;cursor:pointer}
+.sd-account-attach input{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.sd-account-rewards,.sd-account-announcement{margin-top:15px;padding:17px;border:1px solid #dce2eb;border-radius:14px;background:#f8fafc}
+.sd-account-rewards h2,.sd-account-announcement h3{margin:5px 0;color:#172033;font-size:1.2rem}
+.sd-account-rewards p,.sd-account-announcement p{margin:6px 0 0;color:#526176;font-size:.86rem;line-height:1.55}
+.sd-account-reward-list{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.sd-account-reward-list article{display:grid;gap:4px;min-width:150px;padding:11px;border:1px solid #dce2eb;border-radius:10px;background:#fff}
+.sd-account-reward-list article strong{color:#172033}
+.sd-account-reward-list article b{color:#285f42}
+.sd-account-reward-list article span{color:#59677a;font-size:.78rem}
+.sd-account-feedback{margin:13px 0 0;padding:12px 14px;border:1px solid #b9cbe9;border-radius:10px;background:#f1f6ff;color:#203d68;font-size:.86rem;line-height:1.5}
+.sd-account-boundary{margin:15px 0 0;padding-top:13px;border-top:1px solid #e0e5ed;color:#59677a;font-size:.78rem;line-height:1.6}
+.sd-account-inside .sd-button{min-height:45px;border-radius:10px}
+.sd-account-inside button:focus-visible,.sd-account-inside a:focus-visible{outline:3px solid color-mix(in srgb,var(--account-brand) 55%,white);outline-offset:3px}
+@media(max-width:640px){
+ .sd-account-inside{padding:15px 0 48px}
+ .sd-account-masthead{padding:11px 12px}
+ .sd-account-view-label{font-size:.58rem;padding:6px 8px}
+ .sd-account-welcome{align-items:stretch;flex-direction:column;margin:13px 0 20px;padding:22px 18px}
+ .sd-account-welcome h1{font-size:clamp(2.45rem,12vw,3.4rem)}
+ .sd-account-store-link{width:100%}
+ .sd-account-workspace{padding:14px;border-radius:15px}
+ .sd-account-section-heading{align-items:flex-start}
+ .sd-account-local-tag{font-size:.58rem}
+ .sd-account-lookup{padding:13px}
+ .sd-account-lookup-row{align-items:stretch;flex-direction:column;gap:7px}
+ .sd-account-lookup-row>span{font-size:.74rem}
+ .sd-account-summary{gap:7px}
+ .sd-account-summary article{padding:11px}
+ .sd-account-summary article span{font-size:.72rem}
+ .sd-account-summary article strong{font-size:1.55rem}
+ .sd-account-order-main{gap:8px}
+ .sd-account-order-main h3{font-size:1.1rem}
+ .sd-account-order-price{font-size:.95rem}
+ .sd-account-order-actions{align-items:stretch;flex-direction:column}
+ .sd-account-secondary-action{width:100%}
+ .sd-account-message>div{align-items:flex-start;flex-direction:column;gap:4px}
+ .sd-account-composer-actions{align-items:stretch;flex-direction:column}
+ .sd-account-attach,.sd-account-composer-actions .sd-button{width:100%}
+}
+@media(max-width:360px){.sd-account-view-label{max-width:118px;text-align:center;line-height:1.3}.sd-account-summary{grid-template-columns:1fr}.sd-account-order-top{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.sd-account-inside *{scroll-behavior:auto!important;transition:none!important}}
