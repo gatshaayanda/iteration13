@@ -3160,3 +3160,15 @@ h1 em,
 .sd-account-notification-empty{margin:0;color:#536176;font-size:.84rem;line-height:1.5}
 .sd-account-notification-boundary{margin:9px 0 0;color:#657287;font-size:.75rem;line-height:1.45}
 @media(max-width:640px){.sd-account-notifications{padding:10px}.sd-account-notifications li{padding:8px}.sd-account-notifications-head h3{font-size:1rem}}
+
+/* Customer request catalogue picker: type-to-suggest plus explicit custom additions. */
+.sd-catalogue-add{display:grid;gap:7px;margin:0 0 12px;padding:12px;border:1px solid #dfe5ed;border-radius:11px;background:#f8fafc}
+.sd-catalogue-add>label{font-weight:800;font-size:14px;color:#1d2939}
+.sd-catalogue-add>div{display:flex;gap:8px}
+.sd-catalogue-add input{min-width:0;flex:1;min-height:44px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#172033;font:inherit}
+.sd-catalogue-add button{flex:none;padding:9px 13px;border:0;border-radius:8px;background:var(--studio-accent,#2458e8);color:var(--studio-accent-text,#fff);font-weight:800}
+.sd-catalogue-add small{font-size:12px;line-height:1.45;color:#566579}
+.sd-custom-request-items{display:grid;gap:7px;margin:10px 0;padding:11px;border:1px dashed #b8c5d6;border-radius:10px}
+.sd-custom-request-items>strong{font-size:13px}
+.sd-custom-request-items>div{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sd-custom-request-items button{border:0;background:transparent;color:#a13d3d;font-weight:750}
