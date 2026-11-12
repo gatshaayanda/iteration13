@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import ReceiptDocument, { type ReceiptProfile } from "@/app/ReceiptDocument";
 import { generateReactHelpers } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
@@ -31,6 +31,8 @@ type Props = {
 const getBusinessCurrency = () => { if (typeof window === "undefined") return "BWP"; try { return window.localStorage.getItem("iteration13:business-currency:v1") || "BWP"; } catch { return "BWP"; } };
 const money = (amount: number) => new Intl.NumberFormat("en", { style: "currency", currency: getBusinessCurrency(), maximumFractionDigits: 2 }).format(amount);
 const prettyDate = (value: string) => { try { return new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }); } catch { return value; } };
+const deadlineAt = (value: string) => new Date(`${value}T23:59:59`).getTime();
+const countdownLabel = (value: string, now: number) => { const delta = deadlineAt(value) - now; if (!Number.isFinite(delta)) return "Date not set"; if (delta < 0) return "Target date passed"; const totalMinutes = Math.floor(delta / 60000); const days = Math.floor(totalMinutes / 1440); const hours = Math.floor((totalMinutes % 1440) / 60); const minutes = totalMinutes % 60; return [days ? `${days}d` : "", `${hours}h`, `${minutes}m`].filter(Boolean).join(" "); };
 
 export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
@@ -38,12 +40,16 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadNotice, setUploadNotice] = useState("");
   const [openThread, setOpenThread] = useState<string | null>(null);
+  const [clockNow, setClockNow] = useState(() => Date.now());
+  const [testNotificationState, setTestNotificationState] = useState("");
+  useEffect(() => { const timer = window.setInterval(() => setClockNow(Date.now()), 60000); return () => window.clearInterval(timer); }, []);
   const normalizedEmail = email.trim().toLowerCase();
   const filteredOrders = useMemo(() => normalizedEmail ? orders.filter(order => order.email.trim().toLowerCase() === normalizedEmail) : [], [orders, normalizedEmail]);
   const matchingRewards = useMemo(() => normalizedEmail ? discountClaims.filter(claim => claim.email.trim().toLowerCase() === normalizedEmail) : [], [discountClaims, normalizedEmail]);
   const totalMessages = filteredOrders.reduce((total, order) => total + (order.messages?.length || 0), 0);
   const openOrders = filteredOrders.filter(order => !["Completed", "Declined"].includes(order.status)).length;
   const fileCount = filteredOrders.reduce((total, order) => total + (order.messages || []).filter(message => Boolean(message.attachment)).length, 0);
+  const nextDeadlineOrder = filteredOrders.filter(order => order.dueDate && !["Completed", "Declined", "Cancelled"].includes(order.status)).sort((a,b) => deadlineAt(a.dueDate)-deadlineAt(b.dueDate))[0];
   const accountUpdates = useMemo(() => filteredOrders.flatMap(order => [
     { id: order.id + ":status", title: order.serviceName + " · " + order.status, detail: order.status === "New request" ? "Your request has been received on this device and is awaiting review." : "Current request status", kind: "status" as const },
     ...(order.messages || []).filter(message => message.from === "studio").map(message => ({ id: message.id, title: "Message from " + businessName, detail: message.text || (message.attachment ? "A file was shared with your request." : "A new request message is available."), createdAt: message.createdAt, kind: "message" as const }))
@@ -54,6 +60,29 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
     onUploadProgress: progress => setUploadProgress(Math.max(0, Math.min(100, Math.round(progress)))),
     onUploadError: error => { setUploadNotice(error.message || "Upload failed. Your message has not been sent."); setUploadingOrder(null); setUploadProgress(0); },
   });
+
+  async function sendTestNotification() {
+    if (!nextDeadlineOrder) { setTestNotificationState("Add a request with a target date to preview a deadline reminder."); return; }
+    if (!("Notification" in window) || !("serviceWorker" in navigator)) { setTestNotificationState("This browser does not support persistent app notifications."); return; }
+    try {
+      let permission = Notification.permission;
+      if (permission === "default") permission = await Notification.requestPermission();
+      if (permission !== "granted") { setTestNotificationState(permission === "denied" ? "Notifications are blocked in browser settings." : "Notification permission was not granted."); return; }
+      const registration = await navigator.serviceWorker.getRegistration();
+      if (!registration) { setTestNotificationState("The app notification worker is not active yet. Reopen the installed app and try again."); return; }
+      const remaining = countdownLabel(nextDeadlineOrder.dueDate, Date.now());
+      await registration.showNotification("Test update · " + businessName, {
+        body: nextDeadlineOrder.serviceName + " · target date in " + remaining + ". This is a test notification.",
+        icon: "/iteration13-icon-192.png",
+        badge: "/iteration13-icon-192.png",
+        tag: "iteration13-account-test",
+        data: { link: "/?view=account" }
+      });
+      setTestNotificationState("Test notification sent to this device.");
+    } catch {
+      setTestNotificationState("Could not send the test notification. Check app notification permission and try again.");
+    }
+  }
 
   function sendMessage(order: WorkspaceOrder, attachment?: AccountAttachment) {
     const messageText = (drafts[order.id] || "").trim();
@@ -132,7 +161,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
       {normalizedEmail && <section className="sd-account-notifications" aria-labelledby="account-updates-title">
         <div className="sd-account-notifications-head"><div><span className="sd-kicker">NOTIFICATION CENTRE</span><h3 id="account-updates-title">Your updates</h3></div><span>{accountUpdates.length} {accountUpdates.length === 1 ? "update" : "updates"}</span></div>
         {accountUpdates.length ? <ol>{accountUpdates.map(update => <li key={update.id}><span className={update.kind === "message" ? "is-message" : "is-status"} aria-hidden="true">{update.kind === "message" ? "✉" : "↗"}</span><div><strong>{update.title}</strong><p>{update.detail}</p>{update.createdAt && <time>{prettyDate(update.createdAt)}</time>}</div></li>)}</ol> : <p className="sd-account-notification-empty">No request updates yet. Status changes and business replies will appear here when they are saved in this browser.</p>}
-        <p className="sd-account-notification-boundary">In-app updates only in this demo. Push and email delivery are not connected.</p>
+        <div className="sd-account-test-notification"><div><strong>Example reminder</strong><p>{nextDeadlineOrder ? `${nextDeadlineOrder.serviceName} · target date in ${countdownLabel(nextDeadlineOrder.dueDate, clockNow)}.` : "A message can include a live countdown to your requested date."}</p>{testNotificationState && <small role="status">{testNotificationState}</small>}</div><button type="button" onClick={sendTestNotification}>Send test notification</button></div><p className="sd-account-notification-boundary">The test sends immediately to this device. Automatic deadline reminders require an active notification service and a scheduled backend.</p>
       </section>}
 
       {!normalizedEmail ? <div className="sd-account-empty">
@@ -143,8 +172,8 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
       </div> : filteredOrders.length === 0 ? <div className="sd-account-empty">
         <span className="sd-account-empty-mark" aria-hidden="true">↗</span>
         <h3>No requests found for that email.</h3>
-        <p>Check the spelling, or return to the Store to send a new service request using this email.</p>
-        <button className="sd-button sd-primary" onClick={onBrowse}>Browse services</button>
+        <p>Check the spelling, or return to the Store to send a new product / service request using this email.</p>
+        <button className="sd-button sd-primary" onClick={onBrowse}>Browse products / services</button>
       </div> : <div className="sd-account-orders">
         {filteredOrders.map(order => {
           const messages = order.messages || [];
@@ -158,7 +187,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
             </div>
             {order.serviceItems?.length ? <p className="sd-account-detail"><strong>Selected:</strong> {order.serviceItems.map(item => item.name).join(", ")}</p> : null}
             {order.whatsapp ? <p className="sd-account-detail"><strong>WhatsApp:</strong> {order.whatsapp}</p> : null}
-            <p className="sd-account-detail"><strong>Requested date:</strong> {order.dueDate}</p>
+            <p className="sd-account-detail"><strong>Requested date:</strong> {order.dueDate}</p><div className="sd-account-deadline"><span>Time until target date</span><strong>{countdownLabel(order.dueDate, clockNow)}</strong></div>
             {order.brief && <p className="sd-account-brief">{order.brief}</p>}
             {order.discountAmount ? <p className="sd-account-reward-line">Store reward · {money(order.discountAmount)} off</p> : null}
             <div className="sd-account-order-actions">
