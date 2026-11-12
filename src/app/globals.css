@@ -2777,3 +2777,18 @@ h1 em,
 @media(max-width:900px){.sd-journey-guide-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.sd-journey-guide{padding:16px;border-radius:17px}.sd-journey-guide-steps{grid-template-columns:minmax(0,1fr)}.sd-journey-guide-steps article{min-height:0}.sd-briefcase-guide{padding:14px}}
 @media(prefers-reduced-motion:reduce){.sd-toast,.sd-service-card,.sd-admin-panel,.sd-journey-guide-steps article,.sd-os-nav button{animation:none!important;transition:none!important;scroll-behavior:auto!important}.sd-service-card:hover,.sd-journey-guide-steps article button:hover{transform:none!important}}
+
+
+/* A quiet final handoff keeps the business experience first and the platform story secondary. */
+.sd-handoff-card{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:42px auto 24px;padding:22px 24px;border:1px solid #d8e0eb;border-radius:20px;background:#f6f8fc;color:#172033}
+.sd-handoff-card>div{max-width:680px}
+.sd-handoff-card .sd-kicker{color:#53647a}
+.sd-handoff-card h2{margin:6px 0 5px;font-size:clamp(1.35rem,3vw,1.8rem)}
+.sd-handoff-card p{margin:0;color:#4b5b70;font-size:14px;line-height:1.55}
+.sd-handoff-card>a{display:inline-flex;align-items:center;justify-content:center;gap:12px;flex:0 0 auto;min-height:48px;padding:12px 18px;border-radius:12px;background:#14233b;color:#fff;font-weight:850;text-decoration:none;transition:transform .16s ease,background .16s ease}
+.sd-handoff-card>a:hover{background:#263f65;transform:translateY(-2px)}
+.sd-handoff-card>a:focus-visible{outline:3px solid #4d8de8;outline-offset:3px}
+.sd-footer .sd-owner-entry{cursor:pointer}
+.sd-footer .sd-owner-entry:focus-visible{outline:3px solid #4d8de8;outline-offset:4px}
+@media(max-width:680px){.sd-handoff-card{align-items:stretch;flex-direction:column;gap:14px;padding:18px;margin-top:28px}.sd-handoff-card>a{width:100%}}
+@media(prefers-reduced-motion:reduce){.sd-handoff-card>a{transition:none}.sd-handoff-card>a:hover{transform:none}}
