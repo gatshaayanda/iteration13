@@ -750,7 +750,7 @@ export default function Home() {
       </div>
     </div>
     <div className="sd-platform-capacity">
-      <div><span className="sd-kicker">HOSTING PLATFORM REFERENCE</span><strong>Up to 30,000 concurrent Function invocations</strong><p>Vercel publishes this auto-scaling ceiling for Hobby and Pro. It means simultaneous server-function work—not 30,000 guaranteed customers, and not a tested limit for this app.</p></div>
+      <div><span className="sd-kicker">HOSTING PLATFORM REFERENCE</span><strong>Up to 30,000 concurrent invocations on Pro</strong><p>Vercel documents up to 30,000 simultaneous Function executions on Pro and 100,000+ on Enterprise. These are platform concurrency limits—not customer counts, not a Hobby-plan promise, and not a tested limit for this app.</p></div>
       <div><span className="sd-kicker">WHAT ACTUALLY SETS THE LIMIT?</span><strong>App + database + plan + traffic shape</strong><p>Real safe capacity depends on function duration, memory, request bursts, Firestore reads/writes, security rules, data size and load testing. A quota being reached is not the same as a server physically crashing.</p></div>
     </div>
     <p className="sd-capacity-model-note">Important: selecting a service in this local demo does not call a Vercel Function or Firebase. The request is saved in this browser. The payload estimate excludes Firestore indexes, repeated reads and writes, network overhead, files, backups and other services; it is a teaching model, not a capacity promise or revenue forecast.</p>
