@@ -20,9 +20,9 @@ const emptyData: DemoData = { services: [], orders: [], announcement: "", announ
 const CURRENCY_KEY = "iteration13:business-currency:v1";
 const supportedCurrencies = ["BWP", "USD", "GBP", "EUR", "ZAR", "INR"] as const;
 const getBusinessCurrency = () => {
-  if (typeof window === "undefined") return "BWP";
-  try { const value = window.localStorage.getItem(CURRENCY_KEY); return supportedCurrencies.includes(value as typeof supportedCurrencies[number]) ? value! : "BWP"; }
-  catch { return "BWP"; }
+  if (typeof window === "undefined") return "USD";
+  try { const value = window.localStorage.getItem(CURRENCY_KEY); return supportedCurrencies.includes(value as typeof supportedCurrencies[number]) ? value! : "USD"; }
+  catch { return "USD"; }
 };
 const money = (amount: number) => new Intl.NumberFormat("en", { style: "currency", currency: getBusinessCurrency(), maximumFractionDigits: 2 }).format(amount);
 const serviceEmoji = (name: string) => {
@@ -108,7 +108,7 @@ export default function Home() {
   const [identityServiceId, setIdentityServiceId] = useState<string | null>(null);
   const [customBrandColor, setCustomBrandColor] = useState("#2458e8");
   const [businessName, setBusinessName] = useState("Your Business");
-  const [businessCurrency, setBusinessCurrency] = useState("BWP");
+  const [businessCurrency, setBusinessCurrency] = useState("USD");
   const [businessNameReady, setBusinessNameReady] = useState(false);
 
   useEffect(() => {
@@ -126,7 +126,7 @@ export default function Home() {
   }, [businessName, businessNameReady]);
 
   useEffect(() => {
-    try { const savedCurrency = window.localStorage.getItem(CURRENCY_KEY); if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency); } catch { /* default to BWP */ }
+    try { const savedCurrency = window.localStorage.getItem(CURRENCY_KEY); if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency); } catch { /* default to USD */ }
     try {
       const savedPalette = window.localStorage.getItem("iteration13:business-palette:v1");
       const savedTheme = window.localStorage.getItem("iteration13:store-theme:v1");
