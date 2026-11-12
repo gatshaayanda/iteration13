@@ -3098,3 +3098,18 @@ h1 em,
  .serviceDemo .sd-admin .sd-admin-panel{padding:15px;margin:11px 0}
 }
 @media(prefers-reduced-motion:reduce){.serviceDemo .sd-admin .sd-os-nav button{transition:none}}
+
+
+/* Store cleanup: one navigation system, no onboarding mockup or sales handoff inside the customer journey. */
+.serviceDemo .sd-mobile-nav{display:none!important}
+.serviceDemo .sd-header nav{display:flex;align-items:center;gap:8px}
+.serviceDemo .sd-header nav button{min-height:42px;padding:9px 13px;border:1px solid #dce3dd;border-radius:9px;background:transparent;color:#273649;font-size:13px;font-weight:750}
+.serviceDemo .sd-header nav button:hover,.serviceDemo .sd-header nav button:focus-visible{background:#f1f5f2;border-color:var(--studio-accent,#2458e8);outline-offset:2px}
+.serviceDemo .sd-store-intro{grid-template-columns:minmax(0,1fr)}
+.serviceDemo .sd-store-copy{max-width:820px}
+@media(max-width:640px){
+ .serviceDemo .sd-header .sd-nav{align-items:center;flex-direction:row;gap:10px}
+ .serviceDemo .sd-header .sd-nav nav{width:auto;justify-content:flex-end;gap:5px;flex-wrap:wrap}
+ .serviceDemo .sd-header nav button{min-height:40px;padding:8px 9px;font-size:12px}
+ .serviceDemo .sd-header .sd-brand{min-width:0}
+}
