@@ -411,7 +411,7 @@ export default function RacingWarmup({ embedded = false, startExpanded = false, 
         race.lapTime += dt;
         const lapNow = Math.floor(race.progress) + 1;
         if (lapNow > race.lap) {
-          if (!race.lapInvalid && rewardEnabled && rewardedLap.current < race.lap) { rewardedLap.current = race.lap; if (rewardEmail.trim()) rewardCallback.current?.(rewardEmail, race.lapTime); }
+          if (!embedded && !race.lapInvalid && rewardEnabled && rewardedLap.current < race.lap) { rewardedLap.current = race.lap; if (rewardEmail.trim()) rewardCallback.current?.(rewardEmail, race.lapTime); }
           if (!race.lapInvalid && (race.bestLap === null || race.lapTime < race.bestLap)) {
             race.bestLap = race.lapTime;
             setBestLap(race.lapTime);
