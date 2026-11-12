@@ -116,6 +116,14 @@ Visual polish includes behavior, not decoration. Every visible control must work
 Visual polish must help people understand that the application is doing useful work. Apply [OPERATIONAL-TRANSPARENCY-STANDARD.md](./OPERATIONAL-TRANSPARENCY-STANDARD.md) alongside this visual reference. Across relevant customer and staff/admin screens, make genuine search, checking, saving, uploading, review, assignment, processing and completion visible in concise, context-appropriate language. Show the current state, meaningful update and next action; use measurable progress only when the underlying operation provides it. Do not add fake loading stages, artificial delay, animated percentages, decorative activity feeds or oversized status cards. The customer should see their own progress and next step; staff should see the actionable work behind it. Keep both views compact, accessible, brand-appropriate and consistent with the quality/composition of `washride-home-reference.jpeg`.
 
 
+## Restrained business identity and colour system
+
+The first guided interaction is business identity setup: name the business, select one to three brand colours, and preview the coupled Store · Account · Briefcase. Do this before inviting visitors to explore the demo catalogue or modules. Use “Your business in your pocket.” as the shared product proposition. See [BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md](./BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md) for the full contract.
+
+Limit the **brand palette** to a maximum of three hues (primary, secondary, optional highlight). This does not mean the whole interface may contain only three literal colours: readable text/surface neutrals, borders, disabled states and semantic status tokens remain necessary. They must be disciplined and consistent, not treated as extra brand colours. Keep colour roles distinct and avoid using all accents at equal strength.
+
+Never allow palette selection to reduce readability. Derive accessible foregrounds and surface treatments; verify actual foreground/background pairs. Use WCAG AA 4.5:1 for normal text and 3:1 for qualifying large text. Colour must never be the only status or navigation cue. The same business identity must flow through Store, Account, Briefcase, receipts and live previews.
+
 ## Iteration 13 Business OS composition
 
 Iteration 13's own visual direction is specifically a compact **Store → Briefcase → Login** product. The public Store is a real storefront demo, not a generic 13Studio brochure. The first viewport should communicate: a business-branded digital Store, the private owner Briefcase, low-friction one-word Login, and the practical benefit of remaining organised while the owner steps away.
