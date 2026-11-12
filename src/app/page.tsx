@@ -10,7 +10,7 @@ import ReceiptDocument from "@/app/ReceiptDocument";
 import { useEffect, useMemo, useState } from "react";
 
 type Service = { id: string; name: string; industry?: string; price: number; description: string; media: string; mediaType: "image" | "video"; active: boolean; custom?: boolean };
-type DemoOrder = { id: string; serviceId: string; serviceName: string; serviceItems?: { id: string; name: string; price: number }[]; price: number; dueDate: string; customerName: string; email: string; whatsapp?: string; notificationOptIn?: boolean; brief: string; status: string; createdAt: string; messages?: AccountMessage[]; paymentStatus?: "Unpaid" | "Partially paid (demo)" | "Paid (demo)"; originalPrice?: number; quotedPrice?: number; discountAmount?: number; discountCode?: string; paidAmount?: number; paidAt?: string; receiptNo?: string; isTest?: boolean; completedAt?: string };
+type DemoOrder = { id: string; serviceId: string; serviceName: string; serviceItems?: { id: string; name: string; price: number }[]; price: number; dueDate: string; customerName: string; email: string; whatsapp?: string; notificationOptIn?: boolean; brief: string; status: string; createdAt: string; statusUpdatedAt?: string; messages?: AccountMessage[]; paymentStatus?: "Unpaid" | "Partially paid (demo)" | "Paid (demo)"; originalPrice?: number; quotedPrice?: number; discountAmount?: number; discountCode?: string; paidAmount?: number; paidAt?: string; receiptNo?: string; isTest?: boolean; completedAt?: string };
 type DemoEvent = { id: string; kind: "visit" | "service" | "account" | "request" | "completed" | "payment" | "reward"; label: string; at: string; test?: boolean };
 type DiscountClaim = { id: string; email: string; code: string; amount: number; lapTime: number; createdAt: string; status: "Available" | "Redeemed" };
 type DemoData = { services: Service[]; orders: DemoOrder[]; announcement: string; announcementImage?: string; views: number; events?: DemoEvent[]; discountAmount?: number; rewardTitle?: string; rewardDescription?: string; rewardImage?: string; rewardActive?: boolean; discountClaims?: DiscountClaim[]; receiptProfile?: { legalName: string; registration: string; address: string; phone: string; footer: string } };
@@ -499,7 +499,7 @@ export default function Home() {
   function resetServiceForm() { setEditingId(null); setServiceName(""); setServiceIndustry(""); setServicePrice("100"); setServiceDescription(""); setServiceMedia(""); setServiceMediaType("image"); setServiceActive(true); }
   function updateOrder(id: string, status: string) {
     const order = data.orders.find(item => item.id === id); const now = new Date().toISOString();
-    commitData(current => ({ ...current, orders: current.orders.map(item => item.id === id ? { ...item, status, ...(status === "Completed" ? { completedAt: now } : {}) } : item), events: [{ id: "EV-"+Date.now().toString(36), kind: status === "Completed" ? "completed" : "request", label: (order?.serviceName || "Job")+" moved to "+status, at: now, test: order?.isTest }, ...(current.events || [])] }), order ? `${order.serviceName} status changed to ${status}. Saved on this device.` : "Request status saved on this device.");
+    commitData(current => ({ ...current, orders: current.orders.map(item => item.id === id ? { ...item, status, statusUpdatedAt: now, ...(status === "Completed" ? { completedAt: now } : {}) } : item), events: [{ id: "EV-"+Date.now().toString(36), kind: status === "Completed" ? "completed" : "request", label: (order?.serviceName || "Job")+" moved to "+status, at: now, test: order?.isTest }, ...(current.events || [])] }), order ? `${order.serviceName} status changed to ${status}. Saved on this device.` : "Request status saved on this device.");
   }
   function recordDemoPayment(id: string, amount: number) {
     const order = data.orders.find(item => item.id === id);
@@ -530,7 +530,7 @@ export default function Home() {
     if (!Number.isFinite(amount) || amount <= 0) { setNotice("Enter a quote total greater than zero."); return; }
     const now = new Date().toISOString();
     const message: AccountMessage = { id: "MSG-" + Date.now().toString(36), from: "studio", text: "Your quote is ready: " + money(amount) + " total for this request. This is a proposed amount, not a booking confirmation or payment request.", createdAt: now };
-    if (commitData(current => ({ ...current, orders: current.orders.map(item => item.id === id ? { ...item, price: amount, quotedPrice: amount, status: "Reviewing", messages: [...(item.messages || []), message] } : item), events: [{ id: "EV-" + Date.now().toString(36), kind: "request", label: "Custom product / service quote sent · " + order.serviceName, at: now }, ...(current.events || [])] }), "Quote sent to the customer's local Account. No payment was taken.")) {
+    if (commitData(current => ({ ...current, orders: current.orders.map(item => item.id === id ? { ...item, price: amount, quotedPrice: amount, status: "Reviewing", statusUpdatedAt: now, messages: [...(item.messages || []), message] } : item), events: [{ id: "EV-" + Date.now().toString(36), kind: "request", label: "Custom product / service quote sent · " + order.serviceName, at: now }, ...(current.events || [])] }), "Quote sent to the customer's local Account. No payment was taken.")) {
       setQuoteDrafts(current => ({ ...current, [id]: "" }));
     }
   }
