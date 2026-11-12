@@ -32,6 +32,19 @@ When asked to adopt/use Iteration 13 as a reference, do not restart a full found
 
 This path is the default for both new and existing project adaptations. Follow the longer foundation/cloning SOP only when the task actually creates a new repository or changes its foundation.
 
+## First experience: establish the business identity
+
+For Iteration 13 itself and new Business OS builds, the first guided action is to name and brand the business—not to browse the sample catalogue first.
+
+1. Enter a real or fictional business name (example: **Metsi Wellness**).
+2. Select one, two or three brand colours maximum. One colour is a valid finished palette; the third is optional.
+3. Preview the identity across **Store · Account · Briefcase** together. The name and palette must update all three surfaces as one system.
+4. Then explore the Store, customer journey and owner Briefcase.
+
+Use the shared headline **“Your business in your pocket.”** The identity helper should explain that the name and colours rebrand Store, Account and Briefcase together instantly. The owner workspace should be clearly introduced as **“ADMIN HUB / PRIVATE BRIEFCASE”**, repeat the business proposition, show a local-time greeting, and lead directly into owner operations, customer requests and money. Greeting copy is supportive—not a substitute for actionable operational priorities.
+
+The complete colour, contrast, psychology and implementation contract is [docs/BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md](./docs/BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md). It is mandatory for future chats and portfolio adaptations.
+
 ## Mandatory evidence-led diagnosis and release gate
 
 Use the full [Change Safety & Regression Prevention Standard](./docs/CHANGE-SAFETY-STANDARD.md) for every project and every implementation or QA chat; do not assume an earlier chat summary or a user's suspected cause is the current repository truth.
