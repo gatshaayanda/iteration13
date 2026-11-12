@@ -3405,7 +3405,7 @@ h1 em,
   display:flex;align-items:center;justify-content:center;color:#79c4ff;font-size:1.35rem;font-weight:900
 }
 .serviceDemo .sd-infrastructure-footnotes{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px
 }
 .serviceDemo .sd-infrastructure-footnotes>div{
   padding:12px;background:#0c1d31;border:1px solid #314b67;border-radius:10px
@@ -3436,6 +3436,7 @@ h1 em,
 .serviceDemo .sd-platform-capacity p{margin:0;color:#e1eaf4!important;font-size:.76rem;line-height:1.5}
 .serviceDemo .sd-capacity-model-note{margin:0;padding-top:10px;border-top:1px solid #49627d;color:#dce8f5!important;font-size:.74rem;line-height:1.5}
 @media(max-width:900px){
+  .serviceDemo .sd-infrastructure-footnotes{grid-template-columns:repeat(2,minmax(0,1fr))}
   .serviceDemo .sd-infrastructure-flow{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px}
   .serviceDemo .sd-infrastructure-flow .sd-infrastructure-node:nth-of-type(3){grid-column:1}
   .serviceDemo .sd-infrastructure-flow .sd-infrastructure-node:nth-of-type(4){grid-column:3}
