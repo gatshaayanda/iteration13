@@ -99,6 +99,8 @@ export default function Home() {
   const [themeReady, setThemeReady] = useState(false);
   const [identityReady, setIdentityReady] = useState(false);
   const [identityComplete, setIdentityComplete] = useState(false);
+  const [identityEditing, setIdentityEditing] = useState(false);
+  const [identityServiceId, setIdentityServiceId] = useState<string | null>(null);
   const [customBrandColor, setCustomBrandColor] = useState("#2458e8");
   const [businessName, setBusinessName] = useState("Your Business");
   const [businessCurrency, setBusinessCurrency] = useState("BWP");
@@ -272,6 +274,20 @@ export default function Home() {
       ? current
       : current.length < 3 ? [...current, customBrandColor] : [...current.slice(0, 2), customBrandColor]);
   }
+  function openBusinessSetup() {
+    const firstService = data.services[0];
+    setServiceName(firstService?.name || "");
+    setServicePrice(String(firstService?.price ?? 100));
+    setServiceDescription(firstService?.description || "");
+    setServiceMedia(firstService?.media || "");
+    setServiceMediaType(firstService?.mediaType || "image");
+    setServiceActive(firstService?.active ?? true);
+    setIdentityServiceId(firstService?.id || null);
+    setIdentityEditing(true);
+    setIdentityComplete(false);
+    setNotice("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
   function completeBusinessIdentity() {
     const name = businessName.trim();
     const firstServiceName = serviceName.trim();
@@ -284,8 +300,11 @@ export default function Home() {
       try { const parsed = new URL(serviceMedia.trim()); if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported protocol"); }
       catch { setNotice("Enter a valid image URL or upload the image before continuing."); return; }
     }
-    const firstService: Service = { id: "service-" + Date.now().toString(36), name: firstServiceName, price: firstServicePrice, description: serviceDescription.trim(), media: serviceMedia.trim(), mediaType: serviceMediaType, active: serviceActive };
-    const nextData = { ...data, services: [...data.services.filter(item => item.name.toLowerCase() !== firstServiceName.toLowerCase()), firstService] };
+    const firstService: Service = { id: identityEditing && identityServiceId ? identityServiceId : "service-" + Date.now().toString(36), name: firstServiceName, price: firstServicePrice, description: serviceDescription.trim(), media: serviceMedia.trim(), mediaType: serviceMediaType, active: serviceActive };
+    const nextServices = identityEditing && identityServiceId
+      ? data.services.map(item => item.id === identityServiceId ? firstService : item)
+      : [firstService];
+    const nextData = { ...data, services: nextServices };
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextData));
       window.localStorage.setItem("iteration13:business-name:v1", name.slice(0, 48));
@@ -419,12 +438,12 @@ export default function Home() {
 
   return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--studio-accent-secondary": secondaryColor, "--studio-accent-highlight": highlightColor, "--studio-accent-ink": accentInk(themeColor), "--studio-accent-text": accentText(themeColor) } as React.CSSProperties}>
     {!identityReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete ? <section className="sd-identity-onboarding">
-      <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>YOUR BRIEFCASE STARTS HERE</span></div>
+      <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "EDIT YOUR BUSINESS SETUP" : "YOUR BRIEFCASE STARTS HERE"}</span></div>
       <div className="sd-identity-onboarding-layout">
         <div className="sd-identity-onboarding-copy">
           <span className="sd-kicker">LIVE BUSINESS IDENTITY / MAKE IT YOURS</span>
           <h1>{businessName.trim() || "Your Business"} <em>at work.</em></h1>
-          <p>Set up your business once. Your Store welcomes customers, your Account keeps their work together, and your Briefcase gives you the keys to run it all.</p>
+          <p>{identityEditing ? "Update your business name, colours, currency and first Store listing. Your existing requests and other services stay in place." : "Set up your business once. Your Store welcomes customers, your Account keeps their work together, and your Briefcase gives you the keys to run it all."}</p>
           <label className="sd-identity-name-label">01 / Business name
             <input value={businessName} onChange={event => setBusinessName(event.target.value.slice(0, 48))} maxLength={48} autoComplete="organization" placeholder="Example: Metsi Wellness" />
           </label>
@@ -445,8 +464,8 @@ export default function Home() {
               <p className="sd-identity-placeholder-note">No image is required. Leave media empty to use a clean branded service placeholder in your Store.</p>
             </div>
           </section>
-          <button type="button" className="sd-identity-continue" onClick={completeBusinessIdentity} disabled={!ready || serviceMediaUploading}>{serviceMediaUploading ? "Uploading service image…" : "Open my Briefcase"} <span>↗</span></button>
-          <p className="sd-identity-local-note">Demo setup · saved in this browser only. This does not publish a live website or sync across devices.</p>
+          <button type="button" className="sd-identity-continue" onClick={completeBusinessIdentity} disabled={!ready || serviceMediaUploading}>{serviceMediaUploading ? "Uploading service image…" : identityEditing ? "Save business setup" : "Open my Briefcase"} <span>↗</span></button>
+          <p className="sd-identity-local-note">Demo setup · saved in this browser only. This does not publish a live website or sync across devices.</p>{identityEditing && <button type="button" className="sd-small-button" onClick={() => { setIdentityEditing(false); setIdentityServiceId(null); setIdentityComplete(true); }}>Cancel editing</button>}
         </div>
         <div className="sd-identity-live-preview" aria-label="Live preview of your Store, Account and Briefcase">
           <div className="sd-identity-preview-brand" style={{ background: themeColor }}><span>{(businessName.trim() || "Your Business").slice(0,2).toUpperCase()}</span><div><strong>{businessName.trim() || "Your Business"}</strong><small>Your business in your pocket.</small></div></div>
@@ -525,7 +544,7 @@ export default function Home() {
     <label>Business name<input value={businessName} onChange={event => setBusinessName(event.target.value.slice(0, 48))} maxLength={48} autoComplete="organization" /></label>
     <small>Example: Metsi Wellness. Use a real or fictional name. Your Store, Account and Briefcase rebrand together instantly.</small>
   </div>
-  <div className="sd-business-identity-preview" style={{borderColor:themeColor}}><span className="sd-kicker">LIVE BUSINESS IDENTITY</span><strong>{businessName.trim() || "Your Business"}</strong><small>Store · Account · Briefcase</small></div>
+  <div className="sd-business-identity-preview" style={{borderColor:themeColor}}><span className="sd-kicker">LIVE BUSINESS IDENTITY</span><strong>{businessName.trim() || "Your Business"}</strong><small>Store · Account · Briefcase</small><button type="button" className="sd-small-button" onClick={openBusinessSetup}>Edit business setup ↗</button></div>
 </section>
 <div className="sd-theme-control sd-palette-control" aria-label="Business brand colours"><div><strong>Brand palette · {brandColors.length} of 3 colours</strong><small>One to three brand colours shared by Store, Account, Briefcase and receipts.</small></div><div className="sd-admin-palette-swatches">{brandColorOptions.map(option => <button key={option.color} type="button" className={brandColors.includes(option.color) ? "is-selected" : ""} style={{ "--swatch": option.color } as React.CSSProperties} aria-label={option.label} aria-pressed={brandColors.includes(option.color)} onClick={() => toggleBrandColor(option.color)}>{brandColors.includes(option.color) ? "✓" : "+"}</button>)}<label title="Choose a custom brand colour"><input type="color" value={customBrandColor} onChange={event=>setCustomBrandColor(event.target.value)} aria-label="Custom brand colour"/><button type="button" onClick={addCustomBrandColor}>Add</button></label></div></div><div className="sd-briefcase-guide"><span className="sd-kicker">THE KEYS TO YOUR BUSINESS</span><p>Each section handles a different part of running your business. Start with Today, then move into customer work, money and the Store your customers see.</p></div><nav className="sd-os-nav" aria-label="Business OS sections"><button type="button" aria-pressed={adminTab==="today"} onClick={()=>setAdminTab("today")}>Today</button><button type="button" aria-pressed={adminTab==="work"} onClick={()=>setAdminTab("work")}>Customers &amp; jobs</button><button type="button" aria-pressed={adminTab==="money"} onClick={()=>setAdminTab("money")}>Money</button><button type="button" aria-pressed={adminTab==="store"} onClick={()=>setAdminTab("store")}>Store design</button><button type="button" aria-pressed={adminTab==="notes"} onClick={()=>setAdminTab("notes")}>My Notes</button><button type="button" aria-pressed={adminTab==="insights"} onClick={()=>setAdminTab("insights")}>Insights</button></nav><div className="sd-admin-head"><div><span className="sd-kicker">YOUR BRIEFCASE / TODAY</span><h2>Run your business from here</h2><p>Start with what needs attention, then manage customers, jobs, money, Store design and records from one place. Demo changes stay on this device.</p></div><div className="sd-admin-head-actions"><button className="sd-button sd-outline" onClick={() => setView("shop")}>View storefront ↗</button><button className="sd-button sd-outline" onClick={() => setView("account")}>Customer account ↗</button></div></div><div className="sd-stats" id="admin-today" data-admin-tab="today"><article><span>Submitted requests</span><strong>{data.orders.length}</strong><small>{data.views > 0 ? Math.round(data.orders.length / data.views * 100) : 0}% visit-to-request rate</small></article><article><span>New requests</span><strong>{statusCounts["New request"] || 0}</strong><small>{data.orders.length ? Math.round((statusCounts["New request"] || 0) / data.orders.length * 100) : 0}% of requests</small></article><article><span>Menu services</span><strong>{data.services.length}</strong><small>{data.services.length ? Math.round(activeServices.length / data.services.length * 100) : 0}% visible</small></article><article><span>Customer emails</span><strong>{new Set(data.orders.map(order => order.email.toLowerCase())).size}</strong><small>{data.orders.length ? Math.round(new Set(data.orders.map(order => order.email.toLowerCase())).size / data.orders.length * 100) : 0}% unique emails per request count</small></article><article><span>Store visits this demo</span><strong>{data.views}</strong><small>Local browser count · not unique visitors</small></article></div><section className="sd-admin-panel sd-finance-panel" id="admin-finance" data-admin-tab="money"><div className="sd-discount-admin"><div className="sd-panel-head"><div><span className="sd-kicker">CUSTOMER REWARDS</span><h3>Sprint discount promotion</h3><p className="sd-admin-help">Edit the offer customers see beside the racing game. Changes stay in this browser demo.</p></div><span className="sd-local-pill">OWNER CONTROLLED</span></div><div className="sd-reward-editor"><label>Promotion headline<input maxLength={80} value={rewardTitleDraft} onChange={event=>setRewardTitleDraft(event.target.value)} placeholder="Race for a discount." /></label><label>Customer announcement<textarea rows={3} maxLength={280} value={rewardDescriptionDraft} onChange={event=>setRewardDescriptionDraft(event.target.value)} placeholder="Tell customers what the reward is and how to earn it." /></label><label>Discount for a clean eight-second sprint ({businessCurrency})<input type="number" min="0.01" max="5000" step="0.01" value={rewardDiscountDraft} onChange={event=>setRewardDiscountDraft(event.target.value)} /></label><AnnouncementImagePicker value={rewardImageDraft} online={online} onChange={setRewardImageDraft} onUploadingChange={setRewardImageUploading} /><div className="sd-reward-admin-actions"><button className="sd-small-button" type="button" disabled={rewardImageUploading} onClick={()=>{const amount=Number(rewardDiscountDraft);if(!rewardTitleDraft.trim()||!rewardDescriptionDraft.trim()){setNotice("Add a promotion headline and customer announcement first.");return;}if(!Number.isFinite(amount)||amount<=0||amount>5000){setNotice("Enter a valid discount amount in " + businessCurrency + ".");return;}commitData(current=>({...current,rewardTitle:rewardTitleDraft.trim(),rewardDescription:rewardDescriptionDraft.trim(),rewardImage:rewardImageDraft.trim(),discountAmount:amount,rewardActive:true}),"Sprint discount published on this device.");}}>Save &amp; publish reward</button><button className="sd-small-button" type="button" onClick={()=>commitData(current=>({...current,rewardActive:false}),"Sprint discount hidden from the customer Store.")}>Hide reward</button><button className="sd-small-button" type="button" onClick={()=>{setRewardTitleDraft("");setRewardDescriptionDraft("");setRewardImageDraft("");setRewardDiscountDraft("5");commitData(current=>({...current,rewardTitle:"",rewardDescription:"",rewardImage:"",discountAmount:5,rewardActive:false}),"Sprint discount removed from this device.");}}>Remove promotion</button></div><div className="sd-reward-preview"><span>STORE PREVIEW</span><div>{rewardImageDraft?<img src={rewardImageDraft} alt="Lap reward thumbnail preview"/>:<span className="sd-reward-preview-fallback">🏁</span>}<section><strong>{rewardTitleDraft||"Your promotion headline"}</strong><p>{rewardDescriptionDraft||"Your customer announcement will appear here."}</p><b>{money(Number(rewardDiscountDraft)>0?Number(rewardDiscountDraft):0)} OFF</b></section></div><small>{data.rewardActive===false?"Currently hidden":"Currently published"} · save to apply edits</small></div></div><label>Customer email for a direct promotion<input type="email" value={promoAssignEmail} onChange={event=>setPromoAssignEmail(event.target.value)} placeholder="customer@example.com" /></label><button className="sd-small-button" type="button" onClick={assignPromoReward}>Assign discount to customer →</button><div className="sd-discount-claims">{(data.discountClaims || []).length ? (data.discountClaims || []).slice(0,8).map(claim=><article key={claim.id}><strong>{claim.code}</strong><span>{claim.email}</span><b>{money(claim.amount)} · {claim.status}</b></article>) : <p className="sd-admin-empty">No racing rewards earned yet.</p>}</div></div>
 <div className="sd-panel-head"><div><span className="sd-kicker">FINANCE / LOCAL DEMO LEDGER</span><h2>Money &amp; receipts</h2></div><span className="sd-local-pill">SIMULATED RECORDS</span></div>
