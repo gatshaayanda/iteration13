@@ -3145,3 +3145,18 @@ h1 em,
  .sd-account-welcome-compact .sd-account-store-link{width:100%}
  .sd-account-workspace{padding:11px}
 }
+
+.sd-account-notifications{margin:12px 0 14px;padding:13px;border:1px solid #dce2eb;border-radius:12px;background:linear-gradient(135deg,#fff,color-mix(in srgb,var(--account-brand) 5%,#fff))}
+.sd-account-notifications-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}
+.sd-account-notifications-head h3{margin:3px 0 0;color:#172033;font-size:1.05rem}
+.sd-account-notifications-head>span{color:#536176;font-size:.78rem;font-weight:800}
+.sd-account-notifications ol{display:grid;gap:7px;margin:0;padding:0;list-style:none}
+.sd-account-notifications li{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;border:1px solid #e3e8ef;border-radius:9px;background:#fff}
+.sd-account-notifications li>span{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:9px;background:color-mix(in srgb,var(--account-brand) 13%,white);color:var(--studio-accent-text,#174fc4);font-weight:900}
+.sd-account-notifications li>div{min-width:0}
+.sd-account-notifications li strong{display:block;color:#172033;font-size:.84rem}
+.sd-account-notifications li p{margin:3px 0;color:#435166;font-size:.82rem;line-height:1.45;overflow-wrap:anywhere}
+.sd-account-notifications li time{color:#647186;font-size:.72rem}
+.sd-account-notification-empty{margin:0;color:#536176;font-size:.84rem;line-height:1.5}
+.sd-account-notification-boundary{margin:9px 0 0;color:#657287;font-size:.75rem;line-height:1.45}
+@media(max-width:640px){.sd-account-notifications{padding:10px}.sd-account-notifications li{padding:8px}.sd-account-notifications-head h3{font-size:1rem}}
