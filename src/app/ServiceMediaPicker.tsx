@@ -12,9 +12,10 @@ type Props = {
   online: boolean;
   onChange: (url: string, type: "image" | "video") => void;
   onUploadingChange: (uploading: boolean) => void;
+  allowVideo?: boolean;
 };
 
-export default function ServiceMediaPicker({ value, type, online, onChange, onUploadingChange }: Props) {
+export default function ServiceMediaPicker({ value, type, online, onChange, onUploadingChange, allowVideo = true }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -96,7 +97,7 @@ export default function ServiceMediaPicker({ value, type, online, onChange, onUp
       <p className="sd-media-help">Choose what customers will see. Image and video are handled separately.</p>
       <div className="sd-media-mode" role="group" aria-label="Media type">
         <button type="button" className={type === "image" ? "is-selected" : ""} onClick={() => { onChange("", "image"); setUrlDraft(""); setMessage("Media type changed to image. Select or upload an image."); }}>Image</button>
-        <button type="button" className={type === "video" ? "is-selected" : ""} onClick={() => { onChange("", "video"); setUrlDraft(""); setMessage("Media type changed to video. Upload a video or add its URL."); }}>Video</button>
+        {allowVideo && <button type="button" className={type === "video" ? "is-selected" : ""} onClick={() => { onChange("", "video"); setUrlDraft(""); setMessage("Media type changed to video. Upload a video or add its URL."); }}>Video</button>}
       </div>
       {type === "image" ? (
         <div className="sd-media-upload">
