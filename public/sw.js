@@ -90,7 +90,7 @@ async function precacheShell() {
       if (response.ok) await shell.put(request, response);
     } catch {}
   }));
-  await trimCache(SHELL_CACHE, STATIC_LIMIT);
+  try { await trimCache(SHELL_CACHE, STATIC_LIMIT); } catch { /* Shell responses remain usable even if cache quota is unavailable. */ }
 }
 
 self.addEventListener("message", event => {
@@ -115,7 +115,7 @@ async function cacheMediaBatch(urls) {
   for (let index = 0; index < urls.length; index += 3) {
     await Promise.all(urls.slice(index, index + 3).map(cacheMediaUrl));
   }
-  await trimCache(MEDIA_CACHE, MEDIA_LIMIT);
+  try { await trimCache(MEDIA_CACHE, MEDIA_LIMIT); } catch { /* Media is optional; cache quota must not break the app. */ }
 }
 
 async function cacheMediaUrl(value) {
@@ -150,8 +150,8 @@ self.addEventListener("fetch", event => {
   if (request.method !== "GET") return;
   const url = new URL(request.url);
 
-  // Cache only explicitly approved image/video CDNs. This lets previously viewed
-  // Store media remain visible offline without caching arbitrary third-party traffic.
+  // Cache only explicitly approved image CDNs. Video streams and arbitrary third-party
+  // traffic stay network-dependent so they cannot consume the app-shell storage budget.
   if (request.destination === "image" && isApprovedMediaUrl(request.url)) {
     event.respondWith(cacheMediaRequest(request, event));
     return;
@@ -233,14 +233,23 @@ async function cacheMediaRequest(request, event) {
 }
 
 async function cacheFirst(request) {
-  const cache = await caches.open(SHELL_CACHE);
+  let cache;
+  try {
+    cache = await caches.open(SHELL_CACHE);
+  } catch {
+    try { return await fetch(request); } catch { return Response.error(); }
+  }
   const cached = await cache.match(request);
   if (cached) return cached;
   try {
     const response = await fetch(request);
     if (response.ok) {
-      await cache.put(request, response.clone());
-      await trimCache(SHELL_CACHE, STATIC_LIMIT + PUBLIC_PAGE_LIMIT);
+      try {
+        await cache.put(request, response.clone());
+        await trimCache(SHELL_CACHE, STATIC_LIMIT + PUBLIC_PAGE_LIMIT);
+      } catch {
+        // Storage quota failures must not block a successfully fetched asset.
+      }
     }
     return response;
   } catch {
