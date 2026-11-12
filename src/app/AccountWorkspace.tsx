@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import ReceiptDocument, { type ReceiptProfile } from "@/app/ReceiptDocument";
 import { generateReactHelpers } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
@@ -24,6 +24,7 @@ type Props = {
   announcement: string;
   onBrowse: () => void;
   onUpdateOrder: (orderId: string, update: (order: WorkspaceOrder) => WorkspaceOrder, notice: string) => void;
+  children?: ReactNode;
 };
 
 const getBusinessCurrency = () => { if (typeof window === "undefined") return "USD"; try { return window.localStorage.getItem("iteration13:business-currency:v1") || "USD"; } catch { return "USD"; } };
@@ -33,7 +34,7 @@ const prettyDate = (value: string) => {
   catch { return value; }
 };
 
-export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, email, setEmail, online, announcement, onBrowse, onUpdateOrder }: Props) {
+export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [uploadingOrder, setUploadingOrder] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -116,8 +117,9 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
       <span className="sd-kicker">{businessName.toUpperCase()} / CUSTOMER ACCOUNT</span>
       <h1>Your projects.<br/><em>All here.</em></h1>
       <p>Track requests, share files, and keep project messages together. This prototype stores account activity in this browser, not in a shared customer account.</p>
-      <button className="sd-button sd-outline" onClick={onBrowse}>＋ Make another request</button>
+      <button className="sd-button sd-outline" onClick={onBrowse}>＋ Browse services</button>
     </div>
+    {children}
     <div className="sd-account-content"><section className="sd-account-rewards"><div><span className="sd-kicker">CUSTOMER REWARDS</span><h2>Your racing discounts</h2><p>Earn a discount with a clean lap on the Store landing page. Codes are linked to this email and can be used once.</p></div>{discountClaims.filter(claim=>claim.email.toLowerCase()===email.trim().toLowerCase()).length ? discountClaims.filter(claim=>claim.email.toLowerCase()===email.trim().toLowerCase()).map(claim=><article key={claim.id}><strong>{claim.code}</strong><b>{money(claim.amount)} off</b><span>{claim.status}</span></article>) : <p>No discount codes for this email yet. <a href="#racing-rewards">Play the racing game ↗</a></p>}</section>
       <div className="sd-account-filter"><label>Find your requests by email<input type="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="The email used on your order" autoComplete="email" /></label><span>{filteredOrders.length} {filteredOrders.length === 1 ? "project" : "projects"} found</span></div>
       <div className="sd-account-stats"><article><span>Active projects</span><strong>{openOrders}</strong><small>Not completed or declined</small></article><article><span>Conversation</span><strong>{totalMessages}</strong><small>Saved local messages</small></article><article><span>Shared files</span><strong>{fileCount}</strong><small>Attachments in your threads</small></article></div>
