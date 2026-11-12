@@ -60,6 +60,10 @@ export default function Home() {
   const [online, setOnline] = useState(true);
   const [view, setView] = useState<"shop" | "account" | "login" | "admin">("shop");
   const [demoJourney, setDemoJourney] = useState<string[]>(["Storefront preview"]);
+
+  function recordDemoJourney(action: string) {
+    setDemoJourney(current => current.includes(action) ? current : [...current, action]);
+  }
   const [adminTab, setAdminTab] = useState<"today" | "work" | "money" | "store" | "notes" | "insights">("today");
   const [promoAssignEmail, setPromoAssignEmail] = useState("");
   const [adminUnlocked, setAdminUnlocked] = useState(false);
