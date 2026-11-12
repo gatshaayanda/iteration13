@@ -514,3 +514,23 @@
   .warmup-circuit-controls .warmup-driving { min-width: 0; }
   .warmup-circuit-controls .warmup-driving button { min-width: 0; }
 }
+
+
+/* Iteration13 embedded reward card: explicit black-on-white readability. */
+.serviceDemo .race-inline-promo{
+  background:#fff!important;color:#000!important;border:2px solid #000!important
+}
+.serviceDemo .race-inline-promo :is(.big-brothers-eyebrow,h2,p,strong,span,small){
+  color:#000!important;opacity:1!important;text-shadow:none!important
+}
+.serviceDemo .race-inline-promo p:not(.big-brothers-eyebrow){
+  color:#000!important;font-size:.95rem!important;line-height:1.5!important
+}
+.serviceDemo .race-inline-promo :is(a,button,.big-brothers-button){
+  background:#000!important;color:#fff!important;border:2px solid #000!important
+}
+.serviceDemo .race-inline-promo :is(a,button,.big-brothers-button) *{color:#fff!important}
+.serviceDemo .race-hub-embedded :is(.warmup-hud span,.warmup-hud small,.warmup-help,.warmup-overlay p){
+  color:#000!important;opacity:1!important
+}
+.serviceDemo .race-hub-embedded .warmup-hud strong{color:#000!important}
