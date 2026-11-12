@@ -2822,3 +2822,8 @@ h1 em,
 .sd-identity-choice-footnote{margin:18px 0 0;color:#9aabc3;font-size:.82rem;line-height:1.5}
 @media(max-width:680px){.sd-identity-choice{align-items:start;padding:28px 16px}.sd-identity-choice-eyebrow{margin-top:24px}.sd-identity-choice-grid{grid-template-columns:minmax(0,1fr);gap:12px}.sd-identity-choice-card{min-height:0;padding:20px}.sd-identity-choice-card h2{margin-top:15px}.sd-identity-choice-card p{margin-bottom:17px}}
 @media(prefers-reduced-motion:reduce){.sd-identity-choice-card>button{transition:none}}
+
+
+/* The Briefcase is the brand mark: its surface and symbol follow the active business palette. */
+.sd-briefcase-mark{background:var(--studio-accent)!important;color:var(--studio-accent-ink)!important}
+.sd-briefcase-mark:before{background:currentColor!important;-webkit-mask:center/contain no-repeat url("/iteration13-icon.svg");mask:center/contain no-repeat url("/iteration13-icon.svg")}
