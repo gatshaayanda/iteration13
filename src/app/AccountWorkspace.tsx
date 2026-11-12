@@ -89,24 +89,22 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
         <span className="sd-account-brand-mark" aria-hidden="true">{monogram}</span>
         <div><span className="sd-account-overline">{businessName}</span><strong>Customer space</strong></div>
       </div>
-      <span className="sd-account-view-label">INSIDE THE BUSINESS</span>
+      <span className="sd-account-view-label">CUSTOMER ACCOUNT</span>
     </header>
 
-    <div className="sd-account-welcome">
+    <div className="sd-account-welcome sd-account-welcome-compact">
       <div className="sd-account-welcome-copy">
         <span className="sd-kicker">YOUR CUSTOMER ACCOUNT</span>
-        <h1>Your business,<br/><em>from the inside.</em></h1>
-        <p>Keep an eye on your requests, follow the conversation and find your receipts in one place.</p>
+        <h1>Your requests, updates & rewards.</h1>
+        <p>Your work with {businessName} — status, messages, receipts and customer perks in one place.</p>
       </div>
       <button className="sd-account-store-link" onClick={onBrowse}>← Back to the Store</button>
     </div>
 
-    {children}
-
     <div className="sd-account-workspace">
       <div className="sd-account-section-heading">
         <div><span className="sd-kicker">YOUR ACTIVITY</span><h2>Requests & updates</h2></div>
-        <span className="sd-account-local-tag">BROWSER DEMO</span>
+        <span className="sd-account-local-tag">YOUR ACTIVITY</span>
       </div>
 
       <div className="sd-account-lookup">
@@ -178,5 +176,6 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
       {uploadNotice && <p className="sd-account-feedback" role="status">{uploadNotice}</p>}
       <p className="sd-account-boundary">This is a browser-local demo, not a secure sign-in or shared customer account. Requests and messages are stored on this device. Attachments upload to the configured file service when online; they are not queued offline.</p>
     </div>
+    {children}
   </section>;
 }
