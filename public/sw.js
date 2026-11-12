@@ -51,8 +51,8 @@ self.addEventListener("notificationclick", (event) => {
   }));
 });
 
-const CACHE_VERSION = "iteration13-shell-v5";
-const MEDIA_CACHE = "iteration13-media-v3";
+const CACHE_VERSION = "iteration13-shell-v6";
+const MEDIA_CACHE = "iteration13-media-v4";
 const SHELL_CACHE = CACHE_VERSION;
 const STATIC_LIMIT = 100;
 const PUBLIC_PAGE_LIMIT = 12;
@@ -70,14 +70,20 @@ self.addEventListener("install", event => {
 });
 
 async function precacheShell() {
-  const shell = await caches.open(SHELL_CACHE);
+  let shell;
+  try {
+    shell = await caches.open(SHELL_CACHE);
+  } catch {
+    // Storage may be disabled or exhausted. Do not fail service-worker installation.
+    return;
+  }
   const discovered = new Set();
   for (const path of APP_SHELL) {
     try {
       const request = new Request(path, { cache: "reload" });
       const response = await fetch(request);
       if (!response.ok) continue;
-      await shell.put(request, response.clone());
+      try { await shell.put(request, response.clone()); } catch {}
       if (!(response.headers.get("content-type") || "").includes("text/html")) continue;
       const html = await response.text();
       for (const match of html.matchAll(/(?:src|href)=["'](\/_next\/static\/[^"']+)["']/g)) discovered.add(match[1]);
@@ -87,10 +93,12 @@ async function precacheShell() {
     try {
       const request = new Request(path, { cache: "reload" });
       const response = await fetch(request);
-      if (response.ok) await shell.put(request, response);
+      if (response.ok) {
+        try { await shell.put(request, response); } catch {}
+      }
     } catch {}
   }));
-  try { await trimCache(SHELL_CACHE, STATIC_LIMIT); } catch { /* Shell responses remain usable even if cache quota is unavailable. */ }
+  try { await trimCache(SHELL_CACHE, STATIC_LIMIT); } catch {}
 }
 
 self.addEventListener("message", event => {
@@ -165,7 +173,14 @@ self.addEventListener("fetch", event => {
   // Private/member routes are network-only. Never serve a cached account/request page as
   // a substitute for a different route or when the authenticated page cannot be fetched.
   if (isNavigation && isPrivate) {
-    event.respondWith(fetch(request).catch(() => caches.open(SHELL_CACHE).then(cache => cache.match("/offline")).then(response => response || Response.error())));
+    event.respondWith(fetch(request).catch(async () => {
+      try {
+        const cache = await caches.open(SHELL_CACHE);
+        return await cache.match("/offline") || Response.error();
+      } catch {
+        return Response.error();
+      }
+    }));
     return;
   }
 
@@ -194,14 +209,23 @@ self.addEventListener("fetch", event => {
       });
       return response;
     }).catch(async () => {
-      const cache = await caches.open(SHELL_CACHE);
-      return await cache.match(request) || await cache.match("/") || await cache.match("/offline") || Response.error();
+      try {
+        const cache = await caches.open(SHELL_CACHE);
+        return await cache.match(request) || await cache.match("/") || await cache.match("/offline") || Response.error();
+      } catch {
+        return Response.error();
+      }
     }));
   }
 });
 
 async function cacheMediaRequest(request, event) {
-  const cache = await caches.open(MEDIA_CACHE);
+  let cache;
+  try {
+    cache = await caches.open(MEDIA_CACHE);
+  } catch {
+    try { return await fetch(request); } catch { return Response.error(); }
+  }
   const cached = await cache.match(request);
   const refresh = async () => {
     // Convert the browser's often-opaque image request to CORS where supported.
