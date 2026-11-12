@@ -174,3 +174,10 @@ Run `npm run verify:identity`, `npm run lint`, and `npm run build` when the avai
 - Preview the first listing in the Store identity preview. Save it into the same service collection used by the existing customer Store and owner service CRUD; do not create a separate onboarding-only record.
 - Start a fresh demo with an empty catalogue rather than irrelevant inherited sample services. Existing saved demo catalogues must remain intact.
 - Owner dashboard labels and explanatory text must be readable, with a 14 CSS px minimum for supporting copy and metric labels. Never let metric numbers remain visible while their labels/explanations disappear. Maintain strong contrast against each card surface.
+
+
+## Iteration13 product identity and guided adoption
+- Iteration13 is the reusable Business OS product, not merely a colourable storefront. The briefcase-in-your-pocket metaphor is the primary identity; the briefcase mark should recur in the app icon, owner entry and Briefcase workspace.
+- First-run guidance should teach the connected Store · Account · Briefcase model through a live preview and a short optional journey. Explain the owner's keys as access to customers, jobs, money, records, store presentation and insights—not simply brand-colour controls.
+- Preserve a generic, editable base. Niche-specific clones can be refined for a particular market while Iteration13 remains a flexible demonstration and template.
+- Motion and signalers clarify real state changes, respect reduced motion and never replace persistent records or truthful operational status.
