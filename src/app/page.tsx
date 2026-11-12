@@ -105,6 +105,8 @@ export default function Home() {
   const [themeReady, setThemeReady] = useState(false);
   const [identityReady, setIdentityReady] = useState(false);
   const [identityComplete, setIdentityComplete] = useState(false);
+  const [identityMode, setIdentityMode] = useState<"choice" | "setup">("choice");
+  const [hasPreviousSetup, setHasPreviousSetup] = useState(false);
   const [identityEditing, setIdentityEditing] = useState(false);
   const [identityServiceId, setIdentityServiceId] = useState<string | null>(null);
   const [customBrandColor, setCustomBrandColor] = useState("#2458e8");
@@ -138,7 +140,10 @@ export default function Home() {
           if (valid.length) setBrandColors(valid);
         }
       } else if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setBrandColors([savedTheme]);
-      setIdentityComplete(window.localStorage.getItem("iteration13:identity-complete:v1") === "true");
+      setHasPreviousSetup(window.localStorage.getItem("iteration13:identity-complete:v1") === "true");
+      // Never auto-open an old business. Every visit starts with an explicit choice.
+      setIdentityComplete(false);
+      setIdentityMode("choice");
     } catch { /* identity remains at the accessible default */ }
     setThemeReady(true);
     setIdentityReady(true);
@@ -282,6 +287,7 @@ export default function Home() {
   }
   function openBusinessSetup() {
     const firstService = data.services[0];
+    setIdentityMode("setup");
     setServiceName(firstService?.name || "");
     setServiceIndustry(firstService?.industry || "");
     setServicePrice(String(firstService?.price ?? 100));
@@ -294,6 +300,29 @@ export default function Home() {
     setIdentityComplete(false);
     setNotice("");
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function startNewBusinessSetup() {
+    setBusinessName("");
+    setBusinessCurrency("USD");
+    setBrandColors(["#2458e8"]);
+    setCustomBrandColor("#2458e8");
+    setServiceName("");
+    setServiceIndustry("");
+    setServicePrice("100");
+    setServiceDescription("");
+    setServiceMedia("");
+    setServiceMediaType("image");
+    setServiceActive(true);
+    setIdentityServiceId(null);
+    setIdentityEditing(false);
+    setIdentityMode("setup");
+    setIdentityComplete(false);
+    setNotice("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function loadPreviousBusinessSetup() {
+    setIdentityComplete(true);
+    setNotice(`Loaded ${businessName.trim() || "your previous business"} from this browser. You can continue where you left off.`);
   }
   function completeBusinessIdentity() {
     const name = businessName.trim();
@@ -322,6 +351,7 @@ export default function Home() {
       setData(nextData);
       setBusinessName(name.slice(0, 48));
       setIdentityComplete(true);
+      setHasPreviousSetup(true);
       setNotice("Your business identity and first service are saved on this device. Store, Account and Briefcase now share them.");
       resetServiceForm();
     } catch {
@@ -449,7 +479,16 @@ export default function Home() {
   }
 
   return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--studio-accent-secondary": secondaryColor, "--studio-accent-highlight": highlightColor, "--studio-accent-ink": accentInk(themeColor), "--studio-accent-text": accentText(themeColor) } as React.CSSProperties}>
-    {!identityReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete ? <section className="sd-identity-onboarding">
+    {!identityReady || !ready || !businessNameReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete && identityMode === "choice" ? <section className="sd-identity-choice">
+      <div className="sd-identity-choice-shell">
+        <div className="sd-identity-choice-heading"><span className="sd-kicker">ITERATION13 / BUSINESS OS</span><span className="sd-identity-choice-eyebrow">YOUR NEXT STEP</span><h1>Your business, <em>your choice.</em></h1><p>Start with a fresh business setup or deliberately reopen one you saved before. Your previous setup will not load automatically.</p></div>
+        <div className="sd-identity-choice-grid">
+          <article className="sd-identity-choice-card is-primary"><span>01 / START FRESH</span><h2>Create a new business</h2><p>Enter a new business name, choose your brand colours, set your currency and add the first service and its industry.</p><button type="button" onClick={startNewBusinessSetup}>Create new business <b aria-hidden="true">↗</b></button></article>
+          <article className="sd-identity-choice-card"><span>02 / RETURN TO A SETUP</span><h2>Load previous setup</h2>{hasPreviousSetup ? <><div className="sd-identity-saved-preview"><strong>{businessName.trim() || "Your saved business"}</strong><small>{data.services.length} saved service{data.services.length === 1 ? "" : "s"} · {businessCurrency} · this browser</small><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div></div><p>Restore the business identity and local demo storefront saved on this device.</p><button type="button" onClick={loadPreviousBusinessSetup}>Load {businessName.trim() || "previous setup"} <b aria-hidden="true">↗</b></button></> : <><p>No previous business setup has been saved in this browser yet. Create one first and it will be available here next time.</p><button type="button" disabled>Nothing to load yet</button></>}</article>
+        </div>
+        <p className="sd-identity-choice-footnote">Your business setup and demo activity remain on this device in this version. Cloud profile slots are not connected to a verified Iteration13 Firebase project yet.</p>
+      </div>
+    </section> : !identityComplete ? <section className="sd-identity-onboarding">
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "EDIT YOUR BUSINESS SETUP" : "YOUR BRIEFCASE STARTS HERE"}</span></div>
       <div className="sd-identity-onboarding-layout">
         <div className="sd-identity-onboarding-copy">
