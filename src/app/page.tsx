@@ -137,7 +137,7 @@ export default function Home() {
   }, [businessName, businessNameReady, identityComplete]);
 
   useEffect(() => {
-    try { const savedCurrency = window.localStorage.getItem(CURRENCY_KEY); if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency); } catch { /* default to USD */ }
+    try { const savedCurrency = window.localStorage.getItem(CURRENCY_KEY); if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency); } catch { /* default to BWP */ }
     try {
       const savedPalette = window.localStorage.getItem("iteration13:business-palette:v1");
       const savedTheme = window.localStorage.getItem("iteration13:store-theme:v1");
