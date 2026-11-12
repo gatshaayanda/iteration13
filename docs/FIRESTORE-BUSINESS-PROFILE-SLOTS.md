@@ -1,5 +1,7 @@
 # Firestore business profile slots
 
+> **Implementation status (12 November 2026):** this is the approved design contract, not an implemented feature. The current entry chooser can restore the single legacy setup saved in the same browser. Three-slot Firestore persistence and the owner-wide inbox must not be described as available until a dedicated Iteration13 Firebase project, its Auth provider and security rules are configured and verified.
+
 ## Purpose
 
 Persist the business identity configured in Iteration13 so the owner can find and inspect each setup from the separate Iteration13 inbox. This is not a customer-record sync or a full cloud migration of the local demo.
