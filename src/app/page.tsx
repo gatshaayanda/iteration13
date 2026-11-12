@@ -15,12 +15,7 @@ type DemoEvent = { id: string; kind: "visit" | "request" | "completed" | "paymen
 type DiscountClaim = { id: string; email: string; code: string; amount: number; lapTime: number; createdAt: string; status: "Available" | "Redeemed" };
 type DemoData = { services: Service[]; orders: DemoOrder[]; announcement: string; announcementImage?: string; views: number; events?: DemoEvent[]; discountAmount?: number; rewardTitle?: string; rewardDescription?: string; rewardImage?: string; rewardActive?: boolean; discountClaims?: DiscountClaim[]; receiptProfile?: { legalName: string; registration: string; address: string; phone: string; footer: string } };
 const STORAGE_KEY = "iteration13:service-demo:v1";
-const seedServices: Service[] = [
-  { id: "website", name: "Website", price: 100, description: "A clear, professional home for your business, services and contact details.", media: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=1200&q=80", mediaType: "image", active: true },
-  { id: "app", name: "App", price: 200, description: "A mobile-first app experience built around the way your customers work.", media: "https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1200&q=80", mediaType: "image", active: true },
-  { id: "support", name: "Monthly support", price: 50, description: "Ongoing updates, small improvements and practical help after launch.", media: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80", mediaType: "image", active: true },
-  { id: "phaser", name: "Phaser games", price: 500, description: "A custom browser game concept built for play, learning or promotion.", media: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80", mediaType: "image", active: true },
-];
+
 const emptyData: DemoData = { services: [], orders: [], announcement: "", announcementImage: "", views: 0, events: [], discountAmount: 10, rewardTitle: "Take a quick lap.", rewardDescription: "Complete a clean lap to earn a discount code for your next request.", rewardImage: "", rewardActive: true, discountClaims: [], receiptProfile: { legalName: "Your Business", registration: "", address: "", phone: "", footer: "Thank you for your business." } };
 const money = (amount: number) => "P" + amount.toLocaleString("en-BW", { maximumFractionDigits: 2 });
 const serviceEmoji = (name: string) => {
@@ -280,7 +275,7 @@ export default function Home() {
       try { const parsed = new URL(serviceMedia.trim()); if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported protocol"); }
       catch { setNotice("Enter a valid image URL or upload the image before continuing."); return; }
     }
-    const firstService: Service = { id: "service-" + Date.now().toString(36), name: firstServiceName, price: firstServicePrice, description: serviceDescription.trim(), media: serviceMedia.trim(), mediaType: "image", active: serviceActive };
+    const firstService: Service = { id: "service-" + Date.now().toString(36), name: firstServiceName, price: firstServicePrice, description: serviceDescription.trim(), media: serviceMedia.trim(), mediaType: serviceMediaType, active: serviceActive };
     const nextData = { ...data, services: [...data.services.filter(item => item.name.toLowerCase() !== firstServiceName.toLowerCase()), firstService] };
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextData));
