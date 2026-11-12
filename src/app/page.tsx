@@ -21,7 +21,7 @@ const seedServices: Service[] = [
   { id: "support", name: "Monthly support", price: 50, description: "Ongoing updates, small improvements and practical help after launch.", media: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80", mediaType: "image", active: true },
   { id: "phaser", name: "Phaser games", price: 500, description: "A custom browser game concept built for play, learning or promotion.", media: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80", mediaType: "image", active: true },
 ];
-const emptyData: DemoData = { services: seedServices, orders: [], announcement: "", announcementImage: "", views: 0, events: [], discountAmount: 10, rewardTitle: "Take a quick lap.", rewardDescription: "Complete a clean lap to earn a discount code for your next request.", rewardImage: "", rewardActive: true, discountClaims: [], receiptProfile: { legalName: "Your Business", registration: "", address: "", phone: "", footer: "Thank you for your business." } };
+const emptyData: DemoData = { services: [], orders: [], announcement: "", announcementImage: "", views: 0, events: [], discountAmount: 10, rewardTitle: "Take a quick lap.", rewardDescription: "Complete a clean lap to earn a discount code for your next request.", rewardImage: "", rewardActive: true, discountClaims: [], receiptProfile: { legalName: "Your Business", registration: "", address: "", phone: "", footer: "Thank you for your business." } };
 const money = (amount: number) => "P" + amount.toLocaleString("en-BW", { maximumFractionDigits: 2 });
 const serviceEmoji = (name: string) => {
   const label = name.toLowerCase();
@@ -160,7 +160,7 @@ export default function Home() {
       const saved = window.localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as Partial<DemoData>;
-        setData({ ...emptyData, ...parsed, services: Array.isArray(parsed.services) ? parsed.services : seedServices, orders: Array.isArray(parsed.orders) ? parsed.orders : [], announcement: typeof parsed.announcement === "string" ? parsed.announcement : "", views: (Number(parsed.views) || 0) + 1, events: [...(Array.isArray(parsed.events) ? parsed.events : []), { id: "EV-"+Date.now().toString(36), kind: "visit", label: "Store visited", at: new Date().toISOString() }], receiptProfile: { ...emptyData.receiptProfile!, ...(parsed.receiptProfile || {}) } });
+        setData({ ...emptyData, ...parsed, services: Array.isArray(parsed.services) ? parsed.services : [], orders: Array.isArray(parsed.orders) ? parsed.orders : [], announcement: typeof parsed.announcement === "string" ? parsed.announcement : "", views: (Number(parsed.views) || 0) + 1, events: [...(Array.isArray(parsed.events) ? parsed.events : []), { id: "EV-"+Date.now().toString(36), kind: "visit", label: "Store visited", at: new Date().toISOString() }], receiptProfile: { ...emptyData.receiptProfile!, ...(parsed.receiptProfile || {}) } });
         setAnnouncementDraft(typeof parsed.announcement === "string" ? parsed.announcement : "");
         setAnnouncementImageDraft(typeof parsed.announcementImage === "string" ? parsed.announcementImage : "");
         setRewardTitleDraft(typeof parsed.rewardTitle === "string" ? parsed.rewardTitle : emptyData.rewardTitle || "Take a quick lap.");
@@ -270,17 +270,31 @@ export default function Home() {
   }
   function completeBusinessIdentity() {
     const name = businessName.trim();
+    const firstServiceName = serviceName.trim();
+    const firstServicePrice = Number(servicePrice);
     if (!name) { setNotice("Enter your business name to continue."); return; }
+    if (!firstServiceName) { setNotice("Add at least one service before creating your business space."); return; }
+    if (!Number.isFinite(firstServicePrice) || firstServicePrice < 0) { setNotice("Enter a valid first service price in Pula."); return; }
+    if (serviceMediaUploading) { setNotice("Wait for the service image upload to finish before continuing."); return; }
+    if (serviceMedia.trim()) {
+      try { const parsed = new URL(serviceMedia.trim()); if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported protocol"); }
+      catch { setNotice("Enter a valid image URL or upload the image before continuing."); return; }
+    }
+    const firstService: Service = { id: "service-" + Date.now().toString(36), name: firstServiceName, price: firstServicePrice, description: serviceDescription.trim(), media: serviceMedia.trim(), mediaType: "image", active: serviceActive };
+    const nextData = { ...data, services: [...data.services.filter(item => item.name.toLowerCase() !== firstServiceName.toLowerCase()), firstService] };
     try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextData));
       window.localStorage.setItem("iteration13:business-name:v1", name.slice(0, 48));
       window.localStorage.setItem("iteration13:business-palette:v1", JSON.stringify(brandColors.slice(0, 3)));
       window.localStorage.setItem("iteration13:store-theme:v1", themeColor);
       window.localStorage.setItem("iteration13:identity-complete:v1", "true");
+      setData(nextData);
       setBusinessName(name.slice(0, 48));
       setIdentityComplete(true);
-      setNotice("Your business identity is saved on this device. Store, Account and Briefcase now share it.");
+      setNotice("Your business identity and first service are saved on this device. Store, Account and Briefcase now share them.");
+      resetServiceForm();
     } catch {
-      setNotice("Your identity could not be saved on this device. Check browser storage and try again.");
+      setNotice("Your business setup could not be saved on this device. Check browser storage and try again.");
     }
   }
   const paidTotal = data.orders.reduce((sum, order) => sum + (order.paidAmount || 0), 0);
