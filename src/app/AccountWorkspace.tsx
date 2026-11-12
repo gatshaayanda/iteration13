@@ -51,7 +51,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
   const fileCount = filteredOrders.reduce((total, order) => total + (order.messages || []).filter(message => Boolean(message.attachment)).length, 0);
   const nextDeadlineOrder = filteredOrders.filter(order => order.dueDate && !["Completed", "Declined", "Cancelled"].includes(order.status)).sort((a,b) => deadlineAt(a.dueDate)-deadlineAt(b.dueDate))[0];
   const accountUpdates = useMemo(() => filteredOrders.flatMap(order => [
-    { id: order.id + ":status", title: order.serviceName + " · " + order.status, detail: order.status === "New request" ? "Your request has been received on this device and is awaiting review." : "Current request status", kind: "status" as const },
+    { id: order.id + ":status", title: order.serviceName + " · " + order.status, detail: order.status === "New request" ? "Your request has been received on this device and is awaiting review." : "Current request status", createdAt: order.createdAt, kind: "status" as const },
     ...(order.messages || []).filter(message => message.from === "studio").map(message => ({ id: message.id, title: "Message from " + businessName, detail: message.text || (message.attachment ? "A file was shared with your request." : "A new request message is available."), createdAt: message.createdAt, kind: "message" as const }))
   ]).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()).slice(0, 6), [filteredOrders, businessName]);
   const monogram = businessName.trim().split(/\\s+/).slice(0, 2).map(part => part[0]).join("").toUpperCase() || "B";
