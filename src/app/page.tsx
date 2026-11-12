@@ -16,8 +16,15 @@ type DiscountClaim = { id: string; email: string; code: string; amount: number; 
 type DemoData = { services: Service[]; orders: DemoOrder[]; announcement: string; announcementImage?: string; views: number; events?: DemoEvent[]; discountAmount?: number; rewardTitle?: string; rewardDescription?: string; rewardImage?: string; rewardActive?: boolean; discountClaims?: DiscountClaim[]; receiptProfile?: { legalName: string; registration: string; address: string; phone: string; footer: string } };
 const STORAGE_KEY = "iteration13:service-demo:v1";
 
-const emptyData: DemoData = { services: [], orders: [], announcement: "", announcementImage: "", views: 0, events: [], discountAmount: 10, rewardTitle: "Take a quick lap.", rewardDescription: "Complete a clean lap to earn a discount code for your next request.", rewardImage: "", rewardActive: true, discountClaims: [], receiptProfile: { legalName: "Your Business", registration: "", address: "", phone: "", footer: "Thank you for your business." } };
-const money = (amount: number) => "P" + amount.toLocaleString("en-BW", { maximumFractionDigits: 2 });
+const emptyData: DemoData = { services: [], orders: [], announcement: "", announcementImage: "", views: 0, events: [], discountAmount: 5, rewardTitle: "Race for P5 off.", rewardDescription: "Drive for eight seconds. Keep it clean to unlock P5 off your next request.", rewardImage: "", rewardActive: true, discountClaims: [], receiptProfile: { legalName: "Your Business", registration: "", address: "", phone: "", footer: "Thank you for your business." } };
+const CURRENCY_KEY = "iteration13:business-currency:v1";
+const supportedCurrencies = ["BWP", "USD", "GBP", "EUR", "ZAR", "INR"] as const;
+const getBusinessCurrency = () => {
+  if (typeof window === "undefined") return "BWP";
+  try { const value = window.localStorage.getItem(CURRENCY_KEY); return supportedCurrencies.includes(value as typeof supportedCurrencies[number]) ? value! : "BWP"; }
+  catch { return "BWP"; }
+};
+const money = (amount: number) => new Intl.NumberFormat("en", { style: "currency", currency: getBusinessCurrency(), maximumFractionDigits: 2 }).format(amount);
 const serviceEmoji = (name: string) => {
   const label = name.toLowerCase();
   if (/website|web|site|digital|design/.test(label)) return "🌐";
@@ -75,10 +82,10 @@ export default function Home() {
   const [announcementDraft, setAnnouncementDraft] = useState("");
   const [announcementImageDraft, setAnnouncementImageDraft] = useState("");
   const [announcementImageUploading, setAnnouncementImageUploading] = useState(false);
-  const [rewardTitleDraft, setRewardTitleDraft] = useState(emptyData.rewardTitle || "Take a quick lap.");
-  const [rewardDescriptionDraft, setRewardDescriptionDraft] = useState(emptyData.rewardDescription || "Complete a clean lap to earn a discount code for your next request.");
+  const [rewardTitleDraft, setRewardTitleDraft] = useState(emptyData.rewardTitle || "Race for P5 off.");
+  const [rewardDescriptionDraft, setRewardDescriptionDraft] = useState(emptyData.rewardDescription || "Drive for eight seconds. Keep it clean to unlock P5 off your next request.");
   const [rewardImageDraft, setRewardImageDraft] = useState("");
-  const [rewardDiscountDraft, setRewardDiscountDraft] = useState("10");
+  const [rewardDiscountDraft, setRewardDiscountDraft] = useState("5");
   const [rewardImageUploading, setRewardImageUploading] = useState(false);
   const [adminReplyDrafts, setAdminReplyDrafts] = useState<Record<string, string>>({});
   const [paymentDrafts, setPaymentDrafts] = useState<Record<string, string>>({});
@@ -94,6 +101,7 @@ export default function Home() {
   const [identityComplete, setIdentityComplete] = useState(false);
   const [customBrandColor, setCustomBrandColor] = useState("#2458e8");
   const [businessName, setBusinessName] = useState("Your Business");
+  const [businessCurrency, setBusinessCurrency] = useState("BWP");
   const [businessNameReady, setBusinessNameReady] = useState(false);
 
   useEffect(() => {
@@ -111,6 +119,7 @@ export default function Home() {
   }, [businessName, businessNameReady]);
 
   useEffect(() => {
+    try { const savedCurrency = window.localStorage.getItem(CURRENCY_KEY); if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency); } catch { /* default to BWP */ }
     try {
       const savedPalette = window.localStorage.getItem("iteration13:business-palette:v1");
       const savedTheme = window.localStorage.getItem("iteration13:store-theme:v1");
@@ -161,7 +170,7 @@ export default function Home() {
         setRewardTitleDraft(typeof parsed.rewardTitle === "string" ? parsed.rewardTitle : emptyData.rewardTitle || "Take a quick lap.");
         setRewardDescriptionDraft(typeof parsed.rewardDescription === "string" ? parsed.rewardDescription : emptyData.rewardDescription || "Complete a clean lap to earn a discount code for your next request.");
         setRewardImageDraft(typeof parsed.rewardImage === "string" ? parsed.rewardImage : "");
-        setRewardDiscountDraft(String(Number(parsed.discountAmount) > 0 ? Number(parsed.discountAmount) : 10));
+        setRewardDiscountDraft(String(Number(parsed.discountAmount) > 0 ? Number(parsed.discountAmount) : 5));
       } else setData(current => ({ ...current, views: 1, events: [{ id: "EV-"+Date.now().toString(36), kind: "visit", label: "Store visited", at: new Date().toISOString() }] }));
     } catch { setNotice("Local demo storage is unavailable in this browser. You can explore, but changes may not persist."); }
     setReady(true);
@@ -269,7 +278,7 @@ export default function Home() {
     const firstServicePrice = Number(servicePrice);
     if (!name) { setNotice("Enter your business name to continue."); return; }
     if (!firstServiceName) { setNotice("Add at least one service before creating your business space."); return; }
-    if (!Number.isFinite(firstServicePrice) || firstServicePrice < 0) { setNotice("Enter a valid first service price in Pula."); return; }
+    if (!Number.isFinite(firstServicePrice) || firstServicePrice < 0) { setNotice("Enter a valid first service price in " + businessCurrency + "."); return; }
     if (serviceMediaUploading) { setNotice("Wait for the service image upload to finish before continuing."); return; }
     if (serviceMedia.trim()) {
       try { const parsed = new URL(serviceMedia.trim()); if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported protocol"); }
@@ -282,6 +291,7 @@ export default function Home() {
       window.localStorage.setItem("iteration13:business-name:v1", name.slice(0, 48));
       window.localStorage.setItem("iteration13:business-palette:v1", JSON.stringify(brandColors.slice(0, 3)));
       window.localStorage.setItem("iteration13:store-theme:v1", themeColor);
+      window.localStorage.setItem(CURRENCY_KEY, businessCurrency);
       window.localStorage.setItem("iteration13:identity-complete:v1", "true");
       setData(nextData);
       setBusinessName(name.slice(0, 48));
@@ -397,7 +407,7 @@ export default function Home() {
     const existing = (data.discountClaims || []).find(item => item.email.toLowerCase() === normalized && item.status === "Available");
     if (existing) { setNotice("This customer already has an unused discount code: " + existing.code); return; }
     const code = "PROMO-" + Math.random().toString(36).slice(2,7).toUpperCase();
-    const claim: DiscountClaim = { id: "DISC-" + Date.now().toString(36), email: normalized, code, amount: data.discountAmount || 10, lapTime: 0, createdAt: new Date().toISOString(), status: "Available" };
+    const claim: DiscountClaim = { id: "DISC-" + Date.now().toString(36), email: normalized, code, amount: data.discountAmount ?? 5, lapTime: 0, createdAt: new Date().toISOString(), status: "Available" };
     if (commitData(current => ({ ...current, discountClaims: [claim, ...(current.discountClaims || [])], events: [{ id: "EV-" + Date.now().toString(36), kind: "reward", label: "Promotional discount assigned · " + money(claim.amount), at: new Date().toISOString() }, ...(current.events || [])] }), "Promotional discount assigned to " + normalized + ": " + code)) setPromoAssignEmail("");
   }
   function replyToOrder(id: string) {
@@ -419,7 +429,7 @@ export default function Home() {
             <input value={businessName} onChange={event => setBusinessName(event.target.value.slice(0, 48))} maxLength={48} autoComplete="organization" placeholder="Example: Metsi Wellness" />
           </label>
           <small className="sd-identity-helper">Example: Metsi Wellness. Use a real or fictional name. Your Store, Account and Briefcase rebrand together instantly.</small>
-          <div className="sd-identity-palette">
+          <div className="sd-identity-currency"><label htmlFor="sd-business-currency">Business currency</label><select id="sd-business-currency" value={businessCurrency} onChange={event => setBusinessCurrency(event.target.value)}><option value="BWP">Botswana pula (BWP)</option><option value="ZAR">South African rand (ZAR)</option><option value="USD">US dollar (USD)</option><option value="GBP">British pound (GBP)</option><option value="EUR">Euro (EUR)</option><option value="INR">Indian rupee (INR)</option></select><small>Choose the currency your business sets its prices in. This changes display only; no exchange-rate conversion is applied.</small></div>\n           <div className="sd-identity-palette">
             <div><strong>Choose your brand colours</strong><span>{brandColors.length} of 3 selected · choose one, two or three</span></div>
             <div className="sd-identity-swatches">{brandColorOptions.map(option => <button key={option.color} type="button" className={brandColors.includes(option.color) ? "is-selected" : ""} style={{ "--swatch": option.color } as React.CSSProperties} aria-label={option.label} aria-pressed={brandColors.includes(option.color)} onClick={() => toggleBrandColor(option.color)}><span>{brandColors.includes(option.color) ? "✓" : "+"}</span><small>{option.label}</small></button>)}</div>
             <label className="sd-custom-colour">Custom colour <input aria-label="Choose a custom brand colour" type="color" value={customBrandColor} onChange={event => setCustomBrandColor(event.target.value)} /><button type="button" onClick={addCustomBrandColor}>{brandColors.includes(customBrandColor) ? "Already selected" : brandColors.length === 3 ? "Replace highlight" : "Add colour"}</button></label>
@@ -428,7 +438,7 @@ export default function Home() {
             <div className="sd-identity-step-heading"><span>02 / YOUR CUSTOMER OFFER</span><strong id="sd-first-service-title">Create your first service</strong><p>Add at least one service before opening your business space. You can add, edit, hide or remove more later.</p></div>
             <div className="sd-identity-service-fields">
               <label>Service name<input value={serviceName} onChange={event => setServiceName(event.target.value)} maxLength={80} required placeholder="e.g. Website design, Consultation, Haircut" /></label>
-              <label>Price in Pula<input type="number" min="0" step="0.01" value={servicePrice} onChange={event => setServicePrice(event.target.value)} required /></label>
+              <label>Price ({businessCurrency})<input type="number" min="0" step="0.01" value={servicePrice} onChange={event => setServicePrice(event.target.value)} required /></label>
               <label>Description <span className="sd-identity-optional">Optional</span><textarea rows={3} value={serviceDescription} onChange={event => setServiceDescription(event.target.value)} placeholder="Explain what the customer receives." /></label>
               <ServiceMediaPicker value={serviceMedia} type="image" allowVideo={false} online={online} onChange={(url, type) => { setServiceMedia(url); setServiceMediaType(type); }} onUploadingChange={setServiceMediaUploading} />
               <p className="sd-identity-placeholder-note">No image is required. Leave media empty to use a clean branded service placeholder in your Store.</p>
@@ -499,8 +509,8 @@ export default function Home() {
       <section className="sd-services sd-wrap" id="services"><div className="sd-section-head sd-compact-section-head"><div><span className="sd-kicker"><span aria-hidden="true">🛍️</span> STORE / SERVICES</span><h2>Choose what you need</h2></div><p>Starting prices. Choose a service to open a short request form.</p></div><div className="sd-service-grid">{activeServices.map((service,index)=><article className="sd-service-card" key={service.id}><div className={"sd-service-media sd-media-"+(index%4)} data-label={service.name}>{service.media&&service.mediaType==="video"?<video src={service.media} controls muted playsInline preload="metadata"/>:service.media?<img src={service.media} alt={service.name+" preview"} loading="lazy"/>:<div className="sd-media-placeholder"><span>13STUDIO</span><strong>{service.name}</strong></div>}<span className="sd-service-emoji" aria-hidden="true">{serviceEmoji(service.name)}</span><span className="sd-service-index">0{index+1}</span></div><div className="sd-service-info"><div className="sd-service-title"><h3>{service.name}</h3><strong>{money(service.price)}</strong></div><p>{service.description}</p><button className="sd-order-button" onClick={()=>beginOrder(service)}>Request <span>↗</span></button></div></article>)}</div></section>
       {orderFormOpen && <section className="sd-order-section sd-compact-order" id="service-order"><div className="sd-wrap sd-order-grid"><div className="sd-order-copy"><span className="sd-kicker">NEXT STEP</span><h2>Send a request</h2><p>Choose a service, tell us your target date and send the brief. Your date is a preference until reviewed.</p><div className="sd-order-note"><span>i</span><p><strong>Demo only.</strong><br/>No payment is taken and no delivery date is confirmed.</p></div></div><form className="sd-order-form" onSubmit={submitOrder}><div className="sd-form-heading"><button type="button" className="sd-form-close" onClick={() => setOrderFormOpen(false)} aria-label="Close request form">×</button><span>REQUEST DETAILS</span><strong>{selectedService?selectedService.name:"Choose a service"}</strong>{selectedService&&<b>{money(selectedService.price)} <small>starting price</small></b>}</div><label>Service<select value={selected||""} onChange={event=>setSelected(event.target.value||null)} required><option value="">Select a service</option>{activeServices.map(service=><option key={service.id} value={service.id}>{service.name} — {money(service.price)}</option>)}</select></label><div className="sd-form-two"><label>Your name<input value={customerName} onChange={event=>setCustomerName(event.target.value)} autoComplete="name" required placeholder="Name or business"/></label><label>Email<input value={email} onChange={event=>setEmail(event.target.value)} type="email" autoComplete="email" required placeholder="you@example.com"/></label></div><label>Target date<input type="date" value={dueDate} min={localDate()} onChange={event=>setDueDate(event.target.value)} required/><small>Your requested date is reviewed before confirmation.</small></label><label>Discount code <span className="sd-optional">OPTIONAL</span><input value={promoCode} onChange={event=>setPromoCode(event.target.value.toUpperCase())} placeholder="Enter a game reward code" /></label><label>Project details <span className="sd-optional">OPTIONAL</span><textarea value={brief} onChange={event=>setBrief(event.target.value)} rows={3} placeholder="What would you like to achieve?"/></label><button className="sd-button sd-primary sd-submit" type="submit">Send request →</button><p className="sd-privacy-note">Saved in this browser only · no payment taken</p></form></div></section>}<section className="sd-racing-promo sd-wrap" id="racing-rewards">
         <div className="sd-racing-promo-copy"><span className="sd-kicker">PLAY / EARN A LITTLE EXTRA</span><h2>Take a lap. Win a discount.</h2><p>{data.rewardActive === false ? "A quick circuit practice. No lap reward is currently published." : data.rewardDescription || "Complete a clean lap to earn a discount code for your next request."}</p></div>
-        <details className="sd-racing-details"><summary><span aria-hidden="true">🏁</span><strong>Clean lap reward · P{data.discountAmount || 10} OFF</strong><span className="sd-racing-open">Play now ↗</span></summary>
-          <RacingWarmup embedded discountAmount={data.discountAmount || 10} promoTitle={data.rewardTitle || "Take a quick lap."} promoDescription={data.rewardDescription || "A little circuit practice while you wait. Complete a clean lap to earn a discount."} promoImage={data.rewardImage || ""} rewardEnabled={data.rewardActive !== false} onDiscountEarned={(customerEmail, lapTime) => { const normalized = customerEmail.trim().toLowerCase(); if (!normalized || !normalized.includes("@")) { setNotice("Enter your email in the racing panel to receive a discount."); return; } const existing = (data.discountClaims || []).find(item => item.email.toLowerCase() === normalized && item.status === "Available"); if (existing) { setNotice("You already have an unused discount code in this browser account: "+existing.code); return; } const code = "RACE-"+Math.random().toString(36).slice(2,7).toUpperCase(); const claim: DiscountClaim = { id:"DISC-"+Date.now().toString(36), email:normalized, code, amount:data.discountAmount || 10, lapTime, createdAt:new Date().toISOString(), status:"Available" }; commitData(current=>({...current,discountClaims:[claim,...(current.discountClaims||[])],events:[{id:"EV-"+Date.now().toString(36),kind:"reward",label:"Racing discount earned · "+money(claim.amount),at:new Date().toISOString()},...(current.events||[])]}),"You earned "+money(claim.amount)+" off. Code "+code+" is saved for "+normalized+"."); }} />
+        <details className="sd-racing-details"><summary><span aria-hidden="true">🏁</span><strong>Clean lap reward · {money(data.discountAmount ?? 5)} OFF</strong><span className="sd-racing-open">Play now ↗</span></summary>
+          <RacingWarmup embedded discountAmount={data.discountAmount ?? 5} sprintDuration={8} promoTitle={data.rewardTitle || "Race for P5 off."} promoDescription={data.rewardDescription || "Drive for eight seconds. Keep it clean to unlock P5 off your next request."} promoImage={data.rewardImage || ""} rewardEnabled={data.rewardActive !== false} onDiscountEarned={(customerEmail, lapTime) => { const normalized = customerEmail.trim().toLowerCase(); if (!normalized || !normalized.includes("@")) { setNotice("Enter your email in the racing panel to receive a discount."); return; } const existing = (data.discountClaims || []).find(item => item.email.toLowerCase() === normalized && item.status === "Available"); if (existing) { setNotice("You already have an unused discount code in this browser account: "+existing.code); return; } const code = "RACE-"+Math.random().toString(36).slice(2,7).toUpperCase(); const claim: DiscountClaim = { id:"DISC-"+Date.now().toString(36), email:normalized, code, amount:data.discountAmount ?? 5, lapTime, createdAt:new Date().toISOString(), status:"Available" }; commitData(current=>({...current,discountClaims:[claim,...(current.discountClaims||[])],events:[{id:"EV-"+Date.now().toString(36),kind:"reward",label:"Racing discount earned · "+money(claim.amount),at:new Date().toISOString()},...(current.events||[])]}),"You earned "+money(claim.amount)+" off. Code "+code+" is saved for "+normalized+"."); }} />
         </details>
       </section>
     </>}
