@@ -759,6 +759,12 @@ export default function Home() {
         <article><span aria-hidden="true">🛍️</span><strong>{serviceSelections.toLocaleString()}</strong><b>Services explored</b><small>Product / service selections recorded</small></article>
         <article><span aria-hidden="true">📨</span><strong>{localRequestsRecorded.toLocaleString()}</strong><b>Requests saved</b><small>Customer enquiries saved in this browser</small></article>
         <article><span aria-hidden="true">👤</span><strong>{accountOpens.toLocaleString()}</strong><b>Account visits</b><small>Account openings recorded locally</small></article>
+        <article><span aria-hidden="true">⚡</span><strong>{localActivityCount.toLocaleString()}</strong><b>Recorded actions</b><small>All tracked local activity events</small></article>
+      </div>
+      <div className="sd-live-work-meter sd-live-storage-meter">
+        <div><strong>💾 Saved data vs. Admin Hub 25 GB target</strong><span>{formatLocalBytes(localStorageBytes)} of 25 GB · {localCapacityPercentLabel}</span></div>
+        <div className="sd-live-work-track" role="img" aria-label={`${formatLocalBytes(localStorageBytes)} saved locally, ${localCapacityPercentLabel} of the Admin Hub 25 GB planning target`}><span style={{width:(localCapacityPercent ?? 0)+"%"}} /></div>
+        <small>This is the actual local browser footprint. It is not live Firebase usage or a claim about Firebase&apos;s free quota.</small>
       </div>
       <div className="sd-live-work-meter">
         <div><strong>📊 Requests recorded vs. daily planning scenario</strong><span>{localRequestsRecorded.toLocaleString()} of {estimatedCustomersPerDay.toLocaleString()} estimated customer journeys</span></div>
