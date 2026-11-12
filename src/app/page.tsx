@@ -119,7 +119,7 @@ export default function Home() {
   const [identityServiceId, setIdentityServiceId] = useState<string | null>(null);
   const [customBrandColor, setCustomBrandColor] = useState("#2458e8");
   const [businessName, setBusinessName] = useState("Your Business");
-  const [businessCurrency, setBusinessCurrency] = useState("USD");
+  const [businessCurrency, setBusinessCurrency] = useState("BWP");
   const [businessNameReady, setBusinessNameReady] = useState(false);
 
   useEffect(() => {
@@ -281,6 +281,7 @@ export default function Home() {
   }
 
   const activeServices = data.services.filter(service => service.active);
+  const featuredService = activeServices[0];
   const currentHour = new Date().getHours();
   const ownerGreeting = currentHour < 12 ? "Good morning" : currentHour < 17 ? "Good afternoon" : "Good evening";
   function toggleBrandColor(color: string) {
@@ -311,7 +312,7 @@ export default function Home() {
   }
   function startNewBusinessSetup() {
     setBusinessName("");
-    setBusinessCurrency("USD");
+    setBusinessCurrency("BWP");
     setBrandColors(["#2458e8"]);
     setCustomBrandColor("#2458e8");
     setServiceName("");
@@ -330,7 +331,9 @@ export default function Home() {
   }
   function loadPreviousBusinessSetup() {
     setIdentityComplete(true);
+    setView("shop");
     setNotice(`Loaded ${businessName.trim() || "your previous business"} from this browser. You can continue where you left off.`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function completeBusinessIdentity(confirmedOverwrite = false) {
     if (hasPreviousSetup && !identityEditing && !confirmedOverwrite) {
@@ -369,7 +372,9 @@ export default function Home() {
       setBusinessName(name.slice(0, 48));
       setIdentityComplete(true);
       setHasPreviousSetup(true);
-      setNotice("Your business identity and first service are saved on this device. Store, Account and Briefcase now share them.");
+      setView(identityEditing ? "admin" : "shop");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setNotice("Your business OS is ready. Your Store is open; Account and the private Briefcase are available from navigation.");
       resetServiceForm();
     } catch {
       setNotice("Your business setup could not be saved on this device. Check browser storage and try again.");
@@ -559,9 +564,9 @@ export default function Home() {
         <div className="sd-identity-live-preview" aria-label="Live preview of your Store, Account and Briefcase">
           <div className="sd-identity-preview-brand" style={{ background: themeColor }}><span>{(businessName.trim() || "Your Business").slice(0,2).toUpperCase()}</span><div><strong>{businessName.trim() || "Your Business"}</strong><small>Your business in your pocket.</small></div></div>
           <div className="sd-identity-preview-grid">
-            <article><span>01 / CUSTOMER</span><strong>Store</strong><p>Explore services and make a request.</p><button type="button" style={{ background: themeColor }} onClick={() => { setView("shop"); completeBusinessIdentity(); }}>Build &amp; open Store ↗</button></article>
-            <article><span>02 / CUSTOMER</span><strong>Account</strong><p>Follow requests and find your receipts.</p><button type="button" style={{ color: themeColor }} onClick={() => { setView("account"); completeBusinessIdentity(); }}>Build &amp; open Account ↗</button></article>
-            <article><span>03 / OWNER</span><strong>Briefcase</strong><p>Manage customers, work and money.</p><button type="button" style={{ background: themeColor }} onClick={() => { setView("login"); completeBusinessIdentity(); }}>Build &amp; open Briefcase ↗</button></article>
+            <article><span>01 / CUSTOMER</span><strong>Store</strong><p>Explore your services and send a request.</p></article>
+            <article><span>02 / CUSTOMER</span><strong>Account</strong><p>Follow requests, messages and receipts.</p></article>
+            <article><span>03 / OWNER</span><strong>Briefcase</strong><p>Manage customers, jobs, money and insights.</p></article>
           </div>
           <div className="sd-identity-service-preview" aria-live="polite">
             <span>FIRST STORE LISTING</span>
@@ -590,26 +595,36 @@ export default function Home() {
         <div className="sd-wrap">
           <div className="sd-store-intro">
             <div className="sd-store-copy">
-              <span className="sd-kicker"><span aria-hidden="true">💼</span> ITERATION13 / YOUR BUSINESS OS</span>
+              <span className="sd-kicker"><span aria-hidden="true">💼</span> {businessName.toUpperCase()} / CUSTOMER STORE</span>
               <h1>Your business <em>in your pocket.</em></h1>
+              <p>Explore {businessName.trim() || "the business"} services, choose what you need and send a request. Your updates stay together in one place.</p>
               <div className="sd-hero-actions">
-                <button type="button" className="sd-hero-primary" onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth", block: "start" })}>Shop now <span aria-hidden="true">↘</span></button>
+                <button type="button" className="sd-hero-primary" onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth", block: "start" })}>Explore services <span aria-hidden="true">↘</span></button>
               </div>
             </div>
-            <div className="sd-store-visual" aria-hidden="true">
-              <div className="sd-device-card">
-                <div className="sd-device-top"><strong>ITERATION13</strong><span>YOUR BUSINESS OS</span></div>
-                <div className="sd-device-main"><span className="sd-device-mark">🗝️</span><strong>Your business.<br/>All in one place.</strong><small>Store · Account · Briefcase</small></div>
-                <div className="sd-device-bottom"><span>STORE <b>↗</b></span><span>BRIEFCASE <b>✓</b></span></div>
+            <div className="sd-store-visual">
+              <div className="sd-business-preview-card" aria-label={businessName + " Store preview"}>
+                <div className="sd-business-preview-top">
+                  <span className="sd-business-preview-mark" style={{background:themeColor,color:accentInk(themeColor)}}>{(businessName.trim() || "YB").slice(0,2).toUpperCase()}</span>
+                  <div><small>YOUR BUSINESS</small><strong>{businessName}</strong></div>
+                  <span className="sd-business-preview-tag">STORE PREVIEW</span>
+                </div>
+                <div className="sd-business-preview-feature">
+                  <div className="sd-business-preview-media" style={{background:themeColor}}>
+                    {featuredService?.media && featuredService.mediaType === "image" ? <img src={featuredService.media} alt={featuredService.name + " preview"} /> : <span>{serviceEmoji(featuredService?.name || businessName)}</span>}
+                  </div>
+                  <div className="sd-business-preview-service">
+                    <small>FEATURED SERVICE</small>
+                    <strong>{featuredService?.name || "Your first service"}</strong>
+                    <b>{featuredService ? money(featuredService.price) : "Add a service in your Briefcase"}</b>
+                    <p>{featuredService?.description || "Your customer offer appears here, with its price and details."}</p>
+                  </div>
+                </div>
+                <div className="sd-business-preview-nav"><span>Store</span><span>Account</span><span>Briefcase</span></div>
               </div>
             </div>
           </div>
-          <div className="sd-store-proof" aria-label="Platform reference figures">
-            <span><b>25 GB</b><small>BoardSignal Firebase reference ceiling</small></span>
-            <span><b>Local demo</b><small>Activity saved in this browser</small></span>
-            <span><b>No sync</b><small>Firebase is not connected</small></span>
-          </div>
-          <section className="sd-store-identity-strip"><span>BUSINESS IDENTITY</span><strong>{businessName}</strong><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div><small>Store · Account · Briefcase</small></section>
+          <p className="sd-store-demo-note"><strong>LOCAL DEMO</strong><span>Changes save in this browser only. No Firebase connection or cross-device sync.</span></p>
         </div>
       </section>
       {(data.announcement.trim() || data.announcementImage) && <section className="sd-announcement"><div className="sd-wrap"><span><span aria-hidden="true">📣</span> STUDIO NOTE / SPECIAL</span>{data.announcementImage && <img className="sd-announcement-thumb" src={data.announcementImage} alt={data.announcement.slice(0, 120) || "Announcement image"} loading="lazy" />}<p>{data.announcement}</p></div></section>}
@@ -676,7 +691,7 @@ export default function Home() {
 </section><section className="sd-admin-panel sd-owner-notes" id="admin-notes" data-admin-tab="notes"><div className="sd-panel-head"><div><span className="sd-kicker">PRIVATE BRIEFCASE / NOTES</span><h2>My Notes</h2></div><span className="sd-local-pill">THIS DEVICE</span></div><p className="sd-admin-help">Capture priorities, decisions, reminders and ideas for the business. Notes are private to this browser profile in this demo; they are not synced or encrypted as an owner account.</p><label className="sd-admin-label" htmlFor="owner-notes">Working notes</label><textarea id="owner-notes" rows={8} maxLength={12000} value={ownerNotes} onChange={event => setOwnerNotes(event.target.value)} placeholder="Today’s priorities…&#10;Decisions to revisit…&#10;Ideas to develop…" /><div className="sd-notes-meta"><span>{ownerNotes.length.toLocaleString()} / 12,000 characters</span><span>{notesReady ? "Auto-saves on this device" : "Loading notes…"}</span></div></section><div className="sd-admin-footer"><button className="sd-button sd-outline" onClick={() => setPendingConfirm({ kind: "reset-demo" })}>Reset demo data</button><p>Prototype only · no Firebase · no shared admin/customer records</p></div></section>}
 
     <ServiceGuide view={view === "admin" ? "admin" : view === "account" ? "account" : "shop"} services={data.services} requestCount={data.orders.length} onChooseService={beginOrder} onOpenAccount={() => { setView("account"); setNotice(""); }} onOpenAdmin={openAdminGuide} onOpenStorefront={() => { setView("shop"); setNotice(""); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
-    <section className="sd-handoff-card sd-wrap" aria-label="Continue with Admin Hub"><div><span className="sd-kicker">WHEN YOU ARE READY / YOUR NEXT STEP</span><h2>Make this business yours.</h2><p>Your name, colours, currency and services can go with you. Continue to Admin Hub to request a tailored version and discuss the next refinements. Customer names, emails and request details are not included.</p></div><a href={buildAdminHubHandoffUrl()} target="_blank" rel="noreferrer">Request my own version <span aria-hidden="true">↗</span></a></section><footer className="sd-footer"><div className="sd-wrap sd-footer-inner"><button className="sd-brand sd-owner-entry" onClick={() => { requestAdminLogin(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label={`Open ${businessName || "Your Business"} owner Briefcase`}><span className="sd-briefcase-mark" aria-hidden="true">💼</span><span className="sd-owner-entry-copy"><strong>Iteration13</strong><small>TAP TO OPEN THE BRIEFCASE</small><em>{businessName || "Your Business"}</em></span><span className="sd-owner-entry-arrow" aria-hidden="true">↗</span></button><p>Built to be explored online and offline.</p><div><button onClick={() => { setView("account"); setNotice(""); }}>My account</button><Link href="/patterns">PWA pattern lab</Link></div></div></footer>
+    <section className="sd-handoff-card sd-wrap" aria-label="Continue with Admin Hub"><div><span className="sd-kicker">WHEN YOU ARE READY / YOUR NEXT STEP</span><h2>Want a Business OS for your business?</h2><p>This is an interactive local demo. Request a tailored version with your own brand, customer journey and properly connected data. This browser’s customer names, emails and request details are not included.</p></div><a href={buildAdminHubHandoffUrl()} target="_blank" rel="noreferrer">Request your own Business OS <span aria-hidden="true">↗</span></a></section><footer className="sd-footer"><div className="sd-wrap sd-footer-inner"><button className="sd-brand sd-owner-entry" onClick={() => { requestAdminLogin(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label={`Open ${businessName || "Your Business"} owner Briefcase`}><span className="sd-briefcase-mark" aria-hidden="true">💼</span><span className="sd-owner-entry-copy"><strong>{businessName || "Your Business"}</strong><small>PRIVATE BRIEFCASE · OWNER ACCESS</small><em>Open your workspace</em></span><span className="sd-owner-entry-arrow" aria-hidden="true">↗</span></button><p>Built to be explored online and offline.</p><div><button onClick={() => { setView("account"); setNotice(""); }}>My account</button><Link href="/patterns">PWA pattern lab</Link></div></div></footer>
     {pendingConfirm && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-confirm-title" aria-describedby="sd-confirm-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-confirm-title">{pendingConfirm.kind === "reset-demo" ? "Reset demo data?" : pendingConfirm.kind === "overwrite-business" ? "Replace the saved business?" : `Delete ${pendingConfirm.serviceName || "this service"}?`}</h2><p id="sd-confirm-description">{pendingConfirm.kind === "reset-demo" ? "This clears local requests, service edits and the announcement, restoring the starter examples on this device." : pendingConfirm.kind === "overwrite-business" ? "This replaces the current business name, colours, currency and services. Its saved customer requests, messages and owner notes on this device will also be cleared. This cannot be undone." : "This removes the service from this browser demo. Existing requests keep their saved service name and price."}</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep it</button><button type="button" className="sd-button sd-primary" onClick={() => { const action = pendingConfirm; setPendingConfirm(null); if (action.kind === "reset-demo") { if (commitData(() => ({ ...emptyData, views: data.views }), "Demo data reset on this device.")) { setAnnouncementDraft(""); setAnnouncementImageDraft(""); resetServiceForm(); } } else if (action.kind === "overwrite-business") { completeBusinessIdentity(true); } else if (action.serviceId) { if (commitData(current => ({ ...current, services: current.services.filter(item => item.id !== action.serviceId) }), `${action.serviceName || "Service"} deleted from this demo.`) && editingId === action.serviceId) resetServiceForm(); } }}>Confirm</button></div></section></div>}
     {notice && <div className="sd-toast-region"><div className={"sd-toast" + (/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? " is-error" : " is-success")} role={/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? "alert" : "status"}><span className="sd-toast-mark" aria-hidden="true">{/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? "!" : "✓"}</span><p>{notice}</p><button type="button" aria-label="Dismiss message" onClick={() => setNotice("")}>×</button></div></div>}
     </>}

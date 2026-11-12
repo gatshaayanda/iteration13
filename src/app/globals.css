@@ -2649,11 +2649,11 @@ h1 em,
 .sd-identity-preview-brand strong{overflow-wrap:anywhere;font-size:1.12rem}
 .sd-identity-preview-brand small{font-size:.76rem;opacity:.9}
 .sd-identity-preview-grid{display:grid;grid-template-columns:1fr;gap:0}
-.sd-identity-preview-grid article{display:grid;grid-template-columns:110px 1fr auto;gap:12px;align-items:center;padding:17px 19px;border-bottom:1px solid #e6eaf0}
+.sd-identity-preview-grid article{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 12px;align-items:center;padding:17px 19px;border-bottom:1px solid #e6eaf0}
 .sd-identity-preview-grid article>span{color:#657187;font-size:.63rem;font-weight:900;letter-spacing:.07em}
 .sd-identity-preview-grid article>strong{color:#172033;font-size:1rem}
 .sd-identity-preview-grid article>p{grid-column:2;grid-row:2;margin:-6px 0 0;color:#526075;font-size:.78rem;line-height:1.4}
-.sd-identity-preview-grid article>button{grid-column:3;grid-row:1/3;align-self:center;min-height:40px;padding:9px 11px;border:0;border-radius:7px;color:var(--studio-accent-ink);font-size:.7rem;font-weight:850;white-space:nowrap;cursor:pointer;text-align:center}.sd-identity-preview-grid article>button:hover{filter:brightness(.96);transform:translateY(-1px)}.sd-identity-preview-grid article>button:focus-visible{outline:3px solid #172033;outline-offset:3px}
+
 .sd-identity-preview-footer{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 19px;background:#f7f8fa}
 .sd-identity-preview-footer>span{color:#526075;font-size:.63rem;font-weight:900;letter-spacing:.1em}
 .sd-identity-preview-footer>div{display:flex;gap:5px}
@@ -2681,14 +2681,13 @@ h1 em,
  .sd-identity-onboarding-top{font-size:.58rem;letter-spacing:.08em}
  .sd-identity-onboarding-layout{grid-template-columns:1fr;gap:22px;margin:25px auto}
  .sd-identity-onboarding-copy h1{font-size:clamp(2.6rem,12vw,4rem)}
- .sd-identity-preview-grid article{grid-template-columns:90px 1fr;gap:7px 10px}
- .sd-identity-preview-grid article>b{grid-column:2;grid-row:3;justify-self:start}
+ .sd-identity-preview-grid article{grid-template-columns:90px minmax(0,1fr);gap:7px 10px}
  .sd-identity-preview-grid article>p{grid-column:2;grid-row:2;margin:0}
  .sd-identity-preview-footer small{margin-left:0}
  .sd-store-identity-strip>small{margin-left:0}
  .sd-palette-control{align-items:flex-start}
 }
-@media(max-width:390px){.sd-identity-swatches{grid-template-columns:repeat(2,minmax(0,1fr))}.sd-identity-preview-grid article{grid-template-columns:1fr}.sd-identity-preview-grid article>p,.sd-identity-preview-grid article>b{grid-column:1;grid-row:auto}}
+@media(max-width:390px){.sd-identity-swatches{grid-template-columns:repeat(2,minmax(0,1fr))}.sd-identity-preview-grid article{grid-template-columns:1fr}.sd-identity-preview-grid article>span,.sd-identity-preview-grid article>strong,.sd-identity-preview-grid article>p{grid-column:1;grid-row:auto}}
 
 
 /* First-run service setup and readable owner operations: keep supporting text legible. */
@@ -2864,3 +2863,55 @@ h1 em,
  .serviceDemo .sd-local-analytics-columns{grid-template-columns:minmax(0,1fr)}
  .serviceDemo .sd-local-activity-heading{align-items:flex-start;flex-direction:column;gap:4px}
 }
+
+
+/* Business OS storefront: show the business and its real first offer, not a generic device mockup. */
+.sd-store-home{padding:clamp(26px,4vw,48px) 0 20px;background:radial-gradient(ellipse at 82% 20%,color-mix(in srgb,var(--studio-accent) 17%,transparent),transparent 42%),linear-gradient(135deg,#101a2c,#080d17 78%);border-bottom:1px solid #26364f}
+.sd-store-intro{grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);gap:clamp(24px,4vw,52px)}
+.sd-store-copy .sd-kicker{display:inline-flex;align-items:center;gap:8px;color:#a9c5ff;font-size:.7rem;letter-spacing:.12em}
+.sd-store-intro h1{max-width:620px;margin:14px 0 12px;font-size:clamp(2.65rem,5.5vw,4.6rem);line-height:.98;letter-spacing:-.06em;color:#fff}
+.sd-store-intro h1 em{color:var(--studio-accent);font-style:normal}
+.sd-store-intro p{max-width:500px;color:#d1d9e7;font-size:1rem;line-height:1.6}
+.sd-store-home .sd-hero-actions{margin-top:22px}
+.sd-store-home .sd-hero-primary{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:52px;padding:0 23px;border:0;border-radius:12px;background:var(--studio-accent);color:var(--studio-accent-ink);font-size:.95rem;font-weight:900;box-shadow:0 8px 24px color-mix(in srgb,var(--studio-accent) 24%,transparent);cursor:pointer}
+.sd-store-home .sd-hero-primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.sd-store-home .sd-hero-primary:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.sd-business-preview-card{overflow:hidden;padding:16px;border:1px solid #344761;border-radius:22px;background:linear-gradient(155deg,#172944,#0d1728 72%);box-shadow:0 22px 55px #0006;color:#fff;transform:rotate(1deg)}
+.sd-business-preview-top{display:flex;align-items:center;gap:11px;min-width:0;padding:3px 2px 15px}
+.sd-business-preview-mark{display:grid;place-items:center;flex:none;width:43px;height:43px;border-radius:13px;font-size:.82rem;font-weight:950;box-shadow:0 5px 16px #0003}
+.sd-business-preview-top>div{display:grid;gap:3px;min-width:0}
+.sd-business-preview-top>div small,.sd-business-preview-service>small{color:#9db2d1;font-size:.62rem;font-weight:850;letter-spacing:.12em}
+.sd-business-preview-top>div strong{overflow-wrap:anywhere;font-size:1rem}
+.sd-business-preview-tag{margin-left:auto;padding:6px 8px;border:1px solid #536984;border-radius:999px;color:#d6e3f7;font-size:.57rem;font-weight:850;letter-spacing:.07em;white-space:nowrap}
+.sd-business-preview-feature{display:grid;grid-template-columns:42% minmax(0,1fr);overflow:hidden;border:1px solid #344761;border-radius:14px;background:#f7f9fc;color:#14233b}
+.sd-business-preview-media{display:grid;place-items:center;min-height:180px;overflow:hidden;color:var(--studio-accent-ink)}
+.sd-business-preview-media>span{font-size:3.2rem}
+.sd-business-preview-media img{width:100%;height:100%;min-height:180px;object-fit:cover}
+.sd-business-preview-service{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:7px;padding:14px;min-width:0}
+.sd-business-preview-service>small{color:#62738c}
+.sd-business-preview-service>strong{font-size:1.05rem;line-height:1.2;overflow-wrap:anywhere}
+.sd-business-preview-service>b{font-size:1.2rem;color:#101b2e}
+.sd-business-preview-service>p{margin:0;color:#53647a;font-size:.76rem;line-height:1.45;overflow-wrap:anywhere}
+.sd-business-preview-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.sd-business-preview-nav span{padding:10px 6px;border:1px solid #3b506c;border-radius:10px;background:#172944;color:#e7eef9;text-align:center;font-size:.72rem;font-weight:800}
+.sd-store-demo-note{display:flex;align-items:center;gap:10px;margin:18px 0 0;color:#c2cee0;font-size:.74rem;line-height:1.45}
+.sd-store-demo-note strong{flex:none;color:#9dbfff;font-size:.63rem;letter-spacing:.12em}
+.sd-store-demo-note span{padding-left:10px;border-left:1px solid #4a5d77}
+.sd-identity-preview-grid article>span{grid-column:1;grid-row:1;color:#657187;font-size:.63rem;font-weight:900;letter-spacing:.07em}
+.sd-identity-preview-grid article>strong{grid-column:2;grid-row:1;color:#172033;font-size:1rem}
+.sd-identity-preview-grid article>p{grid-column:2;grid-row:2;margin:-5px 0 0;color:#526075;font-size:.78rem;line-height:1.4}
+.sd-footer .sd-owner-entry-copy small{letter-spacing:.08em}
+@media(max-width:760px){
+ .sd-store-home{padding:22px 0 16px}
+ .sd-store-intro{grid-template-columns:minmax(0,1fr);gap:22px}
+ .sd-store-intro h1{font-size:clamp(2.55rem,11vw,3.5rem)}
+ .sd-business-preview-card{transform:none;padding:12px;border-radius:17px}
+ .sd-business-preview-media,.sd-business-preview-media img{min-height:135px}
+ .sd-business-preview-service{padding:11px}
+ .sd-business-preview-service>strong{font-size:.92rem}
+ .sd-business-preview-service>b{font-size:1.05rem}
+ .sd-business-preview-nav span{padding:9px 4px;font-size:.68rem}
+ .sd-store-demo-note{align-items:flex-start;flex-direction:column;gap:5px}
+ .sd-store-demo-note span{padding:0;border:0}
+}
+@media(prefers-reduced-motion:reduce){.sd-store-home .sd-hero-primary:hover{transform:none}.sd-business-preview-card{transform:none}}
