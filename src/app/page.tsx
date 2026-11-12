@@ -58,7 +58,8 @@ export default function Home() {
   const [data, setData] = useState<DemoData>(emptyData);
   const [ready, setReady] = useState(false);
   const [online, setOnline] = useState(true);
-  const [view, setView] = useState<"shop" | "account" | "login" | "admin">("shop");\n  const [demoJourney, setDemoJourney] = useState<string[]>(["Storefront preview"]);
+  const [view, setView] = useState<"shop" | "account" | "login" | "admin">("shop");
+  const [demoJourney, setDemoJourney] = useState<string[]>(["Storefront preview"]);
   const [adminTab, setAdminTab] = useState<"today" | "work" | "money" | "store" | "notes" | "insights">("today");
   const [promoAssignEmail, setPromoAssignEmail] = useState("");
   const [adminUnlocked, setAdminUnlocked] = useState(false);
@@ -379,7 +380,12 @@ export default function Home() {
     setView("account"); setSelected(null); setPromoCode("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-  function buildAdminHubHandoffUrl() {\n    const demo = { businessName: businessName.trim() || "Your Business", currency: businessCurrency, brandColors: brandColors.slice(0, 3), services: activeServices.slice(0, 8).map(service => ({ name: service.name, price: service.price, description: service.description || "" })), journey: [...demoJourney, ...(data.orders.length && !demoJourney.includes("Customer request submitted") ? ["Customer request submitted"] : []), ...(data.discountClaims?.length && !demoJourney.includes("Racing discount earned") ? ["Racing discount earned"] : [])] };\n    const params = new URLSearchParams({ source: "iteration13", demo: JSON.stringify(demo) });\n    return "https://www.adminhub-global.com/?" + params.toString();\n  }\n  function startEdit(service: Service) {
+  function buildAdminHubHandoffUrl() {
+    const demo = { businessName: businessName.trim() || "Your Business", currency: businessCurrency, brandColors: brandColors.slice(0, 3), services: activeServices.slice(0, 8).map(service => ({ name: service.name, price: service.price, description: service.description || "" })), journey: [...demoJourney, ...(data.orders.length && !demoJourney.includes("Customer request submitted") ? ["Customer request submitted"] : []), ...(data.discountClaims?.length && !demoJourney.includes("Racing discount earned") ? ["Racing discount earned"] : [])] };
+    const params = new URLSearchParams({ source: "iteration13", demo: JSON.stringify(demo) });
+    return "https://www.adminhub-global.com/?" + params.toString();
+  }
+  function startEdit(service: Service) {
     setEditingId(service.id); setServiceName(service.name); setServicePrice(String(service.price)); setServiceDescription(service.description); setServiceMedia(service.media); setServiceMediaType(service.mediaType); setServiceActive(service.active);
     document.getElementById("admin-service-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
