@@ -24,7 +24,7 @@ function fmt(seconds: number | null): string {
   return `${Math.floor(seconds / 60)}:${(seconds % 60).toFixed(2).padStart(5, "0")}`;
 }
 
-export default function RacingWarmup({ embedded = false, startExpanded = false, discountAmount = 10, promoTitle = "Take a quick lap.", promoDescription = "A little circuit practice while you wait. Complete a clean lap to earn a discount.", promoImage = "", rewardEnabled = true, onDiscountEarned }: { embedded?: boolean; startExpanded?: boolean; discountAmount?: number; promoTitle?: string; promoDescription?: string; promoImage?: string; rewardEnabled?: boolean; onDiscountEarned?: (email: string, lapTime: number) => void }) {
+export default function RacingWarmup({ embedded = false, startExpanded = false, discountAmount = 5, sprintDuration = 8, promoTitle = "Race for P5 off.", promoDescription = "Drive for eight seconds. Keep it clean to unlock a discount.", promoImage = "", rewardEnabled = true, onDiscountEarned }: { embedded?: boolean; startExpanded?: boolean; discountAmount?: number; sprintDuration?: number; promoTitle?: string; promoDescription?: string; promoImage?: string; rewardEnabled?: boolean; onDiscountEarned?: (email: string, lapTime: number) => void }) {
   const [expanded, setExpanded] = useState(!embedded || startExpanded);
   const raceRef = useRef<Race>(newRace());
   const trackRef = useRef<ReturnType<typeof createRacingTrack> | null>(null);
@@ -428,7 +428,7 @@ export default function RacingWarmup({ embedded = false, startExpanded = false, 
     };
     raf = window.requestAnimationFrame(frame);
     return () => window.cancelAnimationFrame(raf);
-  }, [notify, rewardEmail, rewardEnabled]);
+  }, [notify, rewardEmail, rewardEnabled, embedded, sprintDuration]);
 
   useEffect(() => {
     const keyDown = (e: KeyboardEvent) => {
