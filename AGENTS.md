@@ -40,6 +40,19 @@ Every new client repository must receive a project-specific `AGENTS.md` before s
 
 For any requested one-word staff/owner login, follow the mandatory **One-word staff/admin access** section in `docs/ADMIN-HUB-APP-FACTORY-SOP.md`. One-word means one access-word field at the UI; inspect and preserve the selected source's proven auth/session implementation unless the product owner explicitly directs otherwise. Never invent email/username fields, token systems, provider dependencies or extra Firebase environment requirements.
 
+## Business identity and restrained colour system (mandatory)
+
+- Treat business identity setup as the first product interaction, before visitors explore the demo or sample modules. Ask for a business name (real or fictional) and let the owner choose **one, two or three brand colours maximum**; one or two colours are complete choices, not incomplete states.
+- Present this as one coupled identity: **Store · Account · Briefcase**. Show a live preview and update all three surfaces together immediately. Persist the identity using the target project's real persistence boundary; label browser-local demo persistence honestly.
+- Use the headline **“Your business in your pocket.”** Example helper copy: “Example: Metsi Wellness. Use a real or fictional name. Your Store, Account and Briefcase rebrand together instantly.”
+- In the owner workspace use the clear identity marker **“ADMIN HUB / PRIVATE BRIEFCASE”**, the same “Your business in your pocket” proposition, and a context-aware greeting based on the owner's local time. Follow it with a compact operational summary such as “Owner operations · customer requests · money”. Do not let a greeting displace urgent work or create fake activity.
+- The brand palette is capped at three intentional hues: primary, secondary and optional highlight. Neutral text, backgrounds, borders and semantic status colours are system tokens, not extra brand accents. Avoid rainbow status systems; status must also have a label/icon/shape.
+- Keep readable foreground/surface pairs independent from brand choices. Automatically derive or choose foregrounds and surface tints, and test every rendered text/control pairing. Normal text needs WCAG AA 4.5:1; qualifying large text 3:1. If a brand colour cannot safely carry text, use it as a decorative/accent surface with a compliant neutral foreground instead.
+- Apply the selected identity consistently to the public Store, customer Account, owner Briefcase, receipts and previews. Never let each area drift into its own unrelated palette.
+- This is a portfolio-wide default for all future projects unless the product owner explicitly chooses a different onboarding model. If adapting an existing app or a close industry match, preserve its proven identity and customer journey while applying the same restrained palette and contrast rules; do not force the generic 13Studio look.
+
+Read [docs/BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md](./docs/BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md) for the complete implementation and QA contract.
+
 ## Interaction clarity and feedback (mandatory)
 
 - Read [docs/INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md](./docs/INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md) before implementing or reviewing customer-facing interactions, forms, navigation, account workspaces, status feedback, notifications or error/success states.
