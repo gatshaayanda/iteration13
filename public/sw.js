@@ -51,12 +51,13 @@ self.addEventListener("notificationclick", (event) => {
   }));
 });
 
-const CACHE_VERSION = "iteration13-shell-v4";
-const MEDIA_CACHE = "iteration13-media-v2";
+const CACHE_VERSION = "iteration13-shell-v5";
+const MEDIA_CACHE = "iteration13-media-v3";
 const SHELL_CACHE = CACHE_VERSION;
 const STATIC_LIMIT = 100;
 const PUBLIC_PAGE_LIMIT = 12;
-const MEDIA_LIMIT = 40;
+const MEDIA_LIMIT = 24;
+const MEDIA_MAX_BYTES = 4 * 1024 * 1024;
 const MEDIA_HOSTS = ["images.unsplash.com", "utfs.io", "ufs.sh"];
 const APP_SHELL = ["/", "/offline", "/patterns", "/iphone-install", "/iphone-install.svg", "/iteration13-icon.svg", "/iteration13-icon-192.svg", "/iteration13-icon-512.svg", "/iteration13-icon-192.png", "/iteration13-icon-512.png", "/iteration13-icon-180.png", "/manifest.webmanifest"];
 
@@ -119,13 +120,15 @@ async function cacheMediaBatch(urls) {
 
 async function cacheMediaUrl(value) {
   if (!isApprovedMediaUrl(value)) return;
-  const request = new Request(value, { mode: "no-cors", credentials: "omit", cache: "reload" });
+  // Use a readable CORS response so storage can be bounded by actual declared size.
+  // If a host does not permit CORS, its image still works online but is not prefetched.
+  const request = new Request(value, { mode: "cors", credentials: "omit", cache: "reload" });
   const cache = await caches.open(MEDIA_CACHE);
   if (await cache.match(request)) return;
   try {
     const response = await fetch(request);
     const declaredSize = Number(response.headers.get("content-length") || 0);
-    if ((response.ok || response.type === "opaque") && (!declaredSize || declaredSize <= 20 * 1024 * 1024)) {
+    if (response.ok && response.type !== "opaque" && declaredSize > 0 && declaredSize <= MEDIA_MAX_BYTES) {
       await cache.put(request, response.clone());
       await trimCache(MEDIA_CACHE, MEDIA_LIMIT);
     }
@@ -149,7 +152,7 @@ self.addEventListener("fetch", event => {
 
   // Cache only explicitly approved image/video CDNs. This lets previously viewed
   // Store media remain visible offline without caching arbitrary third-party traffic.
-  if (["image", "video"].includes(request.destination) && isApprovedMediaUrl(request.url)) {
+  if (request.destination === "image" && isApprovedMediaUrl(request.url)) {
     event.respondWith(cacheMediaRequest(request, event));
     return;
   }
@@ -174,8 +177,20 @@ self.addEventListener("fetch", event => {
   if (isNavigation) {
     event.respondWith(fetch(request).then(response => {
       if (response.ok) void caches.open(SHELL_CACHE).then(async cache => {
-        await cache.put(request, response.clone());
-        await trimCache(SHELL_CACHE, PUBLIC_PAGE_LIMIT + STATIC_LIMIT);
+        const cacheControl = response.headers.get("cache-control") || "";
+        const vary = response.headers.get("vary") || "";
+        const isPublicHtml = response.type === "basic"
+          && (response.headers.get("content-type") || "").includes("text/html")
+          && !/private|no-store/i.test(cacheControl)
+          && vary.trim() !== "*"
+          && !response.headers.has("set-cookie");
+        if (!isPublicHtml) return;
+        try {
+          await cache.put(request, response.clone());
+          await trimCache(SHELL_CACHE, PUBLIC_PAGE_LIMIT + STATIC_LIMIT);
+        } catch {
+          // Cache quota failures must not affect the live navigation response.
+        }
       });
       return response;
     }).catch(async () => {
@@ -188,22 +203,30 @@ self.addEventListener("fetch", event => {
 async function cacheMediaRequest(request, event) {
   const cache = await caches.open(MEDIA_CACHE);
   const cached = await cache.match(request);
+  const refresh = async () => {
+    // Convert the browser's often-opaque image request to CORS where supported.
+    // Opaque responses cannot be size-checked and are deliberately not persisted.
+    const readableRequest = new Request(request, { mode: "cors", credentials: "omit" });
+    const response = await fetch(readableRequest);
+    const declaredSize = Number(response.headers.get("content-length") || 0);
+    if (response.ok && response.type !== "opaque" && declaredSize > 0 && declaredSize <= MEDIA_MAX_BYTES) {
+      await cache.put(request, response.clone());
+      await trimCache(MEDIA_CACHE, MEDIA_LIMIT);
+    }
+    return response;
+  };
   if (cached) {
-    // Refresh in the background while returning the cached immutable media immediately.
-    event.waitUntil(fetch(request).then(async response => {
-      if (response.ok || response.type === "opaque") {
-        await cache.put(request, response.clone());
-        await trimCache(MEDIA_CACHE, MEDIA_LIMIT);
-      }
-    }).catch(() => {}));
+    // Return the known-good cached image immediately; refresh without blocking paint.
+    event.waitUntil(refresh().catch(() => {}));
     return cached;
   }
   try {
-    const response = await fetch(request);
-    if (response.ok || response.type === "opaque") {
-      event.waitUntil(cache.put(request, response.clone()).then(() => trimCache(MEDIA_CACHE, MEDIA_LIMIT)));
+    try {
+      return await refresh();
+    } catch {
+      // Preserve normal online rendering for CDNs that reject CORS; do not cache opaque data.
+      return await fetch(request);
     }
-    return response;
   } catch {
     return Response.error();
   }
