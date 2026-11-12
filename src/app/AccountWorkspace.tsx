@@ -25,13 +25,14 @@ type Props = {
   onBrowse: () => void;
   onUpdateOrder: (orderId: string, update: (order: WorkspaceOrder) => WorkspaceOrder, notice: string) => void;
   children?: ReactNode;
+  requestForm?: ReactNode;
 };
 
 const getBusinessCurrency = () => { if (typeof window === "undefined") return "BWP"; try { return window.localStorage.getItem("iteration13:business-currency:v1") || "BWP"; } catch { return "BWP"; } };
 const money = (amount: number) => new Intl.NumberFormat("en", { style: "currency", currency: getBusinessCurrency(), maximumFractionDigits: 2 }).format(amount);
 const prettyDate = (value: string) => { try { return new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }); } catch { return value; } };
 
-export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children }: Props) {
+export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [uploadingOrder, setUploadingOrder] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -104,6 +105,8 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
       </div>
       <button className="sd-account-store-link" onClick={onBrowse}>← Back to the Store</button>
     </div>
+
+    {requestForm}
 
     <div className="sd-account-workspace">
       <div className="sd-account-section-heading">
