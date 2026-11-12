@@ -70,6 +70,7 @@ export default function Home() {
     setData(current => ({ ...current, events: [event, ...(current.events || [])].slice(0, 250) }));
   }
   const [adminTab, setAdminTab] = useState<"today" | "work" | "money" | "store" | "notes" | "insights">("today");
+  const [estimatedRecordKb, setEstimatedRecordKb] = useState(16);
   const [promoAssignEmail, setPromoAssignEmail] = useState("");
   const [adminUnlocked, setAdminUnlocked] = useState(false);
   const [adminPassphrase, setAdminPassphrase] = useState("");
@@ -408,6 +409,10 @@ export default function Home() {
   const firebaseCapacityBytes = 25 * 1024 * 1024 * 1024;
   const localCapacityPercent = localStorageBytes === null ? null : Math.min(100, (localStorageBytes / firebaseCapacityBytes) * 100);
   const localCapacityPercentLabel = localCapacityPercent === null ? "Unavailable" : localCapacityPercent < 0.000001 ? "<0.000001%" : `${localCapacityPercent.toFixed(6)}%`;
+  const lowestPricedService = activeServices.filter(service => Number.isFinite(service.price) && service.price >= 0).sort((a, b) => a.price - b.price)[0];
+  const estimatedPayloadBytes = estimatedRecordKb * 1024;
+  const estimatedRequestsPerCapacity = Math.floor(firebaseCapacityBytes / estimatedPayloadBytes);
+  const estimatedServiceValue = lowestPricedService ? estimatedRequestsPerCapacity * lowestPricedService.price : null;
   const localEvents = data.events || [];
   const recordedVisits = Math.max(data.views || 0, localEvents.filter(event => event.kind === "visit").length);
   const serviceSelections = localEvents.filter(event => event.kind === "service").length;
@@ -694,6 +699,61 @@ export default function Home() {
     <article className="sd-local-footprint-card"><span className="sd-kicker">LOCAL DATA FOOTPRINT</span><strong>{formatLocalBytes(localStorageBytes)}</strong><p>Approximate saved data measured in this browser, including business setup, notes and demo records.</p><span className="sd-local-pill">Measured locally · this device</span></article>
     <article className="sd-firebase-capacity-card"><span className="sd-kicker">ADMIN OS / FIREBASE MONTHLY CAPACITY</span><strong>25 GB / month</strong><p>Compare this browser&apos;s saved data with the monthly cloud capacity maintained by the Admin Hub.</p><div className="sd-capacity-comparison"><div className="sd-capacity-comparison-labels"><strong>{formatLocalBytes(localStorageBytes)} used locally</strong><strong>{localCapacityPercentLabel} of capacity</strong></div><div className="sd-capacity-scale" role="img" aria-label={localCapacityPercent === null ? "Local data size unavailable; monthly Firebase capacity is 25 gigabytes" : `${formatLocalBytes(localStorageBytes)} local data, ${localCapacityPercentLabel} of the 25 gigabyte monthly Admin OS Firebase capacity`}><div className="sd-capacity-scale-fill" style={{ width: `${localCapacityPercent ?? 0}%` }} /></div><div className="sd-capacity-scale-labels"><span>0 GB</span><span>25 GB monthly capacity</span></div></div><small className="sd-capacity-scale-note">This is a local-data-to-capacity comparison, not measured Firebase consumption. Firebase is not connected to this prototype.</small></article>
   </div>
+  <section className="sd-infrastructure-panel" aria-labelledby="sd-infrastructure-title">
+    <div className="sd-infrastructure-heading">
+      <div><span className="sd-kicker">THE OPERATING MODEL</span><h3 id="sd-infrastructure-title">From public visit to business record</h3></div>
+      <span className="sd-infrastructure-status">CURRENTLY LOCAL · CLOUD PATH PLANNED</span>
+    </div>
+    <p className="sd-infrastructure-intro">A domain is the address, not the computer. DNS points that address to Vercel, whose managed infrastructure delivers the app. A connected database would then keep customer and business records in the cloud.</p>
+    <div className="sd-infrastructure-flow">
+      <article className="sd-infrastructure-node is-current">
+        <span className="sd-infrastructure-step">01 · CUSTOMER</span><strong>Visitor&apos;s browser</strong><p>Opens the Store, browses services and chooses an item. In this demo, clicks and saved requests are handled here.</p><span className="sd-infrastructure-tag">Browser activity · measured locally</span>
+      </article>
+      <span className="sd-infrastructure-arrow" aria-hidden="true">→</span>
+      <article className="sd-infrastructure-node is-current">
+        <span className="sd-infrastructure-step">02 · HOSTING</span><strong>Vercel CDN / edge</strong><p>Delivers cached pages, images, scripts and styles from its global network when the public site is deployed.</p><span className="sd-infrastructure-tag">Hosting layer · not metered here</span>
+      </article>
+      <span className="sd-infrastructure-arrow" aria-hidden="true">→</span>
+      <article className="sd-infrastructure-node is-planned">
+        <span className="sd-infrastructure-step">03 · COMPUTE</span><strong>Vercel Functions</strong><p>Runs server-side work when a real cloud action needs it—such as validating and saving an enquiry. Functions scale with demand and can scale down when idle.</p><span className="sd-infrastructure-tag">Future connection · not active in demo</span>
+      </article>
+      <span className="sd-infrastructure-arrow" aria-hidden="true">→</span>
+      <article className="sd-infrastructure-node is-planned">
+        <span className="sd-infrastructure-step">04 · DATABASE</span><strong>Firebase / Firestore</strong><p>Would store shared customer accounts, enquiries, service records and owner updates in the Johannesburg region.</p><span className="sd-infrastructure-tag">Target region · africa-south1</span>
+      </article>
+    </div>
+    <div className="sd-infrastructure-footnotes">
+      <div><strong>Available around the clock</strong><p>The public site can be reachable 24/7. That does not mean one app server is burning CPU at full power all day: cached content is served by the CDN, while serverless compute runs when invoked.</p></div>
+      <div><strong>Where the machines are</strong><p>Google lists Firestore&apos;s Johannesburg region. Vercel lists Cape Town as its South African compute region; a future deployment could place database work near that region, subject to configuration and plan. Neither connection is active here.</p></div>
+      <div><strong>Real-world infrastructure</strong><p>Data centres use physical servers, networking, electricity, cooling and backup systems. This prototype has no provider-side energy or live resource telemetry, so it does not invent those measurements.</p></div>
+    </div>
+  </section>
+  <section className="sd-capacity-playground" aria-labelledby="sd-capacity-playground-title">
+    <div className="sd-infrastructure-heading">
+      <div><span className="sd-kicker">A LITTLE CAPACITY EXPERIMENT</span><h3 id="sd-capacity-playground-title">How much work could fit?</h3></div>
+      <span className="sd-infrastructure-status">ILLUSTRATIVE MODEL</span>
+    </div>
+    <p className="sd-infrastructure-intro">Choose an assumed data payload for one customer enquiry. The model compares that payload with the 25 GB monthly reference—not with a tested server crash limit.</p>
+    <div className="sd-capacity-simulator">
+      <div className="sd-capacity-simulator-control">
+        <label htmlFor="sd-record-size">Estimated data per enquiry</label>
+        <div className="sd-capacity-simulator-value"><strong>{estimatedRecordKb} KB</strong><span>per submitted request</span></div>
+        <input id="sd-record-size" type="range" min="4" max="64" step="4" value={estimatedRecordKb} onChange={event => setEstimatedRecordKb(Number(event.target.value))} />
+        <div className="sd-capacity-slider-labels"><span>4 KB · lightweight</span><span>64 KB · detailed</span></div>
+        <p>Assumption only. Actual records vary with customer details, messages, metadata and attachments.</p>
+      </div>
+      <div className="sd-capacity-simulator-results">
+        <div><span>Equivalent enquiry payloads in 25 GB</span><strong>{estimatedRequestsPerCapacity.toLocaleString()}</strong></div>
+        <div><span>Cheapest active service</span><strong>{lowestPricedService ? `${lowestPricedService.name} · ${money(lowestPricedService.price)}` : "No active priced service"}</strong></div>
+        <div><span>Illustrative gross value if every payload became a paid job</span><strong>{estimatedServiceValue === null ? "—" : money(estimatedServiceValue)}</strong></div>
+      </div>
+    </div>
+    <div className="sd-platform-capacity">
+      <div><span className="sd-kicker">HOSTING PLATFORM REFERENCE</span><strong>Up to 30,000 concurrent Function invocations</strong><p>Vercel publishes this auto-scaling ceiling for Hobby and Pro. It means simultaneous server-function work—not 30,000 guaranteed customers, and not a tested limit for this app.</p></div>
+      <div><span className="sd-kicker">WHAT ACTUALLY SETS THE LIMIT?</span><strong>App + database + plan + traffic shape</strong><p>Real safe capacity depends on function duration, memory, request bursts, Firestore reads/writes, security rules, data size and load testing. A quota being reached is not the same as a server physically crashing.</p></div>
+    </div>
+    <p className="sd-capacity-model-note">Important: selecting a service in this local demo does not call a Vercel Function or Firebase. The request is saved in this browser. The payload estimate excludes Firestore indexes, repeated reads and writes, network overhead, files, backups and other services; it is a teaching model, not a capacity promise or revenue forecast.</p>
+  </section>
   <div className="sd-local-activity-feed">
     <div className="sd-local-activity-heading"><div><span className="sd-kicker">RECENT RECORDED WORK</span><h3>Activity trail</h3></div><span>{recentLocalEvents.length} latest events</span></div>
     {recentLocalEvents.length ? <ol>{recentLocalEvents.map(event => <li key={event.id}><span className={"sd-activity-dot is-" + event.kind} aria-hidden="true" /><div><strong>{event.label}</strong><time dateTime={event.at}>{new Date(event.at).toLocaleString()}</time></div></li>)}</ol> : <p className="sd-admin-empty">No activity has been recorded yet. Open the Store, choose a product / service or visit the Account to start the local activity trail.</p>}
