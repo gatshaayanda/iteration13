@@ -3188,3 +3188,92 @@ h1 em,
 .sd-admin-quote label{display:grid;gap:5px;font-size:12px;font-weight:750}
 .sd-admin-quote input{min-height:40px;padding:8px 10px;border:1px solid #d7c9a8;border-radius:8px;background:#fff;color:#172033}
 .sd-admin-quote button{justify-self:start}
+
+
+/* Hard-contrast storefront and customer request dialog. Readability takes priority over palette nuance. */
+.serviceDemo .sd-racing-promo{
+  background:#fff!important;color:#000!important;border:2px solid #000!important;border-radius:14px;
+}
+.serviceDemo .sd-racing-promo :is(.sd-kicker,h2,p,strong,summary){
+  color:#000!important;opacity:1!important;text-shadow:none!important;
+}
+.serviceDemo .sd-racing-promo-copy>p{font-size:.95rem!important;line-height:1.5!important}
+.serviceDemo .sd-racing-details{background:#fff!important;color:#000!important;border:1px solid #000!important;border-radius:10px}
+.serviceDemo .sd-racing-details>summary{background:#fff!important;color:#000!important;min-height:52px;padding:12px}
+.serviceDemo .sd-racing-details>summary :is(strong,span){color:#000!important}
+.serviceDemo .sd-racing-details>summary .sd-racing-open{
+  display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;
+  background:#000!important;color:#fff!important;border:2px solid #000!important;border-radius:7px;font-weight:900
+}
+.serviceDemo .sd-racing-details>summary .sd-racing-open *{color:#fff!important}
+.serviceDemo .sd-request-modal-backdrop{
+  position:fixed;inset:0;z-index:1000;display:grid;place-items:center;
+  padding:14px;background:rgba(0,0,0,.78);overscroll-behavior:contain
+}
+.serviceDemo .sd-account-request-form{
+  width:min(100%,680px);max-height:min(90dvh,820px);overflow:auto;
+  margin:0!important;padding:18px!important;background:#fff!important;color:#000!important;
+  border:2px solid #000!important;border-radius:14px!important;box-shadow:0 20px 70px rgba(0,0,0,.45)
+}
+.serviceDemo .sd-request-modal-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+  padding:0 0 12px;margin:0 0 12px;border-bottom:2px solid #000
+}
+.serviceDemo .sd-request-modal-head :is(.sd-kicker,h2,p){color:#000!important;opacity:1!important}
+.serviceDemo .sd-request-modal-head h2{margin:4px 0;font-size:1.5rem;line-height:1.15}
+.serviceDemo .sd-request-modal-head p{margin:4px 0 0;font-size:.875rem;line-height:1.4}
+.serviceDemo .sd-account-request-form .sd-form-close{
+  flex:0 0 40px;width:40px;height:40px;border:2px solid #000!important;border-radius:8px;
+  background:#fff!important;color:#000!important;font-size:1.6rem;font-weight:900
+}
+.serviceDemo .sd-account-request-form .sd-order-form{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;
+  padding:0!important;background:#fff!important;color:#000!important;border:0!important;box-shadow:none!important
+}
+.serviceDemo .sd-account-request-form .sd-order-form>*{min-width:0;margin:0}
+.serviceDemo .sd-account-request-form .sd-form-heading,
+.serviceDemo .sd-account-request-form .sd-catalogue-add,
+.serviceDemo .sd-account-request-form .sd-enquiry-services,
+.serviceDemo .sd-account-request-form .sd-custom-request-items,
+.serviceDemo .sd-account-request-form .sd-form-two,
+.serviceDemo .sd-account-request-form .sd-request-brief,
+.serviceDemo .sd-account-request-form .sd-enquiry-notifications,
+.serviceDemo .sd-account-request-form .sd-submit,
+.serviceDemo .sd-account-request-form .sd-privacy-note{grid-column:1/-1}
+.serviceDemo .sd-account-request-form .sd-form-heading{
+  display:grid;gap:4px;padding:10px;background:#f2f2f2;border:1px solid #000;border-radius:8px
+}
+.serviceDemo .sd-account-request-form .sd-form-heading :is(span,strong,b,small){color:#000!important}
+.serviceDemo .sd-account-request-form :is(label,legend,p,small,.sd-optional,.sd-privacy-note){color:#000!important;opacity:1!important}
+.serviceDemo .sd-account-request-form label{display:grid;gap:5px;font-size:.875rem!important;font-weight:800}
+.serviceDemo .sd-account-request-form :is(input:not([type=checkbox]),select,textarea){
+  width:100%;min-height:42px;padding:9px 10px;background:#fff!important;color:#000!important;
+  border:2px solid #000!important;border-radius:7px;font-size:1rem!important;opacity:1!important
+}
+.serviceDemo .sd-account-request-form textarea{min-height:68px;resize:vertical}
+.serviceDemo .sd-account-request-form input::placeholder,
+.serviceDemo .sd-account-request-form textarea::placeholder{color:#555!important;opacity:1}
+.serviceDemo .sd-account-request-form .sd-catalogue-add>div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}
+.serviceDemo .sd-account-request-form .sd-catalogue-add button,
+.serviceDemo .sd-account-request-form .sd-submit{
+  min-height:44px;padding:9px 14px;background:#000!important;color:#fff!important;
+  border:2px solid #000!important;border-radius:7px;font-weight:900
+}
+.serviceDemo .sd-account-request-form .sd-enquiry-services{
+  max-height:150px;overflow:auto;padding:10px;border:2px solid #000;border-radius:8px
+}
+.serviceDemo .sd-account-request-form .sd-enquiry-services>label{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid #777}
+.serviceDemo .sd-account-request-form .sd-enquiry-services input[type=checkbox],
+.serviceDemo .sd-account-request-form .sd-enquiry-notifications input[type=checkbox]{width:20px;height:20px;min-height:20px;accent-color:#000}
+.serviceDemo .sd-account-request-form .sd-enquiry-notifications{display:grid;grid-template-columns:22px minmax(0,1fr);align-items:start;gap:7px;padding:10px;background:#f2f2f2;border:1px solid #000;border-radius:8px}
+.serviceDemo .sd-account-request-form .sd-enquiry-notifications span{grid-column:2;color:#000!important;font-size:.8rem;line-height:1.4}
+.serviceDemo .sd-account-request-form .sd-submit{width:100%;font-size:1rem!important}
+.serviceDemo .sd-account-request-form .sd-privacy-note{font-size:.75rem;text-align:center}
+@media(max-width:560px){
+  .serviceDemo .sd-request-modal-backdrop{padding:8px;align-items:end}
+  .serviceDemo .sd-account-request-form{width:100%;max-height:92dvh;padding:14px!important;border-radius:12px 12px 8px 8px!important}
+  .serviceDemo .sd-account-request-form .sd-order-form{grid-template-columns:minmax(0,1fr);gap:9px}
+  .serviceDemo .sd-account-request-form .sd-form-two{grid-template-columns:minmax(0,1fr)}
+  .serviceDemo .sd-account-request-form .sd-order-form>*{grid-column:1}
+  .serviceDemo .sd-account-request-form .sd-form-two{grid-column:1}
+}
