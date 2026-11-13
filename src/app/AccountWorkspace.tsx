@@ -175,7 +175,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
         <h3>Let’s find your activity.</h3>
         <p>Enter your email above to look up requests saved in this browser.</p>
         <button className="sd-button sd-primary" onClick={onBrowse}>Explore the Store</button>
-      </div> : filteredOrders.length === 0 ? <div className="sd-account-empty">
+      </div> : filteredOrders.length === 0 ? <div className="sd-account-empty" id="account-requests">
         <span className="sd-account-empty-mark" aria-hidden="true">↗</span>
         <h3>No requests found for that email.</h3>
         <p>Check the spelling, or return to the Store to send a new product / service request using this email.</p>
@@ -200,8 +200,8 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
               <span>{messages.length} {messages.length === 1 ? "message" : "messages"} · {studioReplies ? "Business replied" : "Awaiting reply"}</span>
               <button className="sd-account-secondary-action" type="button" aria-expanded={expanded} onClick={() => setOpenThread(expanded ? null : order.id)}>{expanded ? "Close conversation" : "Open conversation →"}</button>
             </div>
-            <div id="account-receipts"><ReceiptDocument businessName={businessName} accentColor={accentColor} receiptProfile={receiptProfile} order={order} /></div>
-            {expanded && <section className="sd-account-conversation" id="account-messages" aria-label={`Conversation for ${order.serviceName}`}>
+            <div><ReceiptDocument businessName={businessName} accentColor={accentColor} receiptProfile={receiptProfile} order={order} /></div>
+            {expanded && <section className="sd-account-conversation" aria-label={`Conversation for ${order.serviceName}`}>
               <div className="sd-account-conversation-heading"><div><span className="sd-kicker">REQUEST CONVERSATION</span><h4>{order.serviceName}</h4></div><span className="sd-account-local-tag">LOCAL THREAD</span></div>
               <p className="sd-account-demo-explainer">Messages are saved in this browser and appear in the business Admin demo on this device. They are not emailed or sent to a remote team.</p>
               <div className="sd-account-messages" aria-live="polite">{messages.length ? messages.map(message => <article key={message.id} className={`sd-account-message is-${message.from}`}><div><strong>{message.from === "customer" ? "You" : businessName}</strong><time>{prettyDate(message.createdAt)}</time></div>{message.text && <p>{message.text}</p>}{message.attachment && <a href={message.attachment.url} target="_blank" rel="noreferrer">↗ {message.attachment.name} · Open attachment</a>}</article>) : <p className="sd-account-message-empty">No messages yet. Send a question to start the conversation in this demo.</p>}</div>
