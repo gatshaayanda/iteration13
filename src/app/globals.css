@@ -4491,3 +4491,6 @@ h1 em,
  .sd-business-share{grid-template-columns:minmax(0,1fr);align-items:stretch}
  .sd-business-share>button{width:100%}
 }
+
+/* The share control spans the complete business identity panel instead of occupying a third grid cell. */
+.serviceDemo .sd-business-identity>.sd-business-share{grid-column:1/-1}

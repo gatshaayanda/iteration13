@@ -47,7 +47,7 @@ function readSharedExampleFromUrl(): SharedExample | null {
       custom: service.custom === true,
     })) : [];
     const value: SharedExample = {
-      id: parsed.id, businessName: parsed.businessName.slice(0, 48), currency: parsed.currency, brandColors: parsed.brandColors,
+      id: parsed.id, businessName: parsed.businessName.slice(0, 48), currency: parsed.currency as string, brandColors: parsed.brandColors,
       data: {
         services,
         availability: incoming.availability === "limited" || incoming.availability === "unavailable" ? incoming.availability : "available",
@@ -513,6 +513,12 @@ export default function Home() {
       try {
         const parsed = JSON.parse(saved) as Partial<DemoData>;
         setData({ ...emptyData, ...parsed, services: Array.isArray(parsed.services) ? parsed.services : [], orders: Array.isArray(parsed.orders) ? parsed.orders : [], events: Array.isArray(parsed.events) ? parsed.events : [], receiptProfile: { ...emptyData.receiptProfile!, ...(parsed.receiptProfile || {}) } });
+        setAnnouncementDraft(typeof parsed.announcement === "string" ? parsed.announcement : "");
+        setAnnouncementImageDraft(typeof parsed.announcementImage === "string" ? parsed.announcementImage : "");
+        setRewardTitleDraft(typeof parsed.rewardTitle === "string" ? parsed.rewardTitle : emptyData.rewardTitle || "Take a quick lap.");
+        setRewardDescriptionDraft(typeof parsed.rewardDescription === "string" ? parsed.rewardDescription : emptyData.rewardDescription || "");
+        setRewardImageDraft(typeof parsed.rewardImage === "string" ? parsed.rewardImage : "");
+        setRewardDiscountDraft(String(Number(parsed.discountAmount) > 0 ? Number(parsed.discountAmount) : 5));
       } catch { setNotice("The saved example could not be loaded. Reload the shared link and try again."); return; }
     }
     setBusinessName(sharedExample.businessName);
@@ -794,7 +800,7 @@ export default function Home() {
     const order: DemoOrder = { id, receiptNo: "RCP-" + createdAt.slice(0, 10).replaceAll("-", "") + "-" + id.slice(-5), serviceId: selectedServices[0].id, serviceName: selectedServices.map(service => service.name).join(" + "), serviceItems: selectedServices.map(({id,name,price}) => ({id,name,price})), price: Math.max(0, servicesTotal - discountAmount), ...(discountAmount ? { originalPrice: servicesTotal, discountAmount, discountCode: claim!.code } : {}), dueDate, customerName: customerName.trim(), email: email.trim(), whatsapp: whatsapp.trim(), notificationOptIn, brief: brief.trim(), status: "New request", createdAt, paymentStatus: "Unpaid", paidAmount: 0 };
     if (!commitData(current => ({ ...current, orders: [order, ...current.orders], discountClaims: claim ? (current.discountClaims || []).map(item => item.id === claim.id ? { ...item, status: "Redeemed" as const } : item) : current.discountClaims, events: [{ id: "EV-"+Date.now().toString(36), kind: "request", label: "Customer request received · "+order.serviceName, at: new Date().toISOString() }, ...(current.events || [])] }), "Order request saved on this device. No payment was taken.")) return;
     setView("account"); setOrderFormOpen(false); setSelected(null); setSelectedServiceIds([]); setCustomSelections([]); setCatalogueQuery(""); setPromoCode("");
-    try { window.localStorage.removeItem(CUSTOMER_SELECTION_KEY); } catch { /* selection state is already cleared in memory */ }
+    try { window.localStorage.removeItem(getStorageKey(CUSTOMER_SELECTION_KEY)); } catch { /* selection state is already cleared in memory */ }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function buildAdminHubHandoffUrl() {
@@ -988,7 +994,7 @@ export default function Home() {
   <summary className="sd-owner-shift-title"><span className="sd-shift-clock" aria-hidden="true">◷</span><div><span className="sd-kicker">OWNER SHIFT</span><strong>Shift active</strong></div><span className="sd-shift-live"><i /> ACTIVE</span><span className="sd-shift-summary-hint">Manage shift</span></summary>
   <div className="sd-owner-shift-metrics"><div><small>Time on shift</small><strong>{shiftStartedAt ? new Date(Math.max(0,sessionNow-shiftStartedAt)).toISOString().slice(11,19) : "00:00:00"}</strong><span>Started {shiftStartedAt ? new Date(shiftStartedAt).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) : "just now"}</span></div><div><small>Session expires in</small><strong>{sessionExpiresAt ? (()=>{const ms=Math.max(0,sessionExpiresAt-sessionNow);return [Math.floor(ms/3600000),Math.floor(ms%3600000/60000),Math.floor(ms%60000/1000)].map(v=>String(v).padStart(2,"0")).join(":")})() : "12:00:00"}</strong><span>Automatic expiry</span></div></div>
   <div className="sd-owner-shift-controls"><label>Maximum session (applies to this shift) <select value={sessionDurationHours} onChange={event=>setOwnerSessionDuration(Number(event.target.value))}>{[1,2,4,6,8,10,12,16,20,24].map(hours=><option key={hours} value={hours}>{hours} hours</option>)}</select></label><button type="button" className="sd-button sd-outline" onClick={()=>endOwnerShift(false)}>End shift / Sign out</button></div>
-  <p>Browser-local session. Locks after 30 minutes idle; shift ends at expiry or when you sign out.</p>
+  <p>Shift counts while the Briefcase is open. It ends when you leave, after 30 minutes idle, at maximum duration or when you sign out.</p>
 </details>
 <section className="sd-availability-control" aria-label="Business availability">
   <div><span className="sd-kicker">CUSTOMER-FACING SIGNAL</span><strong>Business availability</strong><small>Choose what customers see in their Care panel.</small></div>
