@@ -91,12 +91,18 @@ export default function Home() {
     try {
       const savedDuration = Number(window.localStorage.getItem("iteration13:owner-session-duration:v1"));
       if (Number.isInteger(savedDuration) && savedDuration >= 1 && savedDuration <= 24) setSessionDurationHours(savedDuration);
-      const savedSession = JSON.parse(window.localStorage.getItem("iteration13:owner-session:v1") || "null") as { startedAt?: number; expiresAt?: number } | null;
+      const savedSession = JSON.parse(window.localStorage.getItem("iteration13:owner-session:v1") || "null") as { startedAt?: number; expiresAt?: number; lastActivityAt?: number } | null;
       if (savedSession && Number.isFinite(savedSession.startedAt) && Number.isFinite(savedSession.expiresAt) && savedSession.expiresAt! > Date.now()) {
         setShiftStartedAt(savedSession.startedAt!);
         setSessionExpiresAt(savedSession.expiresAt!);
-        setAdminUnlocked(true);
-        setView("admin");
+        const lastActiveAt = Number.isFinite(savedSession.lastActivityAt) ? savedSession.lastActivityAt! : savedSession.startedAt!;
+        if (Date.now() - lastActiveAt >= 30 * 60 * 1000) {
+          setAdminLocked(true);
+          setView("login");
+        } else {
+          setAdminUnlocked(true);
+          setView("admin");
+        }
       } else window.localStorage.removeItem("iteration13:owner-session:v1");
     } catch { /* a browser-local demo session can safely start fresh */ }
   }, []);
@@ -115,13 +121,21 @@ export default function Home() {
     const markActivity = () => { lastAdminActivity.current = Date.now(); };
     const events = ["pointerdown", "keydown", "touchstart", "wheel"];
     events.forEach(name => window.addEventListener(name, markActivity, { passive: true }));
+    let lastPersistedAt = Date.now();
     const timer = window.setInterval(() => {
-      if (Date.now() - lastAdminActivity.current >= 30 * 60 * 1000) {
+      const now = Date.now();
+      if (now - lastAdminActivity.current >= 30 * 60 * 1000) {
         setAdminUnlocked(false);
         setAdminLocked(true);
         setAdminPassphrase("");
         setView("login");
         setNotice("The Briefcase was locked after 30 minutes without activity. Your shift continues until its session expires.");
+      } else if (now - lastPersistedAt >= 60000) {
+        try {
+          const saved = JSON.parse(window.localStorage.getItem("iteration13:owner-session:v1") || "null");
+          if (saved) window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ ...saved, lastActivityAt: lastAdminActivity.current }));
+        } catch { /* the current page still enforces its idle lock */ }
+        lastPersistedAt = now;
       }
     }, 15000);
     return () => {
@@ -580,9 +594,10 @@ export default function Home() {
       setShiftStartedAt(now);
       setSessionExpiresAt(expiresAt);
       setSessionNow(now);
-      try { window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ startedAt: now, expiresAt })); } catch { /* demo session remains active for this page */ }
+      try { window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ startedAt: now, expiresAt, lastActivityAt: now })); } catch { /* demo session remains active for this page */ }
       commitData(current => ({ ...current, events: [{ id: "EV-" + now.toString(36), kind: "shift-start", label: "Owner shift started · " + new Date(now).toLocaleString(), at: new Date(now).toISOString() }, ...(current.events || [])] }), "Your shift has started. This browser-local timer is illustrative.");
     } else {
+      try { window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ startedAt: shiftStartedAt, expiresAt: sessionExpiresAt, lastActivityAt: now })); } catch { /* active page session continues */ }
       setNotice("Owner access resumed. Your existing shift continues; the session timer has not restarted.");
     }
     setAdminLocked(false);
@@ -608,7 +623,7 @@ export default function Home() {
     if (shiftStartedAt) {
       const expiresAt = shiftStartedAt + safeValue * 60 * 60 * 1000;
       setSessionExpiresAt(expiresAt);
-      try { window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ startedAt: shiftStartedAt, expiresAt })); } catch { /* in-memory timer remains */ }
+      try { window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ startedAt: shiftStartedAt, expiresAt, lastActivityAt: lastAdminActivity.current })); } catch { /* in-memory timer remains */ }
     }
   }
   function openAdminGuide(target?: "services" | "announcement" | "requests") {
