@@ -8,6 +8,11 @@ const offline = read("../src/app/offline/page.tsx");
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
 
+check(sw.includes('event.waitUntil(self.skipWaiting())'), "user-approved worker activation must be awaited by the message event");
+check(sw.includes("navigationPreload.enable()") && sw.includes("event.preloadResponse"), "navigation preload must be optional and used by network-first page loads");
+check(sw.includes("function isSafePublicHtml") && sw.includes('value === "cookie"') && sw.includes('value === "authorization"'), "public HTML caching must reject cookie- or authorization-varying responses");
+check(sw.includes("sensitiveQuery.test(key)") && sw.includes("responseOrigin === self.location.origin"), "public HTML caching must reject sensitive query strings and cross-origin redirects");
+check(sw.includes("response.status >= 500") && sw.includes("networkFirstNavigation(request, event)"), "cached public pages must recover from transient server errors");
 check(/const CACHE_VERSION = "iteration13-shell-v\d+"/.test(sw), "versioned Iteration 13 app-shell cache is missing");
 check(/const MEDIA_CACHE = "iteration13-media-v\d+"/.test(sw), "versioned media cache is missing");
 check(sw.includes('"/", "/offline"'), "home and offline fallback must be precached");
