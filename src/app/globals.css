@@ -3711,3 +3711,153 @@ h1 em,
   .serviceDemo .sd-admin .sd-stats{gap:7px}
   .serviceDemo .sd-admin .sd-stats article{padding:10px}
 }
+
+
+/* WCAG AA contrast repair — Iteration 13 owner workspace.
+   Keep text colour attached to its actual surface; never rely on inherited colour. */
+.serviceDemo .sd-admin .sd-briefcase-guide,
+.serviceDemo .sd-admin .sd-admin-head,
+.serviceDemo .sd-admin .sd-owner-shift-panel,
+.serviceDemo .sd-admin .sd-availability-control,
+.serviceDemo .sd-admin .sd-owner-action-desk,
+.serviceDemo .sd-admin .sd-owner-action-grid article,
+.serviceDemo .sd-admin .sd-admin-panel,
+.serviceDemo .sd-admin .sd-local-activity-feed,
+.serviceDemo .sd-admin .sd-local-analytics-boundary {
+  color:#202b38!important;
+}
+.serviceDemo .sd-admin .sd-briefcase-guide :is(p,small,span,.sd-kicker),
+.serviceDemo .sd-admin .sd-admin-head :is(p,small,span),
+.serviceDemo .sd-admin .sd-owner-shift-panel :is(p,small,label,span),
+.serviceDemo .sd-admin .sd-availability-control :is(p,small,label,span),
+.serviceDemo .sd-admin .sd-owner-action-desk :is(p,small,label,span),
+.serviceDemo .sd-admin .sd-owner-action-grid article :is(p,small,b,strong,span),
+.serviceDemo .sd-admin .sd-admin-panel :is(p,small,label,time),
+.serviceDemo .sd-admin .sd-local-activity-feed :is(p,small,span,strong,time,h3,h4,.sd-kicker),
+.serviceDemo .sd-admin .sd-local-analytics-boundary {
+  color:#354253!important;
+  -webkit-text-fill-color:#354253!important;
+  opacity:1!important;
+}
+.serviceDemo .sd-admin .sd-local-activity-feed {
+  background:#fff!important;
+  border:1px solid #cbd5df!important;
+}
+.serviceDemo .sd-admin .sd-local-activity-feed li {
+  border-top:1px solid #d7dee7!important;
+}
+.serviceDemo .sd-admin .sd-local-activity-feed li strong {
+  color:#202b38!important;
+  font-weight:800!important;
+}
+.serviceDemo .sd-admin .sd-local-activity-feed li time {
+  color:#526174!important;
+}
+.serviceDemo .sd-admin .sd-local-analytics-boundary {
+  display:block;
+  padding:12px 14px;
+  background:#f3f6f9!important;
+  border:1px solid #d7dee7!important;
+  border-radius:10px;
+  line-height:1.5!important;
+}
+
+/* Dark information panels use deliberate light-on-dark pairs. */
+.serviceDemo .sd-admin .sd-infrastructure-panel,
+.serviceDemo .sd-admin .sd-capacity-playground {
+  background:#071426!important;
+  color:#f8fafc!important;
+}
+.serviceDemo .sd-admin .sd-infrastructure-panel :is(p,small,label,span,strong,b,time),
+.serviceDemo .sd-admin .sd-capacity-playground :is(p,small,label,span,strong,b,time) {
+  color:#e5edf7!important;
+  -webkit-text-fill-color:#e5edf7!important;
+  opacity:1!important;
+}
+.serviceDemo .sd-admin .sd-infrastructure-panel :is(h3,h4),
+.serviceDemo .sd-admin .sd-capacity-playground :is(h3,h4) {
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+.serviceDemo .sd-admin .sd-infrastructure-panel .sd-kicker,
+.serviceDemo .sd-admin .sd-capacity-playground .sd-kicker {
+  color:#9bd2ff!important;
+  -webkit-text-fill-color:#9bd2ff!important;
+}
+.serviceDemo .sd-admin .sd-infrastructure-node {
+  background:#142a43!important;
+  border-color:#49617d!important;
+  color:#f8fafc!important;
+}
+.serviceDemo .sd-admin .sd-infrastructure-node :is(strong,p,span,small) {
+  color:#e5edf7!important;
+  -webkit-text-fill-color:#e5edf7!important;
+}
+.serviceDemo .sd-admin .sd-platform-capacity>div,
+.serviceDemo .sd-admin .sd-capacity-business-controls,
+.serviceDemo .sd-admin .sd-capacity-business-results {
+  background:#142a43!important;
+  border-color:#49617d!important;
+  color:#f8fafc!important;
+}
+.serviceDemo .sd-admin .sd-platform-capacity>div :is(strong,p,span,small,.sd-kicker),
+.serviceDemo .sd-admin .sd-capacity-business-controls :is(label,p,span,strong,small,.sd-kicker),
+.serviceDemo .sd-admin .sd-capacity-business-results :is(p,span,strong,small) {
+  color:#e5edf7!important;
+  -webkit-text-fill-color:#e5edf7!important;
+  opacity:1!important;
+}
+.serviceDemo .sd-admin .sd-capacity-simulator-control,
+.serviceDemo .sd-admin .sd-capacity-simulator-results {
+  background:#fff!important;
+  border-color:#cbd5df!important;
+  color:#202b38!important;
+}
+.serviceDemo .sd-admin .sd-capacity-simulator-control :is(label,p,span,strong,small),
+.serviceDemo .sd-admin .sd-capacity-simulator-results :is(label,p,span,strong,small) {
+  color:#263445!important;
+  -webkit-text-fill-color:#263445!important;
+  opacity:1!important;
+}
+.serviceDemo .sd-admin .sd-capacity-model-note {
+  color:#e5edf7!important;
+  -webkit-text-fill-color:#e5edf7!important;
+}
+
+/* The activity snapshot is a dark panel; its labels and values stay readable. */
+.serviceDemo .sd-admin .sd-live-work-snapshot {
+  background:#111827!important;
+  color:#f8fafc!important;
+}
+.serviceDemo .sd-admin .sd-live-work-snapshot :is(h4,p,strong,b,small,.sd-kicker,.sd-live-local-tag) {
+  color:#e5edf7!important;
+  -webkit-text-fill-color:#e5edf7!important;
+  opacity:1!important;
+}
+.serviceDemo .sd-admin .sd-live-work-grid article {
+  background:#1b2738!important;
+  border:1px solid #46556b!important;
+}
+.serviceDemo .sd-admin .sd-live-work-grid article :is(strong,b,small) {
+  color:#f8fafc!important;
+  -webkit-text-fill-color:#f8fafc!important;
+  opacity:1!important;
+}
+.serviceDemo .sd-admin .sd-live-work-meter,
+.serviceDemo .sd-admin .sd-live-work-eli5 {
+  background:#1b2738!important;
+  border-color:#46556b!important;
+  color:#f8fafc!important;
+}
+.serviceDemo .sd-admin .sd-live-work-meter :is(strong,span,small),
+.serviceDemo .sd-admin .sd-live-work-eli5 :is(p,strong,span,small) {
+  color:#e5edf7!important;
+  -webkit-text-fill-color:#e5edf7!important;
+  opacity:1!important;
+}
+
+/* Readability floor applies to explanations and supporting labels, not only headings. */
+.serviceDemo .sd-admin :is(.sd-admin-help,.sd-infrastructure-intro,.sd-capacity-model-note,.sd-local-analytics-boundary) {
+  font-size:14px!important;
+  line-height:1.5!important;
+}
