@@ -85,6 +85,25 @@ export default function Home() {
   const [orderFormOpen, setOrderFormOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [email, setEmail] = useState("");
+  const [customerProfileReady, setCustomerProfileReady] = useState(false);
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("iteration13:customer-profile:v1");
+      if (saved) {
+        const profile = JSON.parse(saved) as { name?: unknown; email?: unknown };
+        if (typeof profile.name === "string") setCustomerName(profile.name.slice(0, 100));
+        if (typeof profile.email === "string") setEmail(profile.email.slice(0, 254));
+      }
+    } catch { /* customer can still enter their details manually */ }
+    setCustomerProfileReady(true);
+  }, []);
+  useEffect(() => {
+    if (!customerProfileReady) return;
+    try {
+      if (customerName.trim() || email.trim()) window.localStorage.setItem("iteration13:customer-profile:v1", JSON.stringify({ name: customerName.trim(), email: email.trim() }));
+      else window.localStorage.removeItem("iteration13:customer-profile:v1");
+    } catch { setNotice("Your customer details could not be remembered on this device."); }
+  }, [customerName, email, customerProfileReady]);
   const [whatsapp, setWhatsapp] = useState("");
   const [notificationOptIn, setNotificationOptIn] = useState(false);
   const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
@@ -407,7 +426,7 @@ export default function Home() {
   const projectedValue = data.orders.filter(order => ["Accepted", "In progress"].includes(order.status)).reduce((sum, order) => sum + order.price, 0);
   const completedValue = data.orders.filter(order => order.status === "Completed").reduce((sum, order) => sum + order.price, 0);
   const customerRecords = Array.from(new Map(data.orders.map(order => [order.email.toLowerCase(), { name: order.customerName, email: order.email, jobs: data.orders.filter(item => item.email.toLowerCase() === order.email.toLowerCase()) }] as const)).values());
-  const selectedServices = selectedServiceIds.map(id => data.services.find(service => service.id === id && service.active) || customSelections.find(service => service.id === id)).filter((service): service is Service => Boolean(service));
+  const selectedServices = [...selectedServiceIds.map(id => data.services.find(service => service.id === id && service.active) || customSelections.find(service => service.id === id)).filter((service): service is Service => Boolean(service)), ...(selected && !selectedServiceIds.includes(selected) ? [data.services.find(service => service.id === selected && service.active)].filter((service): service is Service => Boolean(service)) : [])];
   const selectedService = selectedServices[0] || data.services.find(service => service.id === selected && service.active);
   const statusCounts = useMemo(() => data.orders.reduce<Record<string, number>>((acc, order) => { acc[order.status] = (acc[order.status] || 0) + 1; return acc; }, {}), [data.orders]);
   const localStorageBytes = useMemo<number | null>(() => {
@@ -452,7 +471,15 @@ export default function Home() {
 
   function beginOrder(service: Service) {
     recordActivity("service", "Product / service selected · " + service.name);
-    setSelected(service.id); setSelectedServiceIds(current => current.includes(service.id) ? current : [...current, service.id]); setOrderFormOpen(false); setView("account"); setNotice(`${service.name} added to your selected items. You can return to the Store to add more before continuing.`); setDueDate(""); setBrief(""); setCatalogueQuery("");
+    setSelected(service.id); setSelectedServiceIds(current => current.includes(service.id) ? current : [...current, service.id]);
+    try {
+      const existing = window.localStorage.getItem(CUSTOMER_SELECTION_KEY);
+      const ids = existing ? JSON.parse(existing) : [];
+      const nextIds = Array.isArray(ids) ? ids.filter((id): id is string => typeof id === "string") : [];
+      if (!nextIds.includes(service.id)) nextIds.push(service.id);
+      window.localStorage.setItem(CUSTOMER_SELECTION_KEY, JSON.stringify(nextIds));
+    } catch { setNotice("The selected item could not be saved on this device. Keep this page open while continuing."); }
+    setOrderFormOpen(false); setView("account"); setNotice(`${service.name} added to your selected items. You can return to the Store to add more before continuing.`); setDueDate(""); setBrief(""); setCatalogueQuery("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function openRequestForm() {
