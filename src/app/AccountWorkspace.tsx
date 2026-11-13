@@ -46,8 +46,10 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadNotice, setUploadNotice] = useState("");
   const [openThread, setOpenThread] = useState<string | null>(null);
+  const [clockNow, setClockNow] = useState(() => Date.now());
   const [basketOpen, setBasketOpen] = useState(false);
   const [lookupOpen, setLookupOpen] = useState(false);
+  useEffect(() => { const timer = window.setInterval(() => setClockNow(Date.now()), 60000); return () => window.clearInterval(timer); }, []);
   const normalizedEmail = email.trim().toLowerCase();
   const filteredOrders = useMemo(() => normalizedEmail ? orders.filter(order => order.email.trim().toLowerCase() === normalizedEmail) : [], [orders, normalizedEmail]);
   const matchingRewards = useMemo(() => normalizedEmail ? discountClaims.filter(claim => claim.email.trim().toLowerCase() === normalizedEmail) : [], [discountClaims, normalizedEmail]);
@@ -104,7 +106,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
   const careMessage = !currentOrder ? "Your next request will appear here once you send it." : ["New request", "Received"].includes(currentOrder.status) ? "We've received your request. The business will review it and keep you updated." : ["Completed", "Declined", "Cancelled"].includes(currentOrder.status) ? "This request has reached its latest status. You can open the details whenever you need them." : "Your request is with the business. We'll let you know when there's an update.";
   const lastBusinessUpdate = currentOrder ? [...(currentOrder.messages || [])].filter(message => message.from === "studio").sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]?.createdAt || currentOrder.statusUpdatedAt : undefined;
   const formatShortDate = (value: string) => { try { return new Date(value).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch { return value; } };
-  const timeAgo = (value: string) => { const minutes = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / 60000)); if (!Number.isFinite(minutes)) return formatShortDate(value); if (minutes < 1) return "just now"; if (minutes < 60) return minutes + " min ago"; const hours = Math.floor(minutes / 60); if (hours < 24) return hours + (hours === 1 ? " hour ago" : " hours ago"); const days = Math.floor(hours / 24); return days + (days === 1 ? " day ago" : " days ago"); };
+  const timeAgo = (value: string) => { const minutes = Math.max(0, Math.floor((clockNow - new Date(value).getTime()) / 60000)); if (!Number.isFinite(minutes)) return formatShortDate(value); if (minutes < 1) return "just now"; if (minutes < 60) return minutes + " min ago"; const hours = Math.floor(minutes / 60); if (hours < 24) return hours + (hours === 1 ? " hour ago" : " hours ago"); const days = Math.floor(hours / 24); return days + (days === 1 ? " day ago" : " days ago"); };
 
   return <section className="sd-account sd-account-inside sd-wrap sd-account-compact" style={{ "--account-brand": accentColor, "--account-secondary": secondaryColor, "--account-highlight": highlightColor } as React.CSSProperties}>
     <header className="sd-account-masthead">
