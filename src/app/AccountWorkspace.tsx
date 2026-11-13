@@ -27,6 +27,9 @@ type Props = {
   children?: ReactNode;
   requestForm?: ReactNode;
   onNewRequest: () => void;
+  selectedServices: { id: string; name: string; price: number; custom?: boolean }[];
+  onRemoveSelected: (id: string) => void;
+  onContinueRequest: () => void;
 };
 
 const getBusinessCurrency = () => { if (typeof window === "undefined") return "BWP"; try { return window.localStorage.getItem("iteration13:business-currency:v1") || "BWP"; } catch { return "BWP"; } };
@@ -35,7 +38,7 @@ const prettyDate = (value: string) => { try { return new Date(value).toLocaleStr
 const deadlineAt = (value: string) => new Date(`${value}T23:59:59`).getTime();
 const countdownLabel = (value: string, now: number) => { const delta = deadlineAt(value) - now; if (!Number.isFinite(delta)) return "Date not set"; if (delta < 0) return "Target date passed"; const totalMinutes = Math.floor(delta / 60000); const days = Math.floor(totalMinutes / 1440); const hours = Math.floor((totalMinutes % 1440) / 60); const minutes = totalMinutes % 60; return [days ? `${days}d` : "", `${hours}h`, `${minutes}m`].filter(Boolean).join(" "); };
 
-export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm, onNewRequest }: Props) {
+export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm, onNewRequest, selectedServices, onRemoveSelected, onContinueRequest }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [uploadingOrder, setUploadingOrder] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -136,7 +139,8 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
       <button className="sd-account-store-link" onClick={onBrowse}>← Back to the Store</button>
     </div>
 
-    <nav className="sd-account-actions" aria-label="Customer account sections"><button type="button" onClick={() => document.getElementById("account-overview")?.scrollIntoView({behavior:"smooth",block:"start"})}>⌂ <span>Overview</span></button><button type="button" disabled={!filteredOrders.length} onClick={() => document.getElementById("account-requests")?.scrollIntoView({behavior:"smooth",block:"start"})}>▤ <span>My requests</span></button><button type="button" disabled={!filteredOrders.length} onClick={() => { if(filteredOrders[0]) setOpenThread(filteredOrders[0].id); window.setTimeout(() => document.getElementById("account-messages")?.scrollIntoView({behavior:"smooth",block:"start"}),80); }}>✉ <span>Messages</span></button><button type="button" disabled={!filteredOrders.length} onClick={() => document.getElementById("account-receipts")?.scrollIntoView({behavior:"smooth",block:"start"})}>▧ <span>Receipts</span></button><button type="button" disabled={!matchingRewards.length} onClick={() => document.getElementById("account-rewards")?.scrollIntoView({behavior:"smooth",block:"start"})}>✦ <span>Rewards</span></button><button type="button" className="is-primary" onClick={onNewRequest}>＋ <span>New request</span></button></nav>
+    <nav className="sd-account-actions" aria-label="Customer account sections"><button type="button" onClick={() => document.getElementById("account-overview")?.scrollIntoView({behavior:"smooth",block:"start"})}>⌂ <span>Overview</span></button><button type="button" onClick={() => document.getElementById("account-requests")?.scrollIntoView({behavior:"smooth",block:"start"})}>▤ <span>My requests</span></button><button type="button" onClick={() => { if(filteredOrders[0]) setOpenThread(filteredOrders[0].id); document.getElementById("account-messages")?.scrollIntoView({behavior:"smooth",block:"start"}); }}>✉ <span>Messages</span></button><button type="button" onClick={() => document.getElementById("account-receipts")?.scrollIntoView({behavior:"smooth",block:"start"})}>▧ <span>Receipts</span></button><button type="button" onClick={() => document.getElementById("account-rewards")?.scrollIntoView({behavior:"smooth",block:"start"})}>✦ <span>Rewards</span></button><button type="button" className="is-primary" onClick={onNewRequest}>＋ <span>New request</span></button></nav>
+    {selectedServices.length > 0 && <section className="sd-account-selected" aria-labelledby="account-selected-title"><div><span className="sd-kicker">YOUR STORE SELECTIONS</span><h2 id="account-selected-title">Items you have selected</h2><p>These stay in your Customer Account while you browse and add more. Nothing is sent to the business until you submit a request.</p></div><ul>{selectedServices.map(item=><li key={item.id}><span><strong>{item.name}</strong><small>{item.custom ? "Custom item · quote required" : item.price > 0 ? money(item.price) : "Price to be confirmed"}</small></span><button type="button" onClick={()=>onRemoveSelected(item.id)} aria-label={`Remove ${item.name}`}>Remove</button></li>)}</ul><div className="sd-account-selected-total"><strong>{selectedServices.some(item=>item.custom) ? "Quote required for custom items" : `Starting total · ${money(selectedServices.reduce((sum,item)=>sum+item.price,0))}`}</strong><button type="button" className="sd-button sd-primary" onClick={onContinueRequest}>Continue with selected items →</button><button type="button" className="sd-account-secondary-action" onClick={onBrowse}>＋ Add another service</button></div></section>}
     {requestForm}
 
     <div className="sd-account-workspace" id="account-overview">
@@ -211,10 +215,13 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
         })}
       </div>}
 
-      {matchingRewards.length > 0 && <section className="sd-account-rewards" id="account-rewards">
+      <div id="account-messages" className="sd-account-nav-anchor" aria-label="Messages section" />
+      <div id="account-receipts" className="sd-account-nav-anchor" aria-label="Receipts section" />
+      <section className="sd-account-rewards" id="account-rewards">
         <div><span className="sd-kicker">STORE REWARDS</span><h2>Your discounts</h2><p>Rewards earned in the Store are linked to this email.</p></div>
         <div className="sd-account-reward-list">{matchingRewards.map(claim => <article key={claim.id}><strong>{claim.code}</strong><b>{money(claim.amount)} off</b><span>{claim.status}</span></article>)}</div>
-      </section>}
+        {matchingRewards.length === 0 && <p className="sd-account-notification-empty">Rewards earned in the Store will appear here when linked to your email address.</p>}
+      </section>
 
       {announcement.trim() && <aside className="sd-account-announcement"><span className="sd-kicker">FROM {businessName.toUpperCase()}</span><h3>Business update</h3><p>{announcement}</p></aside>}
       {uploadNotice && <p className="sd-account-feedback" role="status">{uploadNotice}</p>}
