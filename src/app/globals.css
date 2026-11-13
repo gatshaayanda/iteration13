@@ -4211,3 +4211,57 @@ h1 em,
  .serviceDemo .sd-admin .sd-pulse-metrics article strong{font-size:1.3rem}
 }
 @media(prefers-reduced-motion:reduce){.serviceDemo .sd-status-track span{transition:none}}
+
+
+/* Customer account mobile correction: retain a compact, horizontal app composition. */
+.serviceDemo .sd-account-compact{padding-top:14px;padding-bottom:24px}
+.serviceDemo .sd-account-compact .sd-account-masthead{align-items:center;gap:10px;margin-bottom:10px;padding:10px 12px}
+.serviceDemo .sd-account-compact .sd-account-brand-mark{width:38px;height:38px;border-radius:11px}
+.serviceDemo .sd-account-compact .sd-account-overline{font-size:.68rem}
+.serviceDemo .sd-account-compact .sd-account-brand-lockup strong{font-size:.86rem}
+.serviceDemo .sd-account-compact-intro{align-items:center;flex-wrap:nowrap;gap:10px;margin:8px 0 12px}
+.serviceDemo .sd-account-compact-intro>div{min-width:0}
+.serviceDemo .sd-account-compact-intro h1{font-size:clamp(1.55rem,5vw,2.15rem)}
+.serviceDemo .sd-account-compact-intro p{font-size:.82rem}
+.serviceDemo .sd-account-compact-intro .sd-account-store-link{flex:none;min-height:38px;padding:8px 11px}
+.serviceDemo .sd-care-card{margin-bottom:10px;padding:14px}
+.serviceDemo .sd-care-topline{align-items:center;flex-direction:row;gap:9px;margin-bottom:10px}
+.serviceDemo .sd-care-heading h2{font-size:1.15rem}
+.serviceDemo .sd-availability{max-width:none;margin-left:auto;white-space:nowrap}
+.serviceDemo .sd-care-request{align-items:center;gap:9px;padding:10px 0}
+.serviceDemo .sd-care-request>div{min-width:0}
+.serviceDemo .sd-care-request h3{font-size:.96rem}
+.serviceDemo .sd-care-request p{font-size:.74rem}
+.serviceDemo .sd-care-status{max-width:42%;white-space:normal;text-align:center}
+.serviceDemo .sd-care-next{gap:2px;padding:9px 0 3px}
+.serviceDemo .sd-care-next p{font-size:.8rem;line-height:1.4}
+.serviceDemo .sd-care-conversation{min-height:42px;margin-top:6px;padding:9px 12px}
+.serviceDemo .sd-account-quick-stats{gap:7px;margin-bottom:10px}
+.serviceDemo .sd-account-quick-stats>div{padding:9px 11px}
+.serviceDemo .sd-account-quick-stats>button{min-height:44px}
+.serviceDemo .sd-account-quick-links{gap:6px;margin:10px 0;padding:8px}
+.serviceDemo .sd-account-detail-section{padding:12px}
+@media(max-width:640px){
+ .serviceDemo .sd-account-compact{width:calc(100% - 24px);padding-top:12px;padding-bottom:22px}
+ .serviceDemo .sd-account-compact .sd-account-masthead{align-items:center}
+ .serviceDemo .sd-account-compact-intro{align-items:center;flex-wrap:nowrap}
+ .serviceDemo .sd-account-compact-intro h1{font-size:clamp(1.45rem,6vw,1.85rem)}
+ .serviceDemo .sd-care-topline{align-items:center;flex-direction:row}
+ .serviceDemo .sd-availability{max-width:none;margin-left:auto}
+ .serviceDemo .sd-account-quick-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .serviceDemo .sd-account-quick-stats>button{grid-column:1/-1;min-height:44px}
+ .serviceDemo .sd-account-quick-links{flex-wrap:nowrap;overflow-x:auto}
+}
+@media(max-width:380px){
+ .serviceDemo .sd-account-compact .sd-account-masthead{gap:6px}
+ .serviceDemo .sd-account-compact .sd-account-overline{max-width:42vw;font-size:.59rem}
+ .serviceDemo .sd-account-ready{padding:5px 7px;font-size:.59rem}
+ .serviceDemo .sd-account-compact-intro{flex-wrap:nowrap}
+ .serviceDemo .sd-account-compact-intro h1{font-size:1.42rem}
+ .serviceDemo .sd-account-compact-intro p{font-size:.76rem}
+ .serviceDemo .sd-account-compact-intro .sd-account-store-link{min-height:36px;padding:7px 9px;font-size:.72rem}
+ .serviceDemo .sd-care-topline{align-items:center;flex-direction:row}
+ .serviceDemo .sd-availability{max-width:52%;font-size:.64rem}
+ .serviceDemo .sd-care-request{align-items:center}
+ .serviceDemo .sd-care-status{max-width:42%}
+}
