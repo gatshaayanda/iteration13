@@ -4265,3 +4265,13 @@ h1 em,
  .serviceDemo .sd-care-request{align-items:center}
  .serviceDemo .sd-care-status{max-width:42%}
 }
+
+
+/* Customer account: prevent narrow brand and business labels from collapsing into vertical text. */
+.serviceDemo .sd-account-compact .sd-account-masthead{min-width:0;flex-wrap:wrap}
+.serviceDemo .sd-account-compact .sd-account-brand-lockup{flex:1 1 170px;min-width:0;max-width:100%}
+.serviceDemo .sd-account-compact .sd-account-brand-lockup>div{flex:1 1 auto;min-width:0;max-width:100%}
+.serviceDemo .sd-account-compact .sd-account-overline{display:block;width:100%;max-width:100%;white-space:normal;word-break:normal;overflow-wrap:break-word;hyphens:none}
+.serviceDemo .sd-account-compact .sd-account-ready{flex:0 0 auto;max-width:100%;white-space:nowrap}
+.serviceDemo .sd-account-compact-intro>div{flex:1 1 220px;min-width:0;max-width:100%}
+.serviceDemo .sd-account-compact-intro .sd-kicker{display:block;max-width:100%;white-space:normal;word-break:normal;overflow-wrap:break-word;hyphens:none;letter-spacing:.08em}
