@@ -108,6 +108,8 @@ Preserve the selected source's existing chatbot implementation and behavior. For
 
 When the brief requests a one-word staff/owner login, the **entire user-facing login is one access-word field and one submit action**. Do not turn it into an email, username, multi-field credential form, invitation flow or customer account journey. Keep the entry compact and clearly staff-only.
 
+**Mandatory environment-variable procedure — no invented names:** before editing login code, inspect the target repository's `AGENTS.md`, `.env.example`/environment documentation, actual Vercel environment-variable convention (as documented by the project), login route and existing references. Identify the exact server-only environment variable already designated for the one-word access secret and reuse that exact name end-to-end. If the repository already uses `ADMIN_PASSWORD`, use `ADMIN_PASSWORD`; do not rename it or invent alternatives such as `DIRA_OPERATIONS_WORD`, `OPERATIONS_WORD`, `ADMIN_ACCESS_CODE` or any other project-specific name. Do not add a second variable, migration, duplicate fallback chain or new Vercel configuration requirement. If the expected variable cannot be established from repository evidence, stop and ask one focused question rather than guessing. Keep `.env.example` aligned with the existing name and blank secret value; never commit the secret itself.
+
 - Treat the product owner's explicit authentication instructions as binding. In particular, when the instruction is one-word access with no custom token, do not introduce or retain a Firebase custom-token flow.
 - Validate the submitted word server-side against a server-only secret such as `ADMIN_PASSWORD`. Never expose the expected word in client code/public environment variables, log it, or store it in plaintext.
 - Do not create/provision a staff Firebase email/password account, deterministic internal email identity, invitation, or second credential as a workaround for a one-word login. Do not require Email/Password authentication or a staff email inbox unless the product owner explicitly changes the requirement.
@@ -119,6 +121,10 @@ When the brief requests a one-word staff/owner login, the **entire user-facing l
 - Document only the environment variables and console/rules steps that the implemented architecture genuinely needs. Test correct/incorrect word, missing configuration, expired session, unauthorized access and the complete staff workflow. Never claim login works until the actual flow is verified.
 
 The required outcome is simple: staff enter one word and reach the authorized workspace. The implementation must not invent extra accounts, tokens, credentials or provisioning steps.
+
+### Owner entry affordance — briefcase only
+
+The only public owner/admin entry affordance is **one briefcase symbol (💼)**. It is a single, accessible, tappable control that opens the one-word owner login and then the authorized Briefcase. Do not add an `Admin` or `Login` navigation item, text label, business-name block, subtitle, arrow, secondary icon, separate admin button or duplicate entry point. The briefcase symbol itself is the complete affordance; provide its accessible name through `aria-label`/`title`, not visible explanatory copy. Keep it discreet and visually separate from customer Store/Account navigation. Do not substitute a logo, avatar, gear, key or generic menu icon.
 ### Other protected functionality
 
 Preserve proven customer journeys, authentication, booking/order flows, uploads, offline behavior, games, admin CRUD and other golden features unless the brief explicitly authorizes a change. A branding-only task does not authorize workflow rewrites.

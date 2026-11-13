@@ -85,7 +85,7 @@ Before building/adapting any customer account, read the **Customer account works
 - The product owner handles Vercel deployments unless explicitly delegated, but the implementation agent must still inspect deployment/build status when it is available.
 
 
-For one-word staff/admin login work, follow the **One-word staff/admin access** section in `docs/ADMIN-HUB-APP-FACTORY-SOP.md`: one access-word field at the UI, server-side validation, real expiring authorization, and no invented email/username or auth infrastructure.
+For one-word staff/admin login work, follow the **One-word staff/admin access** and **Owner entry affordance — briefcase only** sections in `docs/ADMIN-HUB-APP-FACTORY-SOP.md`. Inspect and reuse the exact existing server-only environment variable for the one-word secret; never invent or rename it (including project-specific alternatives), add duplicate variables or require new Vercel setup. If repository evidence does not identify it, stop and ask. The only public owner entry is one tappable 💼 briefcase symbol—no Login/Admin nav item, visible label, arrow or duplicate entry. Keep one access-word field, server-side validation and real expiring authorization.
 
 
 ## First-run customer offer and owner readability

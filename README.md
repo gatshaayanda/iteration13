@@ -20,7 +20,7 @@ The date is a requested timeline, not a confirmed delivery promise. No payment i
 
 ## Local admin demo
 
-Use the one-word **Login** entry or the discreet 13Studio footer logo to open the local Briefcase demo. From the owner workspace you can:
+Use the single **💼 briefcase icon** in the footer to open the one-word local Briefcase demo. There is no separate Login/Admin navigation item. From the owner workspace you can:
 
 - Add, edit, hide/show and delete services.
 - Change prices, descriptions, image/video URLs and media type.

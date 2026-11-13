@@ -1777,6 +1777,14 @@ button.plugProductAction{width:100%;align-items:center;background:transparent;bo
 
 
 
+/* Iteration13 owner entry — the briefcase symbol is the entire public affordance */
+.serviceDemo .sd-owner-briefcase{display:grid;place-items:center;width:48px;height:48px;min-width:48px;padding:0!important;border:1px solid color-mix(in srgb,var(--studio-accent) 58%,#303846)!important;border-radius:12px!important;background:color-mix(in srgb,var(--studio-accent) 18%,#111923)!important;color:#fff!important;cursor:pointer;transition:transform .16s ease,border-color .16s ease,background .16s ease}
+.serviceDemo .sd-owner-briefcase span{font-size:27px;line-height:1}
+.serviceDemo .sd-owner-briefcase:hover{transform:translateY(-1px);border-color:var(--studio-accent)!important;background:#1d2430!important}
+.serviceDemo .sd-owner-briefcase:active{transform:scale(.96)}
+.serviceDemo .sd-owner-briefcase:focus-visible{outline:3px solid var(--studio-accent);outline-offset:3px}
+.serviceDemo .sd-owner-briefcase:disabled{cursor:default;opacity:1}
+
 /* 13Studio Briefcase — compact owner workspace and a real footer affordance */
 .serviceDemo .sd-owner-entry{
   display:flex;align-items:center;gap:12px;min-width:min(100%,310px);
