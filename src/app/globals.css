@@ -3861,3 +3861,13 @@ h1 em,
   font-size:14px!important;
   line-height:1.5!important;
 }
+
+
+/* The 25 GB record-count result is a dark inset card inside a light control. */
+.serviceDemo .sd-admin .sd-capacity-simulator .sd-capacity-simulator-control .sd-capacity-primary-result,
+.serviceDemo .sd-admin .sd-capacity-simulator .sd-capacity-simulator-control .sd-capacity-primary-result strong,
+.serviceDemo .sd-admin .sd-capacity-simulator .sd-capacity-simulator-control .sd-capacity-primary-result span {
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  opacity:1!important;
+}
