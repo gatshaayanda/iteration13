@@ -4266,12 +4266,69 @@ h1 em,
  .serviceDemo .sd-care-status{max-width:42%}
 }
 
-
-/* Customer account: prevent narrow brand and business labels from collapsing into vertical text. */
-.serviceDemo .sd-account-compact .sd-account-masthead{min-width:0;flex-wrap:wrap}
-.serviceDemo .sd-account-compact .sd-account-brand-lockup{flex:1 1 170px;min-width:0;max-width:100%}
-.serviceDemo .sd-account-compact .sd-account-brand-lockup>div{flex:1 1 auto;min-width:0;max-width:100%}
-.serviceDemo .sd-account-compact .sd-account-overline{display:block;width:100%;max-width:100%;white-space:normal;word-break:normal;overflow-wrap:break-word;hyphens:none}
-.serviceDemo .sd-account-compact .sd-account-ready{flex:0 0 auto;max-width:100%;white-space:nowrap}
-.serviceDemo .sd-account-compact-intro>div{flex:1 1 220px;min-width:0;max-width:100%}
-.serviceDemo .sd-account-compact-intro .sd-kicker{display:block;max-width:100%;white-space:normal;word-break:normal;overflow-wrap:break-word;hyphens:none;letter-spacing:.08em}
+/* Customer account header follows the same constrained two-column layout as the owner Briefcase heading. */
+.serviceDemo .sd-account-compact .sd-account-masthead{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.serviceDemo .sd-account-compact .sd-account-brand-lockup{
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr);
+  align-items:center;
+  gap:10px;
+  min-width:0;
+  width:100%;
+}
+.serviceDemo .sd-account-compact .sd-account-brand-lockup>div{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:3px;
+  min-width:0;
+  width:100%;
+}
+.serviceDemo .sd-account-compact .sd-account-overline{
+  display:block;
+  width:auto;
+  max-width:none;
+  min-width:0;
+  white-space:normal;
+  overflow-wrap:normal;
+  word-break:normal;
+  hyphens:none;
+  line-height:1.25;
+  letter-spacing:.02em;
+}
+.serviceDemo .sd-account-compact .sd-account-ready{
+  justify-self:end;
+  max-width:100%;
+  white-space:nowrap;
+}
+.serviceDemo .sd-account-compact-intro{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+}
+.serviceDemo .sd-account-compact-intro>div{
+  min-width:0;
+  width:100%;
+}
+.serviceDemo .sd-account-compact-intro .sd-kicker{
+  display:block;
+  max-width:100%;
+  white-space:normal;
+  overflow-wrap:break-word;
+  word-break:normal;
+  hyphens:none;
+  letter-spacing:.08em;
+  line-height:1.35;
+}
+@media(max-width:380px){
+  .serviceDemo .sd-account-compact .sd-account-brand-lockup{grid-template-columns:34px minmax(0,1fr);gap:8px}
+  .serviceDemo .sd-account-compact .sd-account-brand-mark{width:34px;height:34px}
+  .serviceDemo .sd-account-compact .sd-account-ready{font-size:.57rem;padding:5px 6px}
+  .serviceDemo .sd-account-compact-intro{grid-template-columns:minmax(0,1fr) auto}
+}
