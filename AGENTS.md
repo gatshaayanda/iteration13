@@ -217,3 +217,11 @@ Before considering this work complete in QA, verify on a fresh browser profile a
 6. After 30 minutes idle, Briefcase access locks without ending the Shift; re-entry resumes the existing Shift rather than starting a new one.
 7. Verify one-, two-, and three-color palettes across Store, Account and Briefcase. Distinct selected hues must remain visibly distinct, decorative use must not reduce text contrast, and functional text must remain readable.
 8. Treat all timers and event records in this prototype as browser-local illustration, not secure authentication, authoritative attendance or cross-device synchronization. Production requires server-side session enforcement and timestamps.
+
+## Current implementation state — 2026-11-13
+
+The Care / Shift / Availability work is implemented in the prototype source on `main`:
+- `src/app/AccountWorkspace.tsx`: compact customer account, Care card, business availability indicator, unified updates, expandable basket and secondary account details.
+- `src/app/page.tsx`: owner Shift/session lifecycle, configurable maximum duration, inactivity lock, separate manual/automatic end events, and owner-controlled availability.
+- `src/app/globals.css`: responsive Care and Shift styling plus intentional primary/secondary/highlight palette roles.
+- This is still a browser-local prototype. The required acceptance checks above remain a human QA checkpoint; do not mark the experience production-secure or deployed until verified.
