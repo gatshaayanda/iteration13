@@ -5,6 +5,8 @@ const sw = read("../public/sw.js");
 const page = read("../src/app/page.tsx");
 const account = read("../src/app/AccountWorkspace.tsx");
 const offline = read("../src/app/offline/page.tsx");
+const pwaRegister = read("../src/app/pwa-register.tsx");
+const pwaCss = read("../src/app/pwa.css");
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
 
@@ -22,6 +24,9 @@ check(sw.includes("private|no-store") && sw.includes("cache-control"), "private/
 check(sw.includes('url.pathname.startsWith("/api/")') && sw.includes("const isPrivate ="), "API and private routes must remain outside public page caching");
 check(sw.includes('event.data?.type === "CACHE_MEDIA"'), "service worker must accept the page's current media list");
 check(sw.includes('event.data?.type === "SKIP_WAITING"') && !sw.includes("await self.skipWaiting()"), "updates must wait for the user's explicit refresh action");
+check(sw.includes('return await cache.match(request) || await cache.match("/") || await cache.match("/offline")'), "offline public navigation must fall back to the saved app shell and offline route");
+check(pwaRegister.includes("setOffline(!navigator.onLine)") && pwaRegister.includes('window.addEventListener("offline", off)') && pwaRegister.includes('window.addEventListener("online", online)'), "offline and reconnect status must follow browser connectivity events");
+check(pwaCss.includes("pointer-events:none") && pwaCss.includes("top:calc(env(safe-area-inset-top") && pwaCss.includes("bottom:auto"), "offline/reconnect indicator must be compact, safe-area aware, top-positioned and click-through");
 check(sw.includes('"images.unsplash.com"') && sw.includes('"utfs.io"') && sw.includes('"ufs.sh"'), "media cache must be restricted to the supported image/upload hosts");
 check(sw.includes("const MEDIA_LIMIT = 24") && sw.includes("const MEDIA_MAX_BYTES = 4 * 1024 * 1024"), "media cache must enforce 24 entries and a 4 MB per-image limit");
 check(sw.includes('if (cached) return cached') && sw.includes('return Response.error()'), "media and navigation fetches must retain an offline fallback");
