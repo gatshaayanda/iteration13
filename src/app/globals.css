@@ -3971,3 +3971,82 @@ h1 em,
   .serviceDemo .sd-admin .sd-insights-deep-dive>summary,
   .serviceDemo .sd-admin .sd-insights-activity>summary{padding:10px 11px}
 }
+
+
+
+/* Brand-adaptive customer storefront — the configured business palette remains the source of truth. */
+.serviceDemo .sd-storefront-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin:0 0 22px;padding:15px 17px;border:1px solid color-mix(in srgb,var(--studio-accent) 28%,#d8e0e8);
+  border-left:5px solid var(--studio-accent);border-radius:14px;
+  background:linear-gradient(110deg,color-mix(in srgb,var(--studio-accent) 12%,#fff),color-mix(in srgb,var(--studio-accent-secondary) 8%,#fff) 72%,#fff);
+  color:#172033;
+}
+.serviceDemo .sd-storefront-title{display:flex;align-items:center;gap:12px;min-width:0}
+.serviceDemo .sd-storefront-icon{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:12px;background:var(--studio-accent);color:#fff;font-size:1.35rem;box-shadow:0 5px 14px color-mix(in srgb,var(--studio-accent) 20%,transparent)}
+.serviceDemo .sd-storefront-title .sd-kicker{color:#344054;font-size:.64rem;font-weight:900;letter-spacing:.1em}
+.serviceDemo .sd-storefront-title h2{margin:3px 0 0;color:#172033;font-size:clamp(1.05rem,3vw,1.45rem);line-height:1.15;letter-spacing:-.035em}
+.serviceDemo .sd-storefront-signals{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.serviceDemo .sd-store-availability,.serviceDemo .sd-store-count,.serviceDemo .sd-store-selected{
+  display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:6px 10px;border:1px solid #d6dee7;border-radius:999px;background:#fff;color:#263445;font-size:.72rem;font-weight:850;white-space:nowrap
+}
+.serviceDemo .sd-store-availability i{width:8px;height:8px;border-radius:50%;background:#16845d;box-shadow:0 0 0 3px #16845d20;animation:sd-store-pulse 2.8s ease-out infinite}
+.serviceDemo .sd-store-availability.is-limited i{background:#a65b08;box-shadow:0 0 0 3px #a65b0820;animation:none}
+.serviceDemo .sd-store-availability.is-unavailable i{background:#b42318;box-shadow:0 0 0 3px #b4231820;animation:none}
+.serviceDemo .sd-store-selected{border-color:color-mix(in srgb,var(--studio-accent-highlight) 45%,#d6dee7);background:color-mix(in srgb,var(--studio-accent-highlight) 12%,#fff)}
+.serviceDemo .sd-store-section-head{margin-bottom:17px;align-items:end}
+.serviceDemo .sd-store-section-head h2{margin-top:8px;font-size:clamp(1.75rem,4vw,2.65rem);line-height:1.02;letter-spacing:-.055em}
+.serviceDemo .sd-store-section-head>p{max-width:420px;color:#435166;font-size:.86rem;line-height:1.55}
+.serviceDemo .sd-store-grid{gap:14px}
+.serviceDemo .sd-store-card{overflow:hidden;border:1px solid #d9e0e8;border-radius:14px;box-shadow:0 5px 18px #1825360a;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.serviceDemo .sd-store-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--studio-accent) 55%,#d9e0e8);box-shadow:0 12px 26px #18253612}
+.serviceDemo .sd-store-card .sd-service-media{height:clamp(150px,21vw,230px);background:color-mix(in srgb,var(--studio-accent-secondary) 12%,#f2f4f7)}
+.serviceDemo .sd-store-card .sd-media-placeholder{background:linear-gradient(135deg,color-mix(in srgb,var(--studio-accent) 82%,#172033),color-mix(in srgb,var(--studio-accent-secondary) 68%,#fff));color:#fff}
+.serviceDemo .sd-store-card .sd-media-placeholder span{color:#fff;opacity:.96}
+.serviceDemo .sd-store-card .sd-media-placeholder strong{max-width:100%;font-size:clamp(1.35rem,3.5vw,2.5rem);line-height:1.05;overflow-wrap:anywhere}
+.serviceDemo .sd-store-card .sd-service-index{border-radius:8px;box-shadow:0 2px 8px #17203320}
+.serviceDemo .sd-store-card .sd-service-info{padding:16px}
+.serviceDemo .sd-store-card .sd-service-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;color:#465568;font-size:.65rem;font-weight:900;letter-spacing:.07em}
+.serviceDemo .sd-store-card .sd-service-meta span:last-child{color:#176347}
+.serviceDemo .sd-store-card .sd-service-title{gap:10px}
+.serviceDemo .sd-store-card .sd-service-title h3{color:#172033;font-size:1.08rem;line-height:1.2;letter-spacing:-.025em}
+.serviceDemo .sd-store-card .sd-service-title>strong{color:var(--studio-accent);font-size:1.02rem}
+.serviceDemo .sd-store-card .sd-service-info>p{min-height:0;margin:8px 0 14px;color:#435166;font-size:.84rem;line-height:1.55;overflow-wrap:anywhere}
+.serviceDemo .sd-store-card .sd-order-button{min-height:44px;padding:0 13px;border:1px solid var(--studio-accent);border-radius:9px;background:var(--studio-accent);color:#fff;font-size:.78rem;font-weight:900;transition:filter .16s ease,transform .16s ease}
+.serviceDemo .sd-store-card .sd-order-button:hover{background:var(--studio-accent);border-color:var(--studio-accent);filter:brightness(.92)}
+.serviceDemo .sd-store-card .sd-order-button:active{transform:scale(.985)}
+.serviceDemo .sd-store-card .sd-order-button:focus-visible{outline:3px solid var(--studio-accent-highlight);outline-offset:3px}
+.serviceDemo .sd-store-grid.has-featured-item .sd-store-card{width:min(100%,760px)}
+.serviceDemo .sd-store-grid.has-featured-item .sd-store-card .sd-service-media{height:clamp(190px,34vw,320px)}
+.serviceDemo .sd-store-empty{grid-column:1/-1;display:grid;justify-items:start;gap:8px;padding:22px;border:1px dashed #aeb9c7;border-radius:13px;background:#fff;color:#202b38}
+.serviceDemo .sd-store-empty>span{font-size:1.6rem}
+.serviceDemo .sd-store-empty strong{font-size:1rem}
+.serviceDemo .sd-store-empty p{margin:0;color:#435166;font-size:.85rem;line-height:1.5}
+.serviceDemo .sd-store-promo{border:0;border-block:1px solid color-mix(in srgb,var(--studio-accent-highlight) 42%,#e1e5ec);background:linear-gradient(105deg,color-mix(in srgb,var(--studio-accent-highlight) 19%,#fff),color-mix(in srgb,var(--studio-accent) 7%,#fff) 68%,#fff)}
+.serviceDemo .sd-store-promo .sd-wrap{gap:13px;padding:14px 0}
+.serviceDemo .sd-promo-mark{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--studio-accent-highlight) 24%,#fff);font-size:1.2rem}
+.serviceDemo .sd-promo-copy{display:grid;gap:4px;min-width:0}
+.serviceDemo .sd-promo-copy>span{color:#354253;font-size:.63rem;font-weight:950;letter-spacing:.1em}
+.serviceDemo .sd-promo-copy>p{margin:0;color:#202b38;font-size:.88rem;font-weight:750;line-height:1.5}
+.serviceDemo .sd-store-promo .sd-announcement-thumb{width:58px;height:48px;flex:none;object-fit:cover;border-radius:8px}
+.serviceDemo .sd-promo-status{margin-left:auto;padding:6px 9px;border:1px solid #cbd5df;border-radius:999px;background:#fff;color:#354253;font-size:.6rem;font-weight:900;letter-spacing:.06em;white-space:nowrap}
+@keyframes sd-store-pulse{0%,100%{box-shadow:0 0 0 3px #16845d20}50%{box-shadow:0 0 0 6px #16845d10}}
+@media(max-width:640px){
+  .serviceDemo .sd-storefront-bar{align-items:flex-start;flex-direction:column;gap:11px;margin-bottom:17px;padding:12px}
+  .serviceDemo .sd-storefront-icon{width:39px;height:39px}
+  .serviceDemo .sd-storefront-signals{justify-content:flex-start}
+  .serviceDemo .sd-store-availability,.serviceDemo .sd-store-count,.serviceDemo .sd-store-selected{min-height:30px;padding:5px 9px;font-size:.68rem}
+  .serviceDemo .sd-store-section-head{display:grid;gap:8px;margin-bottom:13px}
+  .serviceDemo .sd-store-section-head>p{max-width:none;margin:0}
+  .serviceDemo .sd-store-grid{grid-template-columns:minmax(0,1fr);gap:11px}
+  .serviceDemo .sd-store-grid.has-featured-item .sd-store-card{width:100%}
+  .serviceDemo .sd-store-card .sd-service-media{height:clamp(155px,48vw,230px)}
+  .serviceDemo .sd-store-card .sd-service-info{padding:13px}
+  .serviceDemo .sd-store-promo .sd-wrap{align-items:flex-start;gap:10px;padding:12px 0}
+  .serviceDemo .sd-promo-mark{width:34px;height:34px}
+  .serviceDemo .sd-promo-status{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .serviceDemo .sd-store-availability i{animation:none}
+  .serviceDemo .sd-store-card,.serviceDemo .sd-store-card:hover,.serviceDemo .sd-store-card .sd-order-button{transition:none;transform:none}
+}
