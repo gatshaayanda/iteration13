@@ -3515,3 +3515,28 @@ h1 em,
 .sd-live-work-eli5 strong{color:#111827}
 @media(max-width:700px){.sd-live-work-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sd-live-work-heading{display:grid}.sd-live-local-tag{justify-self:start}}
 @media(max-width:360px){.sd-live-work-grid article{padding:10px}.sd-live-work-grid article>small{font-size:10px}}
+
+
+/* Customer request is a first-class Account section, never a blocking modal. */
+.serviceDemo .sd-account .sd-account-request-form{
+  position:relative!important;inset:auto!important;z-index:auto!important;
+  display:block!important;width:100%!important;max-width:none!important;
+  max-height:none!important;overflow:visible!important;box-sizing:border-box;
+  margin:18px 0 24px!important;padding:18px!important;
+  background:#fff!important;color:#111!important;
+  border:2px solid var(--account-brand,#2458e8)!important;border-radius:16px!important;
+  box-shadow:0 8px 24px rgba(15,23,42,.08)!important;
+}
+.serviceDemo .sd-account .sd-account-request-form .sd-request-modal-head{
+  align-items:center;margin-bottom:16px;padding-bottom:14px;
+}
+.serviceDemo .sd-account .sd-account-request-form .sd-form-close{
+  flex:0 0 auto;width:auto;min-width:40px;padding:7px 12px;
+  font-size:1rem!important;line-height:1.2;
+}
+.serviceDemo .sd-account .sd-account-request-form .sd-order-form{
+  max-width:none!important;width:100%!important;
+}
+@media(max-width:560px){
+  .serviceDemo .sd-account .sd-account-request-form{padding:13px!important;margin:14px 0 20px!important}
+}
