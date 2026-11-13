@@ -4458,3 +4458,15 @@ h1 em,
   .serviceDemo .sd-admin .sd-owner-shift-title .sd-shift-clock{width:34px;height:34px}
   .serviceDemo .sd-admin .sd-shift-summary-hint{padding:6px 8px;font-size:.68rem}
 }
+
+
+/* Identity preview: use spacing and soft surfaces instead of horizontal divider rules. */
+.sd-identity-preview-grid{gap:8px;padding:0 14px}
+.sd-identity-preview-grid article{border:0!important;border-radius:11px;background:#f7f8fa;padding:13px 14px}
+.sd-identity-service-preview{margin-top:8px;border:0!important;padding:16px 18px 14px}
+.sd-identity-preview-footer{margin:0 14px 14px;border:0;border-radius:11px;background:#f7f8fa;padding:13px 14px}
+@media(max-width:760px){
+  .sd-identity-preview-grid{padding:0 12px}
+  .sd-identity-service-preview{padding:14px 16px}
+  .sd-identity-preview-footer{margin:0 12px 12px}
+}
