@@ -4494,3 +4494,26 @@ h1 em,
 
 /* The share control spans the complete business identity panel instead of occupying a third grid cell. */
 .serviceDemo .sd-business-identity>.sd-business-share{grid-column:1/-1}
+
+
+/* Currency choice: clear, touch-friendly options instead of a browser-default dropdown. */
+.sd-identity-currency{display:grid;gap:12px;margin-top:22px;padding:16px;border:1px solid #d5dce7;border-radius:15px;background:#fff}
+.sd-identity-currency-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sd-identity-currency-heading>div{display:grid;gap:5px}
+.sd-identity-currency-heading>div>span{color:#526075;font-size:.68rem;font-weight:900;letter-spacing:.1em}
+.sd-identity-currency-heading strong{color:#172033;font-size:1rem;line-height:1.3}
+.sd-identity-currency-heading>small{color:#526075;font-size:.75rem;line-height:1.4}
+.sd-identity-currency-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sd-identity-currency-options>button{position:relative;display:flex;align-items:center;gap:10px;min-width:0;min-height:64px;padding:10px;border:1px solid #d5dce7;border-radius:10px;background:#fff;color:#172033;text-align:left;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
+.sd-identity-currency-options>button:hover{border-color:#8795a8;background:#f8faff}
+.sd-identity-currency-options>button.is-selected{border:2px solid var(--studio-accent);padding:9px;background:#f1f5ff;box-shadow:0 0 0 2px color-mix(in srgb,var(--studio-accent) 12%,transparent)}
+.sd-identity-currency-flag{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:9px;background:#f0f2f6;font-size:1.2rem}
+.sd-identity-currency-details{display:grid;gap:3px;min-width:0}
+.sd-identity-currency-details strong{color:#172033;font-size:.82rem;line-height:1.25;overflow-wrap:anywhere}
+.sd-identity-currency-details small{color:#526075;font-size:.7rem;font-weight:800;letter-spacing:.06em}
+.sd-identity-currency-symbol{margin-left:auto;color:#344054;font-size:1.05rem}
+.sd-identity-currency-check{display:grid;place-items:center;flex:none;width:19px;height:19px;border:1px solid #aeb8c8;border-radius:50%;color:#fff;font-size:.68rem;font-weight:900}
+.sd-identity-currency-options>button.is-selected .sd-identity-currency-check{border-color:var(--studio-accent);background:var(--studio-accent)}
+.sd-identity-currency>p{margin:0;color:#526075;font-size:.75rem;line-height:1.5}
+.sd-identity-currency-options>button:focus-visible{outline:3px solid #172033;outline-offset:3px}
+@media(max-width:390px){.sd-identity-currency{padding:12px}.sd-identity-currency-options{grid-template-columns:1fr}.sd-identity-currency-options>button{min-height:58px}}
