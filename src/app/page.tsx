@@ -34,7 +34,7 @@ function readSharedExampleFromUrl(): SharedExample | null {
     if (typeof parsed.id !== "string" || !/^[a-z0-9-]{6,80}$/i.test(parsed.id) || typeof parsed.businessName !== "string" || !parsed.businessName.trim()) throw new Error("Invalid shared example");
     if (!Array.isArray(parsed.brandColors) || !parsed.brandColors.length || parsed.brandColors.length > 3 || !parsed.brandColors.every(color => typeof color === "string" && /^#[0-9a-f]{6}$/i.test(color))) throw new Error("Invalid shared palette");
     if (!supportedCurrencies.includes(parsed.currency as typeof supportedCurrencies[number])) throw new Error("Invalid shared currency");
-    const incoming = parsed.data && typeof parsed.data === "object" ? parsed.data : {};
+    const incoming: Partial<DemoData> = parsed.data && typeof parsed.data === "object" ? parsed.data : {};
     const services = Array.isArray(incoming.services) ? incoming.services.filter(service => service && typeof service.name === "string" && typeof service.price === "number" && Number.isFinite(service.price) && service.price >= 0).slice(0, 100).map((service, index) => ({
       id: typeof service.id === "string" ? service.id.slice(0, 100) : "shared-service-" + index,
       name: service.name.slice(0, 80),
@@ -152,6 +152,7 @@ export default function Home() {
   const [sessionNow, setSessionNow] = useState(() => Date.now());
   const [adminLocked, setAdminLocked] = useState(false);
   const lastAdminActivity = useRef(Date.now());
+  const endOwnerShiftRef = useRef<(expired?: boolean, signOut?: boolean) => void>(() => {});
   useEffect(() => {
     try {
       const savedDuration = Number(window.localStorage.getItem(getStorageKey("iteration13:owner-session-duration:v1")));
@@ -182,7 +183,7 @@ export default function Home() {
     const timer = window.setInterval(() => {
       const now = Date.now();
       setSessionNow(now);
-      if (now >= sessionExpiresAt) endOwnerShift(true);
+      if (now >= sessionExpiresAt) endOwnerShiftRef.current(true, true);
     }, 1000);
     return () => window.clearInterval(timer);
   }, [shiftStartedAt, sessionExpiresAt, view]);
@@ -193,7 +194,7 @@ export default function Home() {
     const events = ["pointerdown", "keydown", "touchstart", "wheel"];
     events.forEach(name => window.addEventListener(name, markActivity, { passive: true }));
     const timer = window.setInterval(() => {
-      if (Date.now() - lastAdminActivity.current >= 30 * 60 * 1000) endOwnerShift(true, true);
+      if (Date.now() - lastAdminActivity.current >= 30 * 60 * 1000) endOwnerShiftRef.current(true, true);
     }, 15000);
     return () => {
       events.forEach(name => window.removeEventListener(name, markActivity));
@@ -751,9 +752,10 @@ export default function Home() {
       setView("shop");
     }
   }
+  endOwnerShiftRef.current = endOwnerShift;
   const previousView = useRef(view);
   useEffect(() => {
-    if (previousView.current === "admin" && view !== "admin" && shiftStartedAt) endOwnerShift(false, false);
+    if (previousView.current === "admin" && view !== "admin" && shiftStartedAt) endOwnerShiftRef.current(false, false);
     previousView.current = view;
   }, [view, shiftStartedAt]);
   useEffect(() => {
@@ -776,7 +778,7 @@ export default function Home() {
     if (shiftStartedAt) {
       const expiresAt = shiftStartedAt + safeValue * 60 * 60 * 1000;
       setSessionExpiresAt(expiresAt);
-      try { window.localStorage.setItem(getStorageKey("iteration13:owner-session:v1"), JSON.stringify({ startedAt: shiftStartedAt, expiresAt, lastActivityAt: lastAdminActivity.current })); } catch { /* in-memory timer remains */ }
+      try { window.localStorage.setItem(getStorageKey("iteration13:owner-session:v1"), JSON.stringify({ startedAt: shiftStartedAt, expiresAt })); } catch { /* in-memory timer remains */ }
     }
   }
   function openAdminGuide(target?: "services" | "announcement" | "requests") {
