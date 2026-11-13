@@ -3540,3 +3540,19 @@ h1 em,
 @media(max-width:560px){
   .serviceDemo .sd-account .sd-account-request-form{padding:13px!important;margin:14px 0 20px!important}
 }
+
+
+/* Customer account: persistent selected-service basket and navigation targets. */
+.serviceDemo .sd-account-selected{margin:18px 0;padding:16px;background:#fff;color:#111;border:2px solid var(--account-brand,#2458e8);border-radius:14px;display:grid;gap:12px}
+.serviceDemo .sd-account-selected h2{margin:4px 0;font-size:1.25rem;color:#111}
+.serviceDemo .sd-account-selected p{margin:0;color:#333;font-size:.86rem;line-height:1.5}
+.serviceDemo .sd-account-selected ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.serviceDemo .sd-account-selected li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid #d1d5db}
+.serviceDemo .sd-account-selected li span{display:grid;gap:3px;min-width:0}
+.serviceDemo .sd-account-selected li strong,.serviceDemo .sd-account-selected li small{color:#111;overflow-wrap:anywhere}
+.serviceDemo .sd-account-selected li button{flex:0 0 auto;border:1px solid #111;border-radius:7px;background:#fff;color:#111;padding:7px 10px;font-weight:800}
+.serviceDemo .sd-account-selected-total{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding-top:10px;border-top:1px solid #d1d5db}
+.serviceDemo .sd-account-selected-total strong{margin-right:auto;color:#111;font-size:.9rem}
+.serviceDemo .sd-account-selected-total .sd-button{min-height:42px}
+.serviceDemo .sd-account-nav-anchor{scroll-margin-top:20px;min-height:1px}
+@media(max-width:560px){.serviceDemo .sd-account-selected-total{display:grid}.serviceDemo .sd-account-selected-total strong{margin:0}.serviceDemo .sd-account-selected-total button{width:100%}}
