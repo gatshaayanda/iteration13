@@ -60,8 +60,6 @@ function clearDismissal() {
 }
 
 export default function PwaRegister({ initialEmbedded = false, initialAndroid = false }: { initialEmbedded?: boolean; initialAndroid?: boolean }) {
-  const [offline, setOffline] = useState(false);
-  const [reconnecting, setReconnecting] = useState(false);
   const installPromptRef = useRef<InstallPromptEvent | null>(null);
   const [installState, setInstallState] = useState<InstallState>(initialEmbedded ? "embedded" : "hidden");
   const [updateReady, setUpdateReady] = useState<ServiceWorker | null>(null);
@@ -74,7 +72,6 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   const reloadForUpdate = useRef(false);
 
   useEffect(() => {
-    setOffline(!navigator.onLine);
     const env = environment();
     const embedded = initialEmbedded || env.embedded;
     setEmbeddedAndroid((initialEmbedded && initialAndroid) || (env.embedded && env.android));
@@ -99,18 +96,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       }
     };
 
-    const online = () => {
-      setOffline(false);
-      setReconnecting(true);
-      window.setTimeout(() => {
-        setReconnecting(false);
-        void retryPendingOrderNotifications();
-      }, 1200);
-    };
-    const off = () => {
-      setReconnecting(false);
-      setOffline(true);
-    };
+    const online = () => { void retryPendingOrderNotifications(); };
 
     const onBeforeInstallPrompt = (event: Event) => {
       const current = environment();
@@ -125,7 +111,6 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
     };
 
     window.addEventListener("online", online);
-    window.addEventListener("offline", off);
     const promptWindow = window as Window & { __iteration13InstallPrompt?: Event; __iteration13PwaListenerReady?: boolean };
     // The browser can emit beforeinstallprompt before React hydrates. Adopt the
     // event captured by the tiny beforeInteractive script before listening normally.
@@ -203,7 +188,6 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       window.removeEventListener("iteration13-open-install", requestInstall);
       window.removeEventListener("appinstalled", appInstalled);
       window.removeEventListener("online", online);
-      window.removeEventListener("offline", off);
       window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
       navigator.serviceWorker?.removeEventListener("controllerchange", controllerChange);
       stopPendingAuth();
@@ -327,8 +311,6 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   ) : null;
 
   return <>
-    {offline && <div className="offlineBanner" role="status" aria-live="polite"><span aria-hidden="true">⚡</span> Offline · The service demo saves orders and admin edits locally on this device. Firebase-backed routes need a connection.</div>}
-    {!offline && reconnecting && <div className="offlineBanner reconnectingBanner" role="status" aria-live="polite"><span aria-hidden="true">↻</span> Reconnected · Iteration 13 can reach the network again. Local demo data remains on this device.</div>}
     {!environment().standalone && installState !== "embedded" && (canInstall || canShowManualInstall) && !installCardDismissed && !(installState === "native" && installHelpOpen) && (
       <aside className="i13-install-card" aria-label="Install Iteration 13">
         <div className="i13-install-brand">
@@ -349,6 +331,6 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       </aside>
     )}
     {installCard}
-    {updateReady && <div className="pwaUpdate" role="status" aria-live="polite"><div><strong>Iteration 13 update is ready</strong><span>Refresh when you are ready.</span></div><button type="button" className="button buttonPrimary" onClick={applyUpdate}>Refresh</button></div>}
+    {updateReady && <div className="pwaUpdate" role="status" aria-live="polite" aria-atomic="true"><div><strong>Update ready</strong><span>Refresh to load the latest app shell.</span></div><div className="pwaUpdateActions"><button type="button" className="pwaUpdateDismiss" onClick={() => setUpdateReady(null)}>Later</button><button type="button" className="button buttonPrimary" onClick={applyUpdate}>Refresh</button></div></div>}
   </>;
 }
