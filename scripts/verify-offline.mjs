@@ -15,9 +15,10 @@ check(sw.includes("navigationPreload.enable()") && sw.includes("event.preloadRes
 check(sw.includes("function isSafePublicHtml") && sw.includes('value === "cookie"') && sw.includes('value === "authorization"'), "public HTML caching must reject cookie- or authorization-varying responses");
 check(sw.includes("sensitiveQuery.test(key)") && sw.includes("responseOrigin === self.location.origin"), "public HTML caching must reject sensitive query strings and cross-origin redirects");
 check(sw.includes("response.status >= 500") && sw.includes("networkFirstNavigation(request, event)"), "cached public pages must recover from transient server errors");
-check(/const CACHE_VERSION = "iteration13-shell-v\d+"/.test(sw), "versioned Iteration 13 app-shell cache is missing");
+check(/const CACHE_VERSION = "iteration13-shell-v7"/.test(sw), "current Iteration 13 app-shell cache version must be v7");
 check(/const MEDIA_CACHE = "iteration13-media-v\d+"/.test(sw), "versioned media cache is missing");
-check(sw.includes('"/", "/offline"'), "home and offline fallback must be precached");
+check(sw.includes('"/", "/offline"') && sw.includes('"/patterns", "/iphone-install"'), "home, offline and public utility routes must be precached");
+check(sw.includes("for (const match of html.matchAll") && sw.includes("/_next\\/static\\/"), "app-shell HTML must discover and precache its versioned Next.js assets");
 check(sw.includes('request.destination === "image"') && sw.includes('event.respondWith(cacheMediaRequest(request, event))'), "only approved image requests should use the offline media cache");
 check(sw.includes('response.type !== "opaque"') && sw.includes("declaredSize > 0 && declaredSize <= MEDIA_MAX_BYTES"), "opaque or oversized media must not be persisted");
 check(sw.includes("private|no-store") && sw.includes("cache-control"), "private/no-store HTML must not be cached");
@@ -26,7 +27,10 @@ check(sw.includes('event.data?.type === "CACHE_MEDIA"'), "service worker must ac
 check(sw.includes('event.data?.type === "SKIP_WAITING"') && !sw.includes("await self.skipWaiting()"), "updates must wait for the user's explicit refresh action");
 check(sw.includes('return await cache.match(request) || await cache.match("/") || await cache.match("/offline")'), "offline public navigation must fall back to the saved app shell and offline route");
 check(pwaRegister.includes("setOffline(!navigator.onLine)") && pwaRegister.includes('window.addEventListener("offline", off)') && pwaRegister.includes('window.addEventListener("online", online)'), "offline and reconnect status must follow browser connectivity events");
-check(pwaCss.includes("pointer-events:none") && pwaCss.includes("top:calc(env(safe-area-inset-top") && pwaCss.includes("bottom:auto"), "offline/reconnect indicator must be compact, safe-area aware, top-positioned and click-through");
+check(!pwaRegister.includes("offlineBanner") && !page.includes("sd-offline-notice") && !pwaCss.includes(".offlineBanner"), "duplicated full-width offline/reconnect banners must stay removed");
+check(page.includes('role="status" aria-live="polite" aria-atomic="true"') && page.includes("Offline · local demo"), "the compact Store connectivity indicator must announce offline state accessibly");
+check(pwaCss.includes(".pwaUpdate{position:fixed;top:calc(env(safe-area-inset-top") && pwaCss.includes("bottom:auto"), "update-ready prompt must stay compact at the top, not cover bottom actions");
+check(sw.includes("preservePaths = []") && sw.includes("removable.slice(0, excess)") && sw.includes("trimCache(SHELL_CACHE, STATIC_LIMIT, APP_SHELL)"), "cache trimming must preserve precached app-shell routes");
 check(sw.includes('"images.unsplash.com"') && sw.includes('"utfs.io"') && sw.includes('"ufs.sh"'), "media cache must be restricted to the supported image/upload hosts");
 check(sw.includes("const MEDIA_LIMIT = 24") && sw.includes("const MEDIA_MAX_BYTES = 4 * 1024 * 1024"), "media cache must enforce 24 entries and a 4 MB per-image limit");
 check(sw.includes('if (cached) return cached') && sw.includes('return Response.error()'), "media and navigation fetches must retain an offline fallback");
