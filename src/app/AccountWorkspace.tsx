@@ -49,6 +49,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
   const [clockNow, setClockNow] = useState(() => Date.now());
   const [basketOpen, setBasketOpen] = useState(false);
   const [lookupOpen, setLookupOpen] = useState(false);
+  const [rewardsOpen, setRewardsOpen] = useState(false);
   useEffect(() => { const timer = window.setInterval(() => setClockNow(Date.now()), 60000); return () => window.clearInterval(timer); }, []);
   const normalizedEmail = email.trim().toLowerCase();
   const filteredOrders = useMemo(() => normalizedEmail ? orders.filter(order => order.email.trim().toLowerCase() === normalizedEmail) : [], [orders, normalizedEmail]);
@@ -146,7 +147,10 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
 
     <nav className="sd-account-quick-links" aria-label="Your account">
       <div><span className="sd-kicker">YOUR ACCOUNT</span><strong>View details</strong></div>
-      <a href="#care-requests">Requests</a><a href="#care-messages">Messages</a><a href="#care-receipts">Receipts</a><a href="#care-rewards">Rewards</a>
+      <a href="#care-requests">Requests</a>
+      <button type="button" onClick={() => { if (currentOrder) { setOpenThread(currentOrder.id); window.setTimeout(() => document.getElementById("care-messages-" + currentOrder.id)?.scrollIntoView({behavior:"smooth",block:"start"}), 120); } else document.getElementById("care-requests")?.scrollIntoView({behavior:"smooth"}); }}>Messages</button>
+      <button type="button" onClick={() => { if (currentOrder) { setOpenThread(currentOrder.id); window.setTimeout(() => document.getElementById("care-receipts-" + currentOrder.id)?.scrollIntoView({behavior:"smooth",block:"start"}), 120); } else document.getElementById("care-requests")?.scrollIntoView({behavior:"smooth"}); }}>Receipts</button>
+      <button type="button" onClick={() => { setRewardsOpen(true); window.setTimeout(() => document.getElementById("care-rewards")?.scrollIntoView({behavior:"smooth",block:"start"}), 80); }}>Rewards</button>
     </nav>
 
     <section className="sd-account-detail-section" id="care-requests">
@@ -165,8 +169,8 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
             {order.brief && <p>{order.brief}</p>}
             {order.discountAmount ? <p className="sd-account-reward-line">Store reward · {money(order.discountAmount)} off</p> : null}
             <div className="sd-account-order-actions"><span>{messages.length} {messages.length === 1 ? "message" : "messages"}</span><button className="sd-account-secondary-action" type="button" aria-expanded={expanded} onClick={() => setOpenThread(expanded ? null : order.id)}>{expanded ? "Close conversation" : "Open conversation →"}</button></div>
-            <div id="care-receipts"><ReceiptDocument businessName={businessName} accentColor={accentColor} receiptProfile={receiptProfile} order={order} /></div>
-            {expanded && <section className="sd-account-conversation" id="care-messages" aria-label={`Conversation for ${order.serviceName}`}>
+            <div id={"care-receipts-" + order.id}><ReceiptDocument businessName={businessName} accentColor={accentColor} receiptProfile={receiptProfile} order={order} /></div>
+            {expanded && <section className="sd-account-conversation" id={"care-messages-" + order.id} aria-label={`Conversation for ${order.serviceName}`}>
               <div className="sd-account-conversation-heading"><div><span className="sd-kicker">YOUR CONVERSATION</span><h4>{order.serviceName}</h4></div></div>
               <p className="sd-account-demo-explainer">Messages are saved in this browser and appear in the business workspace on this device. They are not emailed or sent to a remote team.</p>
               <div className="sd-account-messages" aria-live="polite">{messages.length ? messages.map(message => <article key={message.id} className={`sd-account-message is-${message.from}`}><div><strong>{message.from === "customer" ? "You" : businessName}</strong><time>{prettyDate(message.createdAt)}</time></div>{message.text && <p>{message.text}</p>}{message.attachment && <a href={message.attachment.url} target="_blank" rel="noreferrer">↗ {message.attachment.name} · Open attachment</a>}</article>) : <p className="sd-account-message-empty">No messages yet. Send a question to start the conversation.</p>}</div>
@@ -181,7 +185,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
       })}</div>}
     </section>
 
-    <details className="sd-account-collapsible" id="care-rewards"><summary><span>Rewards</span><b>{matchingRewards.length ? `${matchingRewards.length} available` : "View details"}</b></summary><div><p>Rewards earned in the Store are linked to this email.</p>{matchingRewards.map(claim => <article key={claim.id}><strong>{claim.code}</strong><b>{money(claim.amount)} off</b><span>{claim.status}</span></article>)}{matchingRewards.length === 0 && <p className="sd-account-notification-empty">Rewards earned in the Store will appear here when linked to your email address.</p>}</div></details>
+    <details className="sd-account-collapsible" id="care-rewards" open={rewardsOpen} onToggle={event => setRewardsOpen(event.currentTarget.open)}><summary><span>Rewards</span><b>{matchingRewards.length ? `${matchingRewards.length} available` : "View details"}</b></summary><div><p>Rewards earned in the Store are linked to this email.</p>{matchingRewards.map(claim => <article key={claim.id}><strong>{claim.code}</strong><b>{money(claim.amount)} off</b><span>{claim.status}</span></article>)}{matchingRewards.length === 0 && <p className="sd-account-notification-empty">Rewards earned in the Store will appear here when linked to your email address.</p>}</div></details>
 
     {announcement.trim() && <aside className="sd-account-announcement"><span className="sd-kicker">FROM {businessName.toUpperCase()}</span><h3>Business update</h3><p>{announcement}</p></aside>}
     {uploadNotice && <p className="sd-account-feedback" role="status">{uploadNotice}</p>}
