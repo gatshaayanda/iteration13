@@ -7,7 +7,7 @@ import AnnouncementImagePicker from "@/app/AnnouncementImagePicker";
 import AccountWorkspace, { type AccountMessage } from "@/app/AccountWorkspace";
 import RacingWarmup from "@/app/games/racing-warmup";
 import ReceiptDocument from "@/app/ReceiptDocument";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Service = { id: string; name: string; industry?: string; price: number; description: string; media: string; mediaType: "image" | "video"; active: boolean; custom?: boolean };
 type DemoOrder = { id: string; serviceId: string; serviceName: string; serviceItems?: { id: string; name: string; price: number }[]; price: number; dueDate: string; customerName: string; email: string; whatsapp?: string; notificationOptIn?: boolean; brief: string; status: string; createdAt: string; statusUpdatedAt?: string; messages?: AccountMessage[]; paymentStatus?: "Unpaid" | "Partially paid (demo)" | "Paid (demo)"; originalPrice?: number; quotedPrice?: number; discountAmount?: number; discountCode?: string; paidAmount?: number; paidAt?: string; receiptNo?: string; isTest?: boolean; completedAt?: string };
@@ -87,6 +87,8 @@ export default function Home() {
       if (savedSession && Number.isFinite(savedSession.startedAt) && Number.isFinite(savedSession.expiresAt) && savedSession.expiresAt! > Date.now()) {
         setShiftStartedAt(savedSession.startedAt!);
         setSessionExpiresAt(savedSession.expiresAt!);
+        setAdminUnlocked(true);
+        setView("admin");
       } else window.localStorage.removeItem("iteration13:owner-session:v1");
     } catch { /* a browser-local demo session can safely start fresh */ }
   }, []);
@@ -99,6 +101,26 @@ export default function Home() {
     }, 1000);
     return () => window.clearInterval(timer);
   }, [shiftStartedAt, sessionExpiresAt]);
+  useEffect(() => {
+    if (!adminUnlocked) return;
+    lastAdminActivity.current = Date.now();
+    const markActivity = () => { lastAdminActivity.current = Date.now(); };
+    const events = ["pointerdown", "keydown", "touchstart", "wheel"];
+    events.forEach(name => window.addEventListener(name, markActivity, { passive: true }));
+    const timer = window.setInterval(() => {
+      if (Date.now() - lastAdminActivity.current >= 30 * 60 * 1000) {
+        setAdminUnlocked(false);
+        setAdminLocked(true);
+        setAdminPassphrase("");
+        setView("login");
+        setNotice("The Briefcase was locked after 30 minutes without activity. Your shift continues until its session expires.");
+      }
+    }, 15000);
+    return () => {
+      events.forEach(name => window.removeEventListener(name, markActivity));
+      window.clearInterval(timer);
+    };
+  }, [adminUnlocked]);
   const [adminUnlocked, setAdminUnlocked] = useState(false);
   const [adminPassphrase, setAdminPassphrase] = useState("");
   const [shiftStartedAt, setShiftStartedAt] = useState<number | null>(null);
@@ -106,6 +128,7 @@ export default function Home() {
   const [sessionDurationHours, setSessionDurationHours] = useState(12);
   const [sessionNow, setSessionNow] = useState(() => Date.now());
   const [adminLocked, setAdminLocked] = useState(false);
+  const lastAdminActivity = useRef(Date.now());
   const [selected, setSelected] = useState<string | null>(null);
   const [orderFormOpen, setOrderFormOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
@@ -557,7 +580,7 @@ export default function Home() {
       setSessionExpiresAt(expiresAt);
       setSessionNow(now);
       try { window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ startedAt: now, expiresAt })); } catch { /* demo session remains active for this page */ }
-      commitData(current => ({ ...current, events: [{ id: "EV-" + now.toString(36), kind: "shift-start", label: "Owner shift started · " + new Date(now).toLocaleString(), at: new Date(now).toISOString() }, ...(current.events || [])] }), "Your shift has started. The 12-hour default session is illustrative in this local demo.");
+      commitData(current => ({ ...current, events: [{ id: "EV-" + now.toString(36), kind: "shift-start", label: "Owner shift started · " + new Date(now).toLocaleString(), at: new Date(now).toISOString() }, ...(current.events || [])] }), "Your shift has started. This browser-local timer is illustrative.");
     } else {
       setNotice("Owner access resumed. Your existing shift continues; the session timer has not restarted.");
     }
@@ -780,13 +803,13 @@ export default function Home() {
         </details>
       </section></AccountWorkspace>}
 
-    {view === "login" && <section className="sd-admin sd-wrap"><div className="sd-admin-panel sd-admin-login-card" style={{maxWidth:480,margin:"clamp(28px,8vh,84px) auto",padding:24}}><span className="sd-kicker">ITERATION13 / YOUR PRIVATE BRIEFCASE</span><h1 style={{fontSize:"clamp(1.8rem,5vw,2.5rem)",margin:"8px 0"}}>Open your <em>Briefcase.</em></h1><p className="sd-admin-help">This is the owner side of your business: customers, jobs, money, Store design and the records that keep everything together.</p><form className="sd-admin-form" onSubmit={submitAdminLogin}><label>Demo access word<input type="password" autoComplete="off" value={adminPassphrase} onChange={event=>setAdminPassphrase(event.target.value)} placeholder="Enter access word" required /></label><button className="sd-button sd-primary" type="submit">Unlock my Briefcase →</button></form><p className="sd-admin-help" style={{marginTop:12}}>Demo word: <strong>admin</strong>. This client-side gate is for demonstration only; it does not protect real data. {adminLocked ? "Your shift remains active while access is locked." : "Successful access starts your shift automatically."}</p><button className="sd-button sd-outline" type="button" onClick={() => { setView("shop"); setNotice(""); }}>← Back to Store</button></div></section>}
+    {view === "login" && <section className="sd-admin sd-wrap"><div className="sd-admin-panel sd-admin-login-card" style={{maxWidth:480,margin:"clamp(28px,8vh,84px) auto",padding:24}}><span className="sd-kicker">ITERATION13 / YOUR PRIVATE BRIEFCASE</span><h1 style={{fontSize:"clamp(1.8rem,5vw,2.5rem)",margin:"8px 0"}}>Open your <em>Briefcase.</em></h1><p className="sd-admin-help">This is the owner side of your business: customers, jobs, money, Store design and the records that keep everything together.</p><form className="sd-admin-form" onSubmit={submitAdminLogin}><label>{adminLocked ? "Resume access word" : "Demo access word"}<input type="password" autoComplete="off" value={adminPassphrase} onChange={event=>setAdminPassphrase(event.target.value)} placeholder="Enter access word" required /></label><button className="sd-button sd-primary" type="submit">{adminLocked ? "Resume my Briefcase →" : "Unlock my Briefcase →"}</button></form><p className="sd-admin-help" style={{marginTop:12}}>Demo word: <strong>admin</strong>. This client-side gate is for demonstration only; it does not protect real data. {adminLocked ? "Your shift remains active while access is locked." : "Successful access starts your shift automatically."}</p><button className="sd-button sd-outline" type="button" onClick={() => { setView("shop"); setNotice(""); }}>← Back to Store</button></div></section>}
 
     {view === "admin" && adminUnlocked && <section className="sd-admin sd-wrap" data-admin-current={adminTab}><div className="sd-os-heading"><div><span className="sd-kicker">PRIVATE BRIEFCASE / OWNER WORKSPACE</span><small className="sd-owner-greeting">{ownerGreeting}</small><h1>Your business in your pocket.</h1><p><strong>{businessName.trim() || "Your Business"}</strong> · Your workspace for customers, jobs, money and records</p></div><span className="sd-os-status" title="This prototype saves its demo records in this browser only">LOCAL PREVIEW · THIS DEVICE</span></div>
 <section className="sd-owner-shift-panel" aria-label="Owner shift and session">
   <div className="sd-owner-shift-title"><span className="sd-shift-clock" aria-hidden="true">◷</span><div><span className="sd-kicker">OWNER SHIFT</span><strong>Shift active</strong></div><span className="sd-shift-live"><i /> ACTIVE</span></div>
   <div className="sd-owner-shift-metrics"><div><small>Time on shift</small><strong>{shiftStartedAt ? new Date(Math.max(0,sessionNow-shiftStartedAt)).toISOString().slice(11,19) : "00:00:00"}</strong><span>Started {shiftStartedAt ? new Date(shiftStartedAt).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) : "just now"}</span></div><div><small>Session expires in</small><strong>{sessionExpiresAt ? (()=>{const ms=Math.max(0,sessionExpiresAt-sessionNow);return [Math.floor(ms/3600000),Math.floor(ms%3600000/60000),Math.floor(ms%60000/1000)].map(v=>String(v).padStart(2,"0")).join(":")})() : "12:00:00"}</strong><span>Automatic expiry</span></div></div>
-  <div className="sd-owner-shift-controls"><label>Maximum session <select value={sessionDurationHours} onChange={event=>setOwnerSessionDuration(Number(event.target.value))}>{[1,2,4,6,8,10,12,16,20,24].map(hours=><option key={hours} value={hours}>{hours} hours</option>)}</select></label><button type="button" className="sd-button sd-outline" onClick={()=>endOwnerShift(false)}>End shift / Sign out</button></div>
+  <div className="sd-owner-shift-controls"><label>Maximum session (applies to this shift) <select value={sessionDurationHours} onChange={event=>setOwnerSessionDuration(Number(event.target.value))}>{[1,2,4,6,8,10,12,16,20,24].map(hours=><option key={hours} value={hours}>{hours} hours</option>)}</select></label><button type="button" className="sd-button sd-outline" onClick={()=>endOwnerShift(false)}>End shift / Sign out</button></div>
   <p>Illustrative browser-local shift tracking. Access expires automatically at the selected limit (maximum 24 hours).</p>
 </section>
 <section className="sd-availability-control" aria-label="Business availability">
