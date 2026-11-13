@@ -14,6 +14,7 @@ export type WorkspaceOrder = { id: string; serviceId: string; serviceName: strin
 type DiscountClaim = { id: string; email: string; code: string; amount: number; lapTime: number; createdAt: string; status: "Available" | "Redeemed" };
 type Props = {
   businessName: string;
+  currency: string;
   orders: WorkspaceOrder[];
   discountClaims: DiscountClaim[];
   receiptProfile?: ReceiptProfile;
@@ -36,11 +37,9 @@ type Props = {
   onContinueRequest: () => void;
 };
 
-const getBusinessCurrency = () => { if (typeof window === "undefined") return "BWP"; try { return window.localStorage.getItem("iteration13:business-currency:v1") || "BWP"; } catch { return "BWP"; } };
-const money = (amount: number) => new Intl.NumberFormat("en", { style: "currency", currency: getBusinessCurrency(), maximumFractionDigits: 2 }).format(amount);
 const prettyDate = (value: string) => { try { return new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }); } catch { return value; } };
 
-export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, secondaryColor, highlightColor, availability, customerName, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm, onNewRequest, selectedServices, onRemoveSelected, onContinueRequest }: Props) {
+export default function AccountWorkspace({ businessName, currency, orders, discountClaims, receiptProfile, accentColor, secondaryColor, highlightColor, availability, customerName, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm, onNewRequest, selectedServices, onRemoveSelected, onContinueRequest }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [uploadingOrder, setUploadingOrder] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -50,6 +49,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
   const [basketOpen, setBasketOpen] = useState(false);
   const [lookupOpen, setLookupOpen] = useState(false);
   const [rewardsOpen, setRewardsOpen] = useState(false);
+  const money = (amount: number) => new Intl.NumberFormat("en", { style: "currency", currency, maximumFractionDigits: 2 }).format(amount);
   useEffect(() => { const timer = window.setInterval(() => setClockNow(Date.now()), 60000); return () => window.clearInterval(timer); }, []);
   const normalizedEmail = email.trim().toLowerCase();
   const filteredOrders = useMemo(() => normalizedEmail ? orders.filter(order => order.email.trim().toLowerCase() === normalizedEmail) : [], [orders, normalizedEmail]);
@@ -169,7 +169,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
             {order.brief && <p>{order.brief}</p>}
             {order.discountAmount ? <p className="sd-account-reward-line">Store reward · {money(order.discountAmount)} off</p> : null}
             <div className="sd-account-order-actions"><span>{messages.length} {messages.length === 1 ? "message" : "messages"}</span><button className="sd-account-secondary-action" type="button" aria-expanded={expanded} onClick={() => setOpenThread(expanded ? null : order.id)}>{expanded ? "Close conversation" : "Open conversation →"}</button></div>
-            <div id={"care-receipts-" + order.id}><ReceiptDocument businessName={businessName} accentColor={accentColor} receiptProfile={receiptProfile} order={order} /></div>
+            <div id={"care-receipts-" + order.id}><ReceiptDocument businessName={businessName} currency={currency} accentColor={accentColor} receiptProfile={receiptProfile} order={order} /></div>
             {expanded && <section className="sd-account-conversation" id={"care-messages-" + order.id} aria-label={`Conversation for ${order.serviceName}`}>
               <div className="sd-account-conversation-heading"><div><span className="sd-kicker">YOUR CONVERSATION</span><h4>{order.serviceName}</h4></div></div>
               <p className="sd-account-demo-explainer">Messages are saved in this browser and appear in the business workspace on this device. They are not emailed or sent to a remote team.</p>

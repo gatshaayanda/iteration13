@@ -31,13 +31,12 @@ export type ReceiptOrder = {
 
 type Props = {
   businessName: string;
+  currency: string;
   accentColor: string;
   receiptProfile?: ReceiptProfile;
   order: ReceiptOrder;
 };
 
-const getBusinessCurrency = () => { if (typeof window === "undefined") return "BWP"; try { return window.localStorage.getItem("iteration13:business-currency:v1") || "BWP"; } catch { return "BWP"; } };
-const money = (amount: number) => new Intl.NumberFormat("en", { style: "currency", currency: getBusinessCurrency(), maximumFractionDigits: 2 }).format(amount);
 const accentInk = (hex: string) => {
   const values = hex.match(/[0-9a-f]{2}/gi)?.map(value => parseInt(value, 16) / 255) || [0.3, 0.3, 0.3];
   const luminance = values.map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4).reduce((sum, value, index) => sum + value * [0.2126, 0.7152, 0.0722][index], 0);
@@ -49,7 +48,8 @@ const dateLabel = (value?: string) => {
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString("en-BW", { dateStyle: "medium", timeStyle: "short" });
 };
 
-export default function ReceiptDocument({ businessName, accentColor, receiptProfile, order }: Props) {
+export default function ReceiptDocument({ businessName, currency, accentColor, receiptProfile, order }: Props) {
+  const money = (amount: number) => new Intl.NumberFormat("en", { style: "currency", currency, maximumFractionDigits: 2 }).format(amount);
   const total = Math.max(0, Number(order.price) || 0);
   const paid = Math.min(total, Math.max(0, Number(order.paidAmount) || 0));
   const balance = Math.max(0, total - paid);
