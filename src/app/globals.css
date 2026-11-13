@@ -3669,3 +3669,76 @@ h1 em,
   outline:3px solid #fff;
   outline-offset:3px;
 }
+
+
+/* Owner workspace readability + compact information hierarchy. */
+.serviceDemo .sd-admin{color:#f8fafc}
+.serviceDemo .sd-admin .sd-kicker{color:#dbeafe}
+.serviceDemo .sd-os-nav button{
+  min-height:38px;padding:8px 11px;border:1px solid #48617f;border-radius:8px;
+  background:#14243a;color:#f8fafc;-webkit-text-fill-color:#f8fafc;
+  font-size:.75rem;font-weight:850;cursor:pointer
+}
+.serviceDemo .sd-os-nav button[aria-pressed="true"]{
+  background:#fff;color:#102039;-webkit-text-fill-color:#102039;border-color:#fff
+}
+.serviceDemo .sd-os-nav button:hover{background:#294666;color:#fff;-webkit-text-fill-color:#fff}
+.serviceDemo .sd-os-nav button[aria-pressed="true"]:hover{background:#eaf2ff;color:#102039;-webkit-text-fill-color:#102039}
+.serviceDemo .sd-briefcase-guide p,
+.serviceDemo .sd-admin-head p,
+.serviceDemo .sd-os-heading p{color:#e2eaf5}
+.serviceDemo .sd-os-status{color:#e5efff;border-color:#7893b7;background:#10223a}
+.serviceDemo .sd-admin .sd-stats article{padding:12px 13px;border:1px solid #36506f;border-radius:11px;background:#12243a}
+.serviceDemo .sd-admin .sd-stats span{min-height:0;color:#e2eaf5;font-size:.7rem}
+.serviceDemo .sd-admin .sd-stats strong{margin-top:5px;color:#fff;font-size:1.75rem}
+.serviceDemo .sd-owner-action-desk,.serviceDemo .sd-infrastructure-panel,
+.serviceDemo .sd-capacity-playground,.serviceDemo .sd-live-work-snapshot{
+  margin:12px 0;padding:14px;border:1px solid #36506f;border-radius:13px;background:#102039;color:#f8fafc
+}
+.serviceDemo .sd-owner-action-copy p,.serviceDemo .sd-infrastructure-intro,
+.serviceDemo .sd-infrastructure-footnotes p,.serviceDemo .sd-infrastructure-node p,
+.serviceDemo .sd-live-work-heading p,.serviceDemo .sd-live-work-eli5 p,
+.serviceDemo .sd-capacity-playground p{color:#dbe5f2}
+.serviceDemo .sd-infrastructure-node,.serviceDemo .sd-live-work-grid article,
+.serviceDemo .sd-capacity-simulator-control,.serviceDemo .sd-platform-capacity>div,
+.serviceDemo .sd-capacity-business-controls,.serviceDemo .sd-capacity-business-results{
+  background:#172d49;border-color:#496486;color:#fff
+}
+.serviceDemo .sd-infrastructure-node strong,.serviceDemo .sd-infrastructure-footnotes strong,
+.serviceDemo .sd-live-work-grid b,.serviceDemo .sd-live-work-meter strong,
+.serviceDemo .sd-capacity-simulator-control label{color:#fff}
+.serviceDemo .sd-infrastructure-tag,.serviceDemo .sd-live-work-grid small,
+.serviceDemo .sd-live-work-meter small,.serviceDemo .sd-live-work-meter span,
+.serviceDemo .sd-capacity-simulator-control p{color:#d5e0ef}
+.serviceDemo .sd-admin .sd-owner-action-grid article{padding:11px;border:1px solid #496486;border-radius:10px;background:#172d49}
+.serviceDemo .sd-admin .sd-owner-action-grid b,
+.serviceDemo .sd-admin .sd-owner-action-grid small{color:#e3edf9}
+.serviceDemo .sd-admin .sd-owner-action-grid button{min-height:35px;padding:7px 10px;border:1px solid #8da7c8;border-radius:8px;background:#fff;color:#102039;font-weight:850}
+.serviceDemo .sd-admin .sd-infrastructure-heading h3,
+.serviceDemo .sd-admin .sd-live-work-heading h4{color:#fff}
+.serviceDemo .sd-admin .sd-capacity-simulator-value strong,
+.serviceDemo .sd-admin .sd-capacity-hero-metric strong,
+.serviceDemo .sd-admin .sd-capacity-labour-result strong{color:#fff}
+.serviceDemo .sd-admin .sd-capacity-slider-labels{color:#dbe5f2}
+.serviceDemo .sd-admin .sd-infrastructure-status,
+.serviceDemo .sd-admin .sd-live-local-tag{color:#e8f1ff;border-color:#7893b7}
+.serviceDemo .sd-owner-shift-panel,.serviceDemo .sd-availability-control,
+.serviceDemo .sd-business-identity,.serviceDemo .sd-theme-control{
+  margin:10px 0;padding:13px;border-radius:12px
+}
+.serviceDemo .sd-admin-head{margin-bottom:8px;padding:9px 11px}
+.serviceDemo .sd-owner-shift-metrics{gap:8px;margin:10px 0}
+.serviceDemo .sd-owner-shift-metrics>div{padding:9px}
+.serviceDemo .sd-owner-shift-controls{gap:9px}
+.serviceDemo .sd-admin .sd-admin-head-actions .sd-button{white-space:nowrap}
+.serviceDemo .sd-admin .sd-owner-action-grid{gap:8px}
+.serviceDemo .sd-admin .sd-infrastructure-flow{gap:8px}
+@media(max-width:640px){
+  .serviceDemo .sd-os-nav{top:58px;gap:5px}
+  .serviceDemo .sd-os-nav button{flex:0 0 auto;min-height:36px;padding:7px 9px;font-size:.72rem}
+  .serviceDemo .sd-owner-shift-panel,.serviceDemo .sd-availability-control,
+  .serviceDemo .sd-infrastructure-panel,.serviceDemo .sd-capacity-playground,
+  .serviceDemo .sd-live-work-snapshot{padding:11px}
+  .serviceDemo .sd-admin .sd-stats{gap:7px}
+  .serviceDemo .sd-admin .sd-stats article{padding:10px}
+}
