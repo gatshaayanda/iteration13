@@ -204,3 +204,16 @@ This clarification overrides any interpretation that adds an unnecessary interme
 - For this browser-local prototype, owner Shift starts automatically after successful access through the single footer Briefcase flow. Default maximum session is 12 hours; owner may choose 1–24 hours. Auto-expiry and manual end are distinct recorded events. An inactivity lock may lock access after 30 minutes without ending the shift; re-entry resumes the existing shift rather than starting another.
 - The customer Account stays compact and action-led. Remembered email lookup is secondary; selected items are a small expandable basket; older request details, receipts, messages and rewards stay available but collapsed; notifications and request status share one Care activity feed. No test notifications or example reminder theatre in ordinary customer UI. Optional racing/reward experiences stay collapsed.
 - Use all distinct selected brand hues purposefully across Store, Account and Briefcase. Primary establishes identity/action, secondary supports Store/Account grouping, and highlight is a restrained signal/accent. If only one or two hues are selected, do not fabricate additional brand colors. Maintain neutral surfaces, readable text and WCAG AA contrast.
+
+## Delivery checkpoint — Care and Shift implementation (2026-11-13)
+
+Before considering this work complete in QA, verify on a fresh browser profile and a returning profile:
+
+1. A customer with remembered details lands on a compact Account with one Care card, the correct request, actual received age and latest saved business update.
+2. Customer availability reflects the owner's green Available, amber Limited, or red Unavailable setting; no owner shift duration or staff attendance is exposed.
+3. The selection basket, older request details, conversations, receipts, rewards, and racing feature remain reachable but collapsed until requested. No customer test-notification button or sample reminder appears.
+4. The one footer Briefcase click opens access. Successful access starts Shift automatically; there is no separate Start Shift control.
+5. The owner sees elapsed Shift time and expiry, can configure 1–24 hours (12-hour default), manually end the shift, and is automatically expired at the limit. Manual end and automatic expiry are separate local events.
+6. After 30 minutes idle, Briefcase access locks without ending the Shift; re-entry resumes the existing Shift rather than starting a new one.
+7. Verify one-, two-, and three-color palettes across Store, Account and Briefcase. Distinct selected hues must remain visibly distinct, decorative use must not reduce text contrast, and functional text must remain readable.
+8. Treat all timers and event records in this prototype as browser-local illustration, not secure authentication, authoritative attendance or cross-device synchronization. Production requires server-side session enforcement and timestamps.
