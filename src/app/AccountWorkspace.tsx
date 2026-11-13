@@ -53,7 +53,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
   const normalizedEmail = email.trim().toLowerCase();
   const filteredOrders = useMemo(() => normalizedEmail ? orders.filter(order => order.email.trim().toLowerCase() === normalizedEmail) : [], [orders, normalizedEmail]);
   const matchingRewards = useMemo(() => normalizedEmail ? discountClaims.filter(claim => claim.email.trim().toLowerCase() === normalizedEmail) : [], [discountClaims, normalizedEmail]);
-  const openOrders = filteredOrders.filter(order => !["Completed", "Declined"].includes(order.status)).length;
+  const openOrders = filteredOrders.filter(order => !["Completed", "Declined", "Cancelled"].includes(order.status)).length;
   const currentOrder = filteredOrders.find(order => !["Completed", "Declined", "Cancelled"].includes(order.status)) || filteredOrders[0];
   const newUpdates = filteredOrders.reduce((count, order) => count + (order.messages || []).filter(message => message.from === "studio").length, 0);
   const accountUpdates = useMemo(() => filteredOrders.flatMap(order => [
@@ -126,14 +126,14 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
       <div className="sd-care-topline"><div className="sd-care-brand-icon" aria-hidden="true"><span>{monogram}</span><b>♥</b></div><div className="sd-care-heading"><span className="sd-kicker">YOUR CUSTOMER CARE</span><h2 id="sd-care-title">Care</h2></div><span className="sd-availability" style={{ "--availability-color": availabilityColor } as React.CSSProperties}><i />{availabilityLabel}</span></div>
       {currentOrder ? <>
         <div className="sd-care-request"><div><span className="sd-care-label">YOUR CURRENT REQUEST</span><h3>{currentOrder.serviceItems?.length ? currentOrder.serviceItems.map(item => item.name).join(" + ") : currentOrder.serviceName}</h3><p>Received {timeAgo(currentOrder.createdAt)} · {formatShortDate(currentOrder.createdAt)} · {currentOrder.quotedPrice ? "Quote: " + money(currentOrder.quotedPrice) : currentOrder.serviceItems?.some(item => item.price === 0) ? "Quote to be confirmed" : money(currentOrder.price)}</p></div><span className="sd-care-status">{currentOrder.status}</span></div>
-        <div className="sd-care-next"><span className="sd-care-label">WHAT HAPPENS NEXT</span><strong>{currentOrder.status === "New request" ? "Business review" : currentOrder.status === "Completed" ? "Request completed" : currentOrder.status === "Declined" ? "Request closed" : currentOrder.status === "Quote ready" ? "Your review" : "Business handling"}</strong><p>{careMessage}</p>{lastBusinessUpdate && <small>Last business update · {formatShortDate(lastBusinessUpdate)}</small>}</div>
+        <div className="sd-care-next"><span className="sd-care-label">WHAT HAPPENS NEXT</span><strong>{currentOrder.status === "New request" ? "Business review" : currentOrder.status === "Completed" ? "Request completed" : currentOrder.status === "Declined" ? "Request closed" : currentOrder.status === "Quote ready" ? "Your review" : currentOrder.status === "Reviewing" ? "Business reviewing" : currentOrder.status === "In progress" ? "Business working" : "Business handling"}</strong><p>{careMessage}</p>{lastBusinessUpdate && <small>Last business update · {formatShortDate(lastBusinessUpdate)}</small>}</div>
         <button type="button" className="sd-care-conversation" onClick={() => { setOpenThread(currentOrder.id); document.getElementById("care-request-" + currentOrder.id)?.scrollIntoView({behavior:"smooth",block:"start"}); }}>Open conversation <span>↗</span></button>
       </> : <div className="sd-care-next"><strong>Your next step starts here.</strong><p>{careMessage}</p></div>}
     </section>
 
     <div className="sd-account-quick-stats" aria-label="Account summary">
       <div><strong>{openOrders}</strong><span>Active {openOrders === 1 ? "request" : "requests"}</span></div>
-      <div><strong>{newUpdates}</strong><span>New {newUpdates === 1 ? "update" : "updates"}</span></div>
+      <div><strong>{newUpdates}</strong><span>Business {newUpdates === 1 ? "update" : "updates"}</span></div>
       <button type="button" onClick={onNewRequest}>＋ Start a new request</button>
     </div>
 
