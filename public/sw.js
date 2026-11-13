@@ -102,7 +102,11 @@ async function precacheShell() {
 }
 
 self.addEventListener("message", event => {
-  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+  if (event.data?.type === "SKIP_WAITING") {
+    // Keep the message event alive until the user-approved update activation is requested.
+    event.waitUntil(self.skipWaiting());
+    return;
+  }
   if (event.data?.type === "CACHE_MEDIA" && Array.isArray(event.data.urls)) {
     const urls = [...new Set(event.data.urls.filter(url => typeof url === "string" && isApprovedMediaUrl(url)))].slice(0, MEDIA_LIMIT);
     event.waitUntil(cacheMediaBatch(urls));
@@ -149,9 +153,66 @@ self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
     await Promise.all(keys.filter(key => key.startsWith("theplug-shell-") || key.startsWith("theplug-media-") || (key.startsWith("iteration13-shell-") && key !== SHELL_CACHE) || (key.startsWith("iteration13-media-") && key !== MEDIA_CACHE)).map(key => caches.delete(key)));
+    // Navigation preload overlaps the network request with worker startup. It is
+    // optional and must never prevent activation on browsers that do not support it.
+    try {
+      if (self.registration.navigationPreload) await self.registration.navigationPreload.enable();
+    } catch {}
     await self.clients.claim();
   })());
 });
+
+function isSafePublicHtml(request, response) {
+  const cacheControl = response.headers.get("cache-control") || "";
+  const vary = (response.headers.get("vary") || "").split(",").map(value => value.trim().toLowerCase()).filter(Boolean);
+  const queryKeys = [...new URL(request.url).searchParams.keys()];
+  const sensitiveQuery = /^(?:token|access_token|code|email|auth|authorization|invite|key|signature|sig)$/i;
+  let responseOrigin = self.location.origin;
+  try { if (response.url) responseOrigin = new URL(response.url).origin; } catch { return false; }
+
+  return request.method === "GET"
+    && !request.headers.has("authorization")
+    && response.type === "basic"
+    && responseOrigin === self.location.origin
+    && (response.headers.get("content-type") || "").includes("text/html")
+    && !/private|no-store/i.test(cacheControl)
+    && !vary.some(value => value === "*" || value === "cookie" || value === "authorization")
+    && !response.headers.has("set-cookie")
+    && !queryKeys.some(key => sensitiveQuery.test(key));
+}
+
+async function networkFirstNavigation(request, event) {
+  try {
+    const preloaded = event.preloadResponse ? await event.preloadResponse.catch(() => undefined) : undefined;
+    const response = preloaded || await fetch(request);
+    if (response.ok && isSafePublicHtml(request, response)) {
+      // Cache writes are deliberately detached from the navigation response.
+      event.waitUntil(caches.open(SHELL_CACHE).then(async cache => {
+        try {
+          await cache.put(request, response.clone());
+          await trimCache(SHELL_CACHE, PUBLIC_PAGE_LIMIT + STATIC_LIMIT);
+        } catch {
+          // Cache quota failures must not affect the live navigation response.
+        }
+      }).catch(() => {}));
+    } else if (response.status >= 500) {
+      // A transient server failure should not blank a previously cached public page.
+      try {
+        const cache = await caches.open(SHELL_CACHE);
+        const cached = await cache.match(request);
+        if (cached) return cached;
+      } catch {}
+    }
+    return response;
+  } catch {
+    try {
+      const cache = await caches.open(SHELL_CACHE);
+      return await cache.match(request) || await cache.match("/") || await cache.match("/offline") || Response.error();
+    } catch {
+      return Response.error();
+    }
+  }
+}
 
 self.addEventListener("fetch", event => {
   const request = event.request;
@@ -190,32 +251,7 @@ self.addEventListener("fetch", event => {
   }
 
   if (isNavigation) {
-    event.respondWith(fetch(request).then(response => {
-      if (response.ok) void caches.open(SHELL_CACHE).then(async cache => {
-        const cacheControl = response.headers.get("cache-control") || "";
-        const vary = response.headers.get("vary") || "";
-        const isPublicHtml = response.type === "basic"
-          && (response.headers.get("content-type") || "").includes("text/html")
-          && !/private|no-store/i.test(cacheControl)
-          && vary.trim() !== "*"
-          && !response.headers.has("set-cookie");
-        if (!isPublicHtml) return;
-        try {
-          await cache.put(request, response.clone());
-          await trimCache(SHELL_CACHE, PUBLIC_PAGE_LIMIT + STATIC_LIMIT);
-        } catch {
-          // Cache quota failures must not affect the live navigation response.
-        }
-      });
-      return response;
-    }).catch(async () => {
-      try {
-        const cache = await caches.open(SHELL_CACHE);
-        return await cache.match(request) || await cache.match("/") || await cache.match("/offline") || Response.error();
-      } catch {
-        return Response.error();
-      }
-    }));
+    event.respondWith(networkFirstNavigation(request, event));
   }
 });
 
