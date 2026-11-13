@@ -104,3 +104,11 @@ Before cloning/adapting the guide, read [CHAT-WIDGET-RESEARCH.md](./CHAT-WIDGET-
 ### Reusing the account in another project
 
 Read the customer account adaptation contract in `AGENTS.md` and the account section in `CLONING.md`. Keep the useful capabilities, but replace the theme/game, wording, account extras, status language, file policy and actions with those that fit the actual project. Inspect its authentication, persistence, admin workflow and security rules. A production account requires verified per-customer data access and staff authorization; the demo's localStorage thread is not a real support inbox.
+
+## Share a business example
+
+From the owner Briefcase, use **Generate share link** in the business identity section. The link opens a choice to explore that exact business example or create a separate business. It carries only public-facing setup data (business name, currency, palette, catalogue, announcement and public reward settings); customer requests, contact details, messages, payment records, private receipt details, owner notes and activity history are excluded. Each visitor's edits are saved in a separate browser-local workspace and do not change the owner's business. This is a URL-carried local demo, not cloud sharing, cross-device synchronization or production data isolation.
+
+## Owner shift measurement
+
+A shift starts when the owner successfully opens the Briefcase. Switching between Briefcase tabs does not restart it. Leaving the Briefcase, closing/reloading the page, the 30-minute idle lock, maximum duration or signing out ends the shift. A login by itself is not counted, and a previous shift is never resumed on a later opening.

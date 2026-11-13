@@ -97,6 +97,14 @@ Brand, business terminology, service catalogue, prices, visual assets, account e
 
 Readability is a release blocker: no clipped/truncated customer descriptions, no hidden prices, no faint text, no accent-colour contrast failures. Normal text/control labels ≥14 CSS px; supporting metadata generally ≥12 CSS px; WCAG 2.2 AA contrast ≥4.5:1 normal text and ≥3:1 qualifying large text. Never achieve compactness by shrinking or clipping text.
 
+## Dynamic business example sharing and owner shifts
+
+- The owner can generate a share link from the current Briefcase business identity. The link contains only customer-facing setup (name, currency, palette, catalogue, announcement and public reward settings); never include customer requests, contact details, messages, payment records, private receipt profile fields, owner notes or activity history.
+- A shared link opens a business-specific choice: explore the named example or create a separate business. The example is copied into a visitor-specific browser-local namespace keyed by the share ID. Visitor edits persist in that browser and never overwrite the owner's local workspace. The URL carries the public example snapshot so a new visitor can open it without a backend; this is demo sharing, not secure cloud persistence or analytics.
+- Keep the CTA explicit: **“Explore the [Business Name] example”**. Do not hard-code Lemonade Stand or another fixed sample business into the shared journey.
+- Owner shift time measures the period the Briefcase screen is open. Successful owner entry starts a new shift; navigating between Briefcase tabs keeps it active; leaving the Briefcase, closing/reloading the page, idle lock, maximum duration or sign-out ends that shift. Signing in alone is not a shift and a previous shift must never resume on a later screen opening.
+- Preserve the one-word demo access flow and existing 30-minute idle lock / configurable maximum duration. A visitor's shared example remains browser-local and is not a production customer-data boundary.
+
 ## Reusable product principles
 - Customer action first. Make the next step obvious, reduce unnecessary navigation, and keep copy concise.
 - Mobile-first, accessible, legible UI; WCAG 2.2 AA contrast is the baseline. Apply compact, task-focused information density across every surface—not only the homepage—including booking, customer account and admin pages. Avoid oversized headers/cards, redundant welcome/hero sections and unnecessary vertical whitespace; keep operational information scannable without making controls cramped. Verify keyboard focus, narrow layouts, empty/error/loading states and touch targets.

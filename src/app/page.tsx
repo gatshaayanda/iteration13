@@ -14,15 +14,77 @@ type DemoOrder = { id: string; serviceId: string; serviceName: string; serviceIt
 type DemoEvent = { id: string; kind: "visit" | "service" | "account" | "request" | "completed" | "payment" | "reward" | "shift-start" | "shift-end" | "session-expired"; label: string; at: string; test?: boolean };
 type DiscountClaim = { id: string; email: string; code: string; amount: number; lapTime: number; createdAt: string; status: "Available" | "Redeemed" };
 type DemoData = { services: Service[]; orders: DemoOrder[]; availability?: "available" | "limited" | "unavailable"; announcement: string; announcementImage?: string; views: number; events?: DemoEvent[]; discountAmount?: number; rewardTitle?: string; rewardDescription?: string; rewardImage?: string; rewardActive?: boolean; discountClaims?: DiscountClaim[]; receiptProfile?: { legalName: string; registration: string; address: string; phone: string; footer: string } };
+type SharedExample = { id: string; businessName: string; currency: string; brandColors: string[]; data: Partial<DemoData> };
 const STORAGE_KEY = "iteration13:service-demo:v1";
 const CUSTOMER_SELECTION_KEY = "iteration13:customer-selected-services:v1";
 
 const emptyData: DemoData = { services: [], orders: [], availability: "available", announcement: "", announcementImage: "", views: 0, events: [], discountAmount: 5, rewardTitle: "Race for a discount.", rewardDescription: "Drive for eight seconds. Keep it clean to unlock the published discount on your next request.", rewardImage: "", rewardActive: true, discountClaims: [], receiptProfile: { legalName: "Your Business", registration: "", address: "", phone: "", footer: "Thank you for your business." } };
 const CURRENCY_KEY = "iteration13:business-currency:v1";
+let sharedExampleCache: { token: string; value: SharedExample | null } | null = null;
+function readSharedExampleFromUrl(): SharedExample | null {
+  if (typeof window === "undefined") return null;
+  const token = new URLSearchParams(window.location.search).get("example");
+  if (!token) return null;
+  if (sharedExampleCache?.token === token) return sharedExampleCache.value;
+  try {
+    const base64 = token.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(token.length / 4) * 4, "=");
+    const binary = window.atob(base64);
+    const bytes = Uint8Array.from(binary, character => character.charCodeAt(0));
+    const parsed = JSON.parse(new TextDecoder().decode(bytes)) as Partial<SharedExample>;
+    if (typeof parsed.id !== "string" || !/^[a-z0-9-]{6,80}$/i.test(parsed.id) || typeof parsed.businessName !== "string" || !parsed.businessName.trim()) throw new Error("Invalid shared example");
+    if (!Array.isArray(parsed.brandColors) || !parsed.brandColors.length || parsed.brandColors.length > 3 || !parsed.brandColors.every(color => typeof color === "string" && /^#[0-9a-f]{6}$/i.test(color))) throw new Error("Invalid shared palette");
+    if (!supportedCurrencies.includes(parsed.currency as typeof supportedCurrencies[number])) throw new Error("Invalid shared currency");
+    const incoming = parsed.data && typeof parsed.data === "object" ? parsed.data : {};
+    const services = Array.isArray(incoming.services) ? incoming.services.filter(service => service && typeof service.name === "string" && typeof service.price === "number" && Number.isFinite(service.price) && service.price >= 0).slice(0, 100).map((service, index) => ({
+      id: typeof service.id === "string" ? service.id.slice(0, 100) : "shared-service-" + index,
+      name: service.name.slice(0, 80),
+      industry: typeof service.industry === "string" ? service.industry.slice(0, 80) : "",
+      price: service.price,
+      description: typeof service.description === "string" ? service.description.slice(0, 1200) : "",
+      media: typeof service.media === "string" && /^https?:\/\//i.test(service.media) ? service.media : "",
+      mediaType: service.mediaType === "video" ? "video" as const : "image" as const,
+      active: service.active !== false,
+      custom: service.custom === true,
+    })) : [];
+    const value: SharedExample = {
+      id: parsed.id, businessName: parsed.businessName.slice(0, 48), currency: parsed.currency, brandColors: parsed.brandColors,
+      data: {
+        services,
+        availability: incoming.availability === "limited" || incoming.availability === "unavailable" ? incoming.availability : "available",
+        announcement: typeof incoming.announcement === "string" ? incoming.announcement.slice(0, 2000) : "",
+        announcementImage: typeof incoming.announcementImage === "string" ? incoming.announcementImage : "",
+        discountAmount: Number.isFinite(incoming.discountAmount) ? incoming.discountAmount : 5,
+        rewardTitle: typeof incoming.rewardTitle === "string" ? incoming.rewardTitle.slice(0, 120) : emptyData.rewardTitle,
+        rewardDescription: typeof incoming.rewardDescription === "string" ? incoming.rewardDescription.slice(0, 500) : emptyData.rewardDescription,
+        rewardImage: typeof incoming.rewardImage === "string" ? incoming.rewardImage : "",
+        rewardActive: incoming.rewardActive !== false,
+      },
+    };
+    sharedExampleCache = { token, value };
+    return value;
+  } catch {
+    sharedExampleCache = { token, value: null };
+    return null;
+  }
+}
+function getSharedWorkspaceMode(): "example" | "own" {
+  if (typeof window === "undefined") return "example";
+  return new URLSearchParams(window.location.search).get("workspace") === "own" ? "own" : "example";
+}
+function getStorageKey(key: string): string {
+  const shared = readSharedExampleFromUrl();
+  return shared ? `${key}:visitor:${shared.id}:${getSharedWorkspaceMode()}` : key;
+}
+function encodeSharedExample(value: SharedExample): string {
+  const bytes = new TextEncoder().encode(JSON.stringify(value));
+  let binary = "";
+  for (let index = 0; index < bytes.length; index += 0x8000) binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+  return window.btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
 const supportedCurrencies = ["BWP", "USD", "GBP", "EUR", "ZAR", "INR"] as const;
 const getBusinessCurrency = () => {
   if (typeof window === "undefined") return "USD";
-  try { const value = window.localStorage.getItem(CURRENCY_KEY); return supportedCurrencies.includes(value as typeof supportedCurrencies[number]) ? value! : "USD"; }
+  try { const value = window.localStorage.getItem(getStorageKey(CURRENCY_KEY)); return supportedCurrencies.includes(value as typeof supportedCurrencies[number]) ? value! : "USD"; }
   catch { return "USD"; }
 };
 const money = (amount: number) => new Intl.NumberFormat("en", { style: "currency", currency: getBusinessCurrency(), maximumFractionDigits: 2 }).format(amount);
@@ -58,6 +120,9 @@ const brandColorOptions = [
 
 export default function Home() {
   const [data, setData] = useState<DemoData>(emptyData);
+  const [sharedExample, setSharedExample] = useState<SharedExample | null>(null);
+  const [isSharedExampleWorkspace, setIsSharedExampleWorkspace] = useState(false);
+  const [shareLink, setShareLink] = useState("");
   const [ready, setReady] = useState(false);
   const [online, setOnline] = useState(true);
   const [view, setView] = useState<"shop" | "account" | "login" | "admin">("shop");
@@ -89,60 +154,52 @@ export default function Home() {
   const lastAdminActivity = useRef(Date.now());
   useEffect(() => {
     try {
-      const savedDuration = Number(window.localStorage.getItem("iteration13:owner-session-duration:v1"));
+      const savedDuration = Number(window.localStorage.getItem(getStorageKey("iteration13:owner-session-duration:v1")));
       if (Number.isInteger(savedDuration) && savedDuration >= 1 && savedDuration <= 24) setSessionDurationHours(savedDuration);
-      const savedSession = JSON.parse(window.localStorage.getItem("iteration13:owner-session:v1") || "null") as { startedAt?: number; expiresAt?: number; lastActivityAt?: number } | null;
-      if (savedSession && Number.isFinite(savedSession.startedAt) && Number.isFinite(savedSession.expiresAt) && savedSession.expiresAt! > Date.now()) {
-        setShiftStartedAt(savedSession.startedAt!);
-        setSessionExpiresAt(savedSession.expiresAt!);
-        const lastActiveAt = Number.isFinite(savedSession.lastActivityAt) ? savedSession.lastActivityAt! : savedSession.startedAt!;
-        if (Date.now() - lastActiveAt >= 30 * 60 * 1000) {
-          setAdminLocked(true);
-          setView("login");
-        } else {
-          setAdminUnlocked(true);
-          setView("admin");
+      window.localStorage.removeItem(getStorageKey("iteration13:owner-session:v1"));
+      const incoming = readSharedExampleFromUrl();
+      if (incoming) {
+        setSharedExample(incoming);
+        const exampleWorkspace = getSharedWorkspaceMode() === "example";
+        setIsSharedExampleWorkspace(exampleWorkspace);
+        if (exampleWorkspace) {
+          const key = getStorageKey(STORAGE_KEY);
+          if (!window.localStorage.getItem(key)) {
+            const independentData: DemoData = { ...emptyData, ...incoming.data, orders: [], events: [], views: 0, discountClaims: [], receiptProfile: { ...emptyData.receiptProfile! } };
+            window.localStorage.setItem(key, JSON.stringify(independentData));
+            window.localStorage.setItem(getStorageKey("iteration13:business-name:v1"), incoming.businessName);
+            window.localStorage.setItem(getStorageKey("iteration13:business-palette:v1"), JSON.stringify(incoming.brandColors));
+            window.localStorage.setItem(getStorageKey("iteration13:store-theme:v1"), incoming.brandColors[0]);
+            window.localStorage.setItem(getStorageKey(CURRENCY_KEY), incoming.currency);
+            window.localStorage.setItem(getStorageKey("iteration13:identity-complete:v1"), "true");
+          }
         }
-      } else window.localStorage.removeItem("iteration13:owner-session:v1");
+      }
     } catch { /* a browser-local demo session can safely start fresh */ }
   }, []);
   useEffect(() => {
-    if (!shiftStartedAt || !sessionExpiresAt) return;
+    if (!shiftStartedAt || !sessionExpiresAt || view !== "admin") return;
     const timer = window.setInterval(() => {
       const now = Date.now();
       setSessionNow(now);
       if (now >= sessionExpiresAt) endOwnerShift(true);
     }, 1000);
     return () => window.clearInterval(timer);
-  }, [shiftStartedAt, sessionExpiresAt]);
+  }, [shiftStartedAt, sessionExpiresAt, view]);
   useEffect(() => {
-    if (!adminUnlocked) return;
+    if (!adminUnlocked || view !== "admin") return;
     lastAdminActivity.current = Date.now();
     const markActivity = () => { lastAdminActivity.current = Date.now(); };
     const events = ["pointerdown", "keydown", "touchstart", "wheel"];
     events.forEach(name => window.addEventListener(name, markActivity, { passive: true }));
-    let lastPersistedAt = Date.now();
     const timer = window.setInterval(() => {
-      const now = Date.now();
-      if (now - lastAdminActivity.current >= 30 * 60 * 1000) {
-        setAdminUnlocked(false);
-        setAdminLocked(true);
-        setAdminPassphrase("");
-        setView("login");
-        setNotice("The Briefcase was locked after 30 minutes without activity. Your shift continues until its session expires.");
-      } else if (now - lastPersistedAt >= 60000) {
-        try {
-          const saved = JSON.parse(window.localStorage.getItem("iteration13:owner-session:v1") || "null");
-          if (saved) window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ ...saved, lastActivityAt: lastAdminActivity.current }));
-        } catch { /* the current page still enforces its idle lock */ }
-        lastPersistedAt = now;
-      }
+      if (Date.now() - lastAdminActivity.current >= 30 * 60 * 1000) endOwnerShift(true, true);
     }, 15000);
     return () => {
       events.forEach(name => window.removeEventListener(name, markActivity));
       window.clearInterval(timer);
     };
-  }, [adminUnlocked]);
+  }, [adminUnlocked, view]);
 
   const [selected, setSelected] = useState<string | null>(null);
   const [orderFormOpen, setOrderFormOpen] = useState(false);
@@ -151,7 +208,7 @@ export default function Home() {
   const [customerProfileReady, setCustomerProfileReady] = useState(false);
   useEffect(() => {
     try {
-      const saved = window.localStorage.getItem("iteration13:customer-profile:v1");
+      const saved = window.localStorage.getItem(getStorageKey("iteration13:customer-profile:v1"));
       if (saved) {
         const profile = JSON.parse(saved) as { name?: unknown; email?: unknown };
         if (typeof profile.name === "string") setCustomerName(profile.name.slice(0, 100));
@@ -163,8 +220,8 @@ export default function Home() {
   useEffect(() => {
     if (!customerProfileReady) return;
     try {
-      if (customerName.trim() || email.trim()) window.localStorage.setItem("iteration13:customer-profile:v1", JSON.stringify({ name: customerName.trim(), email: email.trim() }));
-      else window.localStorage.removeItem("iteration13:customer-profile:v1");
+      if (customerName.trim() || email.trim()) window.localStorage.setItem(getStorageKey("iteration13:customer-profile:v1"), JSON.stringify({ name: customerName.trim(), email: email.trim() }));
+      else window.localStorage.removeItem(getStorageKey("iteration13:customer-profile:v1"));
     } catch { setNotice("Your customer details could not be remembered on this device."); }
   }, [customerName, email, customerProfileReady]);
   const [whatsapp, setWhatsapp] = useState("");
@@ -172,12 +229,12 @@ export default function Home() {
   const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
   const [selectionReady, setSelectionReady] = useState(false);
   useEffect(() => {
-    try { const saved = window.localStorage.getItem(CUSTOMER_SELECTION_KEY); if (saved) { const ids = JSON.parse(saved); if (Array.isArray(ids)) setSelectedServiceIds(ids.filter((id): id is string => typeof id === "string")); } } catch { /* start with an empty selection history */ }
+    try { const saved = window.localStorage.getItem(getStorageKey(CUSTOMER_SELECTION_KEY)); if (saved) { const ids = JSON.parse(saved); if (Array.isArray(ids)) setSelectedServiceIds(ids.filter((id): id is string => typeof id === "string")); } } catch { /* start with an empty selection history */ }
     setSelectionReady(true);
   }, []);
   useEffect(() => {
     if (!selectionReady) return;
-    try { window.localStorage.setItem(CUSTOMER_SELECTION_KEY, JSON.stringify(selectedServiceIds)); } catch { setNotice("Your selected items could not be saved on this device."); }
+    try { window.localStorage.setItem(getStorageKey(CUSTOMER_SELECTION_KEY), JSON.stringify(selectedServiceIds)); } catch { setNotice("Your selected items could not be saved on this device."); }
   }, [selectedServiceIds, selectionReady]);
   const [customSelections, setCustomSelections] = useState<Service[]>([]);
   const [catalogueQuery, setCatalogueQuery] = useState("");
@@ -226,7 +283,7 @@ export default function Home() {
 
   useEffect(() => {
     try {
-      const savedName = window.localStorage.getItem("iteration13:business-name:v1");
+      const savedName = window.localStorage.getItem(getStorageKey("iteration13:business-name:v1"));
       if (savedName) setBusinessName(savedName.slice(0, 48));
     } catch { /* use the demo business name */ }
     setBusinessNameReady(true);
@@ -234,15 +291,15 @@ export default function Home() {
 
   useEffect(() => {
     if (!businessNameReady || !identityComplete) return;
-    try { window.localStorage.setItem("iteration13:business-name:v1", businessName.trim().slice(0, 48) || "Your Business"); }
+    try { window.localStorage.setItem(getStorageKey("iteration13:business-name:v1"), businessName.trim().slice(0, 48) || "Your Business"); }
     catch { setNotice("Business name could not be saved on this device."); }
   }, [businessName, businessNameReady, identityComplete]);
 
   useEffect(() => {
-    try { const savedCurrency = window.localStorage.getItem(CURRENCY_KEY); if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency); } catch { /* default to BWP */ }
+    try { const savedCurrency = window.localStorage.getItem(getStorageKey(CURRENCY_KEY)); if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency); } catch { /* default to BWP */ }
     try {
-      const savedPalette = window.localStorage.getItem("iteration13:business-palette:v1");
-      const savedTheme = window.localStorage.getItem("iteration13:store-theme:v1");
+      const savedPalette = window.localStorage.getItem(getStorageKey("iteration13:business-palette:v1"));
+      const savedTheme = window.localStorage.getItem(getStorageKey("iteration13:store-theme:v1"));
       if (savedPalette) {
         const parsed = JSON.parse(savedPalette);
         if (Array.isArray(parsed)) {
@@ -250,7 +307,7 @@ export default function Home() {
           if (valid.length) setBrandColors(valid);
         }
       } else if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setBrandColors([savedTheme]);
-      setHasPreviousSetup(window.localStorage.getItem("iteration13:identity-complete:v1") === "true");
+      setHasPreviousSetup(window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true");
       // Never auto-open an old business. Every visit starts with an explicit choice.
       setIdentityComplete(false);
       setIdentityMode("choice");
@@ -265,32 +322,32 @@ export default function Home() {
     document.documentElement.style.setProperty("--studio-accent-highlight", highlightColor);
     if (!themeReady || !identityComplete) return;
     try {
-      window.localStorage.setItem("iteration13:business-palette:v1", JSON.stringify(brandColors));
-      window.localStorage.setItem("iteration13:store-theme:v1", themeColor);
+      window.localStorage.setItem(getStorageKey("iteration13:business-palette:v1"), JSON.stringify(brandColors));
+      window.localStorage.setItem(getStorageKey("iteration13:store-theme:v1"), themeColor);
     } catch { setNotice("Brand colours could not be saved on this device."); }
   }, [brandColors, themeColor, secondaryColor, highlightColor, themeReady, identityComplete]);
 
   useEffect(() => {
-    try { setOwnerNotes(window.localStorage.getItem("iteration13:owner-notes:v1") || ""); }
+    try { setOwnerNotes(window.localStorage.getItem(getStorageKey("iteration13:owner-notes:v1")) || ""); }
     catch { setNotice("My Notes could not be loaded from this browser."); }
     setNotesReady(true);
   }, []);
 
   useEffect(() => {
     if (!notesReady) return;
-    try { window.localStorage.setItem("iteration13:owner-notes:v1", ownerNotes); }
+    try { window.localStorage.setItem(getStorageKey("iteration13:owner-notes:v1"), ownerNotes); }
     catch { setNotice("My Notes could not be saved on this device."); }
   }, [ownerNotes, notesReady]);
 
   useEffect(() => {
     try {
-      const saved = window.localStorage.getItem(STORAGE_KEY);
+      const saved = window.localStorage.getItem(getStorageKey(STORAGE_KEY));
       if (saved) {
         const parsed = JSON.parse(saved) as Partial<DemoData>;
         // Older demo data did not persist a separate customer profile. Restore the
         // most recently used customer so their existing local requests are visible.
         try {
-          const savedProfile = window.localStorage.getItem("iteration13:customer-profile:v1");
+          const savedProfile = window.localStorage.getItem(getStorageKey("iteration13:customer-profile:v1"));
           const latestOrder = Array.isArray(parsed.orders) ? parsed.orders[0] : undefined;
           if (!savedProfile && latestOrder) {
             if (typeof latestOrder.customerName === "string") setCustomerName(latestOrder.customerName);
@@ -319,7 +376,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!ready) return;
-    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch { setNotice("The browser could not save this change locally. Check available storage."); }
+    try { window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(data)); } catch { setNotice("The browser could not save this change locally. Check available storage."); }
   }, [data, ready]);
 
   useEffect(() => {
@@ -378,7 +435,7 @@ export default function Home() {
   function commitData(update: (current: DemoData) => DemoData, successMessage: string) {
     const next = update(data);
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(next));
     } catch {
       setNotice("Could not save that change on this device. Check browser storage and try again.");
       return false;
@@ -441,6 +498,73 @@ export default function Home() {
     setNotice("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+  function switchSharedWorkspace(mode: "example" | "own") {
+    if (!sharedExample) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("workspace", mode);
+    window.history.replaceState({}, "", url.toString());
+    setIsSharedExampleWorkspace(mode === "example");
+  }
+  function loadSharedBusinessExample() {
+    if (!sharedExample) return;
+    switchSharedWorkspace("example");
+    const saved = window.localStorage.getItem(getStorageKey(STORAGE_KEY));
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as Partial<DemoData>;
+        setData({ ...emptyData, ...parsed, services: Array.isArray(parsed.services) ? parsed.services : [], orders: Array.isArray(parsed.orders) ? parsed.orders : [], events: Array.isArray(parsed.events) ? parsed.events : [], receiptProfile: { ...emptyData.receiptProfile!, ...(parsed.receiptProfile || {}) } });
+      } catch { setNotice("The saved example could not be loaded. Reload the shared link and try again."); return; }
+    }
+    setBusinessName(sharedExample.businessName);
+    setBusinessCurrency(sharedExample.currency);
+    setBrandColors(sharedExample.brandColors);
+    setIdentityComplete(true);
+    setView("shop");
+    setNotice(`You are exploring the ${sharedExample.businessName} example. Your changes stay in this browser and do not affect the owner's business.`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function startOwnBusinessSetup() {
+    if (sharedExample) {
+      switchSharedWorkspace("own");
+      setHasPreviousSetup(window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true");
+      setCustomerName("");
+      setEmail("");
+      setWhatsapp("");
+      setSelectedServiceIds([]);
+      setOwnerNotes("");
+    }
+    startNewBusinessSetup();
+  }
+  function shareBusinessExample() {
+    const snapshot: SharedExample = {
+      id: "example-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8),
+      businessName: businessName.trim() || "Your Business",
+      currency: businessCurrency,
+      brandColors: brandColors.slice(0, 3),
+      data: {
+        services: data.services.map(service => ({ id: service.id, name: service.name, industry: service.industry, price: service.price, description: service.description, media: service.media, mediaType: service.mediaType, active: service.active, custom: service.custom })),
+        availability: data.availability || "available",
+        announcement: data.announcement || "",
+        announcementImage: data.announcementImage || "",
+        discountAmount: data.discountAmount,
+        rewardTitle: data.rewardTitle,
+        rewardDescription: data.rewardDescription,
+        rewardImage: data.rewardImage,
+        rewardActive: data.rewardActive,
+      },
+    };
+    const token = encodeSharedExample(snapshot);
+    if (token.length > 16000) { setNotice("This business setup is too large for a share link. Reduce the catalogue or media and try again."); return; }
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.hash = "";
+    url.searchParams.set("example", token);
+    const link = url.toString();
+    setShareLink(link);
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(link).then(() => setNotice("Business example link copied. Visitors receive an independent browser-local copy.")).catch(() => setNotice("Your share link is ready below. Copy it to share the business example."));
+    } else setNotice("Your share link is ready below. Copy it to share the business example.");
+  }
   function loadPreviousBusinessSetup() {
     setIdentityComplete(true);
     setView("shop");
@@ -469,15 +593,15 @@ export default function Home() {
       : [firstService];
     const nextData = identityEditing ? { ...data, services: nextServices } : { ...emptyData, services: nextServices, views: data.views };
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextData));
-      window.localStorage.setItem("iteration13:business-name:v1", name.slice(0, 48));
-      window.localStorage.setItem("iteration13:business-palette:v1", JSON.stringify(brandColors.slice(0, 3)));
-      window.localStorage.setItem("iteration13:store-theme:v1", themeColor);
-      window.localStorage.setItem(CURRENCY_KEY, businessCurrency);
-      window.localStorage.setItem("iteration13:identity-complete:v1", "true");
+      window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(nextData));
+      window.localStorage.setItem(getStorageKey("iteration13:business-name:v1"), name.slice(0, 48));
+      window.localStorage.setItem(getStorageKey("iteration13:business-palette:v1"), JSON.stringify(brandColors.slice(0, 3)));
+      window.localStorage.setItem(getStorageKey("iteration13:store-theme:v1"), themeColor);
+      window.localStorage.setItem(getStorageKey(CURRENCY_KEY), businessCurrency);
+      window.localStorage.setItem(getStorageKey("iteration13:identity-complete:v1"), "true");
       if (!identityEditing && confirmedOverwrite) {
-        window.localStorage.removeItem("iteration13:owner-notes:v1");
-        window.localStorage.removeItem("iteration13:account-extras:v1");
+        window.localStorage.removeItem(getStorageKey("iteration13:owner-notes:v1"));
+        window.localStorage.removeItem(getStorageKey("iteration13:account-extras:v1"));
         setOwnerNotes("");
       }
       setData(nextData);
@@ -546,11 +670,11 @@ export default function Home() {
     recordActivity("service", "Product / service selected · " + service.name);
     setSelected(service.id); setSelectedServiceIds(current => current.includes(service.id) ? current : [...current, service.id]);
     try {
-      const existing = window.localStorage.getItem(CUSTOMER_SELECTION_KEY);
+      const existing = window.localStorage.getItem(getStorageKey(CUSTOMER_SELECTION_KEY));
       const ids = existing ? JSON.parse(existing) : [];
       const nextIds = Array.isArray(ids) ? ids.filter((id): id is string => typeof id === "string") : [];
       if (!nextIds.includes(service.id)) nextIds.push(service.id);
-      window.localStorage.setItem(CUSTOMER_SELECTION_KEY, JSON.stringify(nextIds));
+      window.localStorage.setItem(getStorageKey(CUSTOMER_SELECTION_KEY), JSON.stringify(nextIds));
     } catch { setNotice("The selected item could not be saved on this device. Keep this page open while continuing."); }
     setOrderFormOpen(false); setView("account"); setNotice(`${service.name} added to your selected items. You can return to the Store to add more before continuing.`); setDueDate(""); setBrief(""); setCatalogueQuery("");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -576,8 +700,22 @@ export default function Home() {
     setCatalogueQuery("");
   }
 
+  function beginOwnerShift() {
+    const now = Date.now();
+    const expiresAt = now + sessionDurationHours * 60 * 60 * 1000;
+    setShiftStartedAt(now);
+    setSessionExpiresAt(expiresAt);
+    setSessionNow(now);
+    lastAdminActivity.current = now;
+    try { window.localStorage.setItem(getStorageKey("iteration13:owner-session:v1"), JSON.stringify({ startedAt: now, expiresAt })); } catch { /* the current Briefcase still tracks its active shift */ }
+    commitData(current => ({ ...current, events: [{ id: "EV-" + now.toString(36), kind: "shift-start", label: "Owner Briefcase opened · " + new Date(now).toLocaleString(), at: new Date(now).toISOString() }, ...(current.events || [])] }), "Your Briefcase shift has started.");
+  }
   function requestAdminLogin() {
-    if (adminUnlocked) { setView("admin"); return; }
+    if (adminUnlocked) {
+      if (view !== "admin") beginOwnerShift();
+      setView("admin");
+      return;
+    }
     setAdminPassphrase("");
     setView("login");
     setNotice("Enter the demo access word to open the owner workspace.");
@@ -588,42 +726,51 @@ export default function Home() {
       setNotice("That word is not correct. Enter admin for this demo.");
       return;
     }
-    const now = Date.now();
-    if (!shiftStartedAt || !sessionExpiresAt || sessionExpiresAt <= now) {
-      const expiresAt = now + sessionDurationHours * 60 * 60 * 1000;
-      setShiftStartedAt(now);
-      setSessionExpiresAt(expiresAt);
-      setSessionNow(now);
-      try { window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ startedAt: now, expiresAt, lastActivityAt: now })); } catch { /* demo session remains active for this page */ }
-      commitData(current => ({ ...current, events: [{ id: "EV-" + now.toString(36), kind: "shift-start", label: "Owner shift started · " + new Date(now).toLocaleString(), at: new Date(now).toISOString() }, ...(current.events || [])] }), "Your shift has started. This browser-local timer is illustrative.");
-    } else {
-      try { window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ startedAt: shiftStartedAt, expiresAt: sessionExpiresAt, lastActivityAt: now })); } catch { /* active page session continues */ }
-      setNotice("Owner access resumed. Your existing shift continues; the session timer has not restarted.");
-    }
     setAdminLocked(false);
     setAdminUnlocked(true);
     setAdminPassphrase("");
+    beginOwnerShift();
     setView("admin");
   }
-  function endOwnerShift(expired = false) {
+  function endOwnerShift(expired = false, signOut = true) {
     const now = Date.now();
-    if (shiftStartedAt) commitData(current => ({ ...current, events: [{ id: "EV-" + now.toString(36), kind: expired ? "session-expired" : "shift-end", label: expired ? "Owner session automatically expired" : "Owner manually ended the shift", at: new Date(now).toISOString() }, ...(current.events || [])] }), expired ? "Your owner session expired automatically." : "Your shift has ended.");
-    try { window.localStorage.removeItem("iteration13:owner-session:v1"); } catch { /* no-op */ }
+    if (shiftStartedAt) commitData(current => ({ ...current, events: [{ id: "EV-" + now.toString(36), kind: expired ? "session-expired" : "shift-end", label: expired ? "Owner Briefcase locked after inactivity or maximum duration" : "Owner Briefcase closed", at: new Date(now).toISOString() }, ...(current.events || [])] }), expired ? "Your Briefcase shift ended and owner access was locked." : "Your Briefcase shift has ended.");
+    try { window.localStorage.removeItem(getStorageKey("iteration13:owner-session:v1")); } catch { /* no-op */ }
     setShiftStartedAt(null);
     setSessionExpiresAt(null);
-    setAdminUnlocked(false);
-    setAdminLocked(false);
-    setAdminPassphrase("");
-    setView("shop");
+    if (signOut) {
+      setAdminUnlocked(false);
+      setAdminLocked(false);
+      setAdminPassphrase("");
+      setView("shop");
+    }
   }
+  const previousView = useRef(view);
+  useEffect(() => {
+    if (previousView.current === "admin" && view !== "admin" && shiftStartedAt) endOwnerShift(false, false);
+    previousView.current = view;
+  }, [view, shiftStartedAt]);
+  useEffect(() => {
+    if (!shiftStartedAt || view !== "admin") return;
+    const closeShift = () => {
+      try {
+        const key = getStorageKey(STORAGE_KEY);
+        const saved = JSON.parse(window.localStorage.getItem(key) || "null") as DemoData | null;
+        if (saved) window.localStorage.setItem(key, JSON.stringify({ ...saved, events: [{ id: "EV-" + Date.now().toString(36), kind: "shift-end", label: "Owner Briefcase screen closed", at: new Date().toISOString() }, ...(saved.events || [])] }));
+        window.localStorage.removeItem(getStorageKey("iteration13:owner-session:v1"));
+      } catch { /* browser shutdown must never block closing the page */ }
+    };
+    window.addEventListener("pagehide", closeShift);
+    return () => window.removeEventListener("pagehide", closeShift);
+  }, [shiftStartedAt, view]);
   function setOwnerSessionDuration(value: number) {
     const safeValue = Math.max(1, Math.min(24, Math.round(value)));
     setSessionDurationHours(safeValue);
-    try { window.localStorage.setItem("iteration13:owner-session-duration:v1", String(safeValue)); } catch { /* in-memory setting remains */ }
+    try { window.localStorage.setItem(getStorageKey("iteration13:owner-session-duration:v1"), String(safeValue)); } catch { /* in-memory setting remains */ }
     if (shiftStartedAt) {
       const expiresAt = shiftStartedAt + safeValue * 60 * 60 * 1000;
       setSessionExpiresAt(expiresAt);
-      try { window.localStorage.setItem("iteration13:owner-session:v1", JSON.stringify({ startedAt: shiftStartedAt, expiresAt, lastActivityAt: lastAdminActivity.current })); } catch { /* in-memory timer remains */ }
+      try { window.localStorage.setItem(getStorageKey("iteration13:owner-session:v1"), JSON.stringify({ startedAt: shiftStartedAt, expiresAt, lastActivityAt: lastAdminActivity.current })); } catch { /* in-memory timer remains */ }
     }
   }
   function openAdminGuide(target?: "services" | "announcement" | "requests") {
@@ -728,10 +875,13 @@ export default function Home() {
     {!identityReady || !ready || !businessNameReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete && identityMode === "choice" ? <section className="sd-identity-choice">
       <div className="sd-identity-choice-shell">
         <div className="sd-identity-choice-heading"><span className="sd-kicker">ITERATION13 / BUSINESS OS</span><span className="sd-identity-choice-eyebrow">YOUR NEXT STEP</span><h1>Your business, <em>your choice.</em></h1><p>Start with a fresh business setup or deliberately reopen one you saved before. Your previous setup will not load automatically.</p></div>
-        <div className="sd-identity-choice-grid">
-          <article className="sd-identity-choice-card is-primary"><span>01 / START FRESH</span><h2>Create a new business</h2><p>Enter a new business name, choose your brand colours, set your currency and add the first product / service and its industry.</p><button type="button" onClick={startNewBusinessSetup}>Create new business <b aria-hidden="true">↗</b></button></article>
-          <article className="sd-identity-choice-card"><span>02 / RETURN TO A SETUP</span><h2>Load previous setup</h2>{hasPreviousSetup ? <><div className="sd-identity-saved-preview"><strong>{businessName.trim() || "Your saved business"}</strong><small>{data.services.length} saved product / service{data.services.length === 1 ? "" : "s"} · {businessCurrency} · this browser</small><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div></div><p>Restore the business identity and local demo storefront saved on this device.</p><button type="button" onClick={loadPreviousBusinessSetup}>Load {businessName.trim() || "previous setup"} <b aria-hidden="true">↗</b></button></> : <><p>No previous business setup has been saved in this browser yet. Create one first and it will be available here next time.</p><button type="button" disabled>Nothing to load yet</button></>}</article>
-        </div>
+        {sharedExample && isSharedExampleWorkspace ? <div className="sd-identity-choice-grid">
+          <article className="sd-identity-choice-card is-primary"><span>01 / BUSINESS EXAMPLE</span><h2>Explore {sharedExample.businessName}</h2><p>Open the Store, customer Account and owner Briefcase using this business setup. Your exploration is saved separately in this browser.</p><button type="button" onClick={loadSharedBusinessExample}>Explore the {sharedExample.businessName} example <b aria-hidden="true">↗</b></button></article>
+          <article className="sd-identity-choice-card"><span>02 / MAKE IT YOURS</span><h2>Create your own business</h2><p>Start with a clean business identity, your own products or services and a separate local workspace.</p><button type="button" onClick={startOwnBusinessSetup}>Create my own business <b aria-hidden="true">↗</b></button></article>
+        </div> : <div className="sd-identity-choice-grid">
+          <article className="sd-identity-choice-card is-primary"><span>01 / START FRESH</span><h2>Create a new business</h2><p>Enter a new business name, choose your brand colours, set your currency and add the first product / service and its industry.</p><button type="button" onClick={startOwnBusinessSetup}>Create new business <b aria-hidden="true">↗</b></button></article>
+          <article className="sd-identity-choice-card"><span>02 / RETURN TO A SETUP</span><h2>Load previous setup</h2>{hasPreviousSetup ? <><div className="sd-identity-saved-preview"><strong>{businessName.trim() || "Your saved business"}</strong><small>{data.services.length} saved product / service{data.services.length === 1 ? "" : "s"} · {businessCurrency} · this browser</small><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div></div><p>Restore the business identity and local demo storefront saved on this device.</p><button type="button" onClick={loadPreviousBusinessSetup}>Load {businessName.trim() || "previous setup"} <b aria-hidden="true">↗</b></button></> : <><p>No previous business setup has been saved in this browser yet. Create one first and it will be available here.</p><button type="button" disabled>Nothing to load yet</button></>}</article>
+        </div>}
         <p className="sd-identity-choice-footnote">One business is saved on this device. Load it whenever you return, or create a new one and confirm before replacing it.</p>
       </div>
     </section> : !identityComplete ? <section className="sd-identity-onboarding">
@@ -852,6 +1002,7 @@ export default function Home() {
     <small>Example: Metsi Wellness. Use a real or fictional name. Your Store, Account and Briefcase rebrand together instantly.</small>
   </div>
   <div className="sd-business-identity-preview" style={{borderColor:themeColor}}><span className="sd-kicker">LIVE BUSINESS IDENTITY</span><strong>{businessName.trim() || "Your Business"}</strong><small>Store · Account · Briefcase</small><button type="button" className="sd-small-button" onClick={openBusinessSetup}>Edit business setup ↗</button></div>
+  <div className="sd-business-share"><div><span className="sd-kicker">SHARE YOUR BUSINESS EXAMPLE</span><p>Share this exact Store, Account and Briefcase setup. Visitors get their own browser-local copy; your customer records and owner notes are never included.</p></div><button type="button" className="sd-button sd-outline" onClick={shareBusinessExample}>Generate share link ↗</button>{shareLink && <label>Share link<input readOnly value={shareLink} onFocus={event=>event.currentTarget.select()} aria-label="Business example share link" /></label>}</div>
 </section>
 <div className="sd-theme-control sd-palette-control" data-admin-tab="store" aria-label="Business brand colours"><div><strong>Brand palette · {brandColors.length} of 3 colours</strong><small>One to three brand colours shared by Store, Account, Briefcase and receipts.</small></div><div className="sd-admin-palette-swatches">{brandColorOptions.map(option => <button key={option.color} type="button" className={brandColors.includes(option.color) ? "is-selected" : ""} style={{ "--swatch": option.color } as React.CSSProperties} aria-label={option.label} aria-pressed={brandColors.includes(option.color)} onClick={() => toggleBrandColor(option.color)}>{brandColors.includes(option.color) ? "✓" : "+"}</button>)}<label title="Choose a custom brand colour"><input type="color" value={customBrandColor} onChange={event=>setCustomBrandColor(event.target.value)} aria-label="Custom brand colour"/><button type="button" onClick={addCustomBrandColor}>Add</button></label></div></div><nav className="sd-os-nav" aria-label="Business OS sections"><button type="button" aria-pressed={adminTab==="today"} onClick={()=>setAdminTab("today")}>Today</button><button type="button" aria-pressed={adminTab==="work"} onClick={()=>setAdminTab("work")}>Customers &amp; jobs</button><button type="button" aria-pressed={adminTab==="money"} onClick={()=>setAdminTab("money")}>Money</button><button type="button" aria-pressed={adminTab==="store"} onClick={()=>setAdminTab("store")}>Store design</button><button type="button" aria-pressed={adminTab==="notes"} onClick={()=>setAdminTab("notes")}>My Notes</button><button type="button" aria-pressed={adminTab==="insights"} onClick={()=>setAdminTab("insights")}>Insights</button></nav><div className="sd-admin-head"><div><span className="sd-kicker">YOUR BRIEFCASE / {adminTab === "today" ? "TODAY" : adminTab === "work" ? "CUSTOMERS & JOBS" : adminTab === "money" ? "MONEY" : adminTab === "store" ? "STORE DESIGN" : adminTab === "notes" ? "MY NOTES" : "INSIGHTS"}</span><h2>{adminTab === "today" ? "Your business at a glance" : adminTab === "work" ? "Customers & jobs" : adminTab === "money" ? "Money & records" : adminTab === "store" ? "Your customer Store" : adminTab === "notes" ? "Your working notes" : "Business insights"}</h2></div><div className="sd-admin-head-actions"><button className="sd-button sd-outline" onClick={() => setView("shop")}>View storefront ↗</button><button className="sd-button sd-outline" onClick={() => setView("account")}>Customer account ↗</button></div></div><div className="sd-stats sd-pulse-metrics" id="admin-today" data-admin-tab="today">
  <article className="is-primary"><span>Requests received</span><strong>{data.orders.length}</strong><small>Saved on this device</small><i aria-hidden="true">↗</i></article>
