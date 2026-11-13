@@ -3871,3 +3871,103 @@ h1 em,
   -webkit-text-fill-color:#ffffff!important;
   opacity:1!important;
 }
+
+
+/* Compact Business OS cockpit: persistent, scrollable destinations and on-demand detail. */
+.serviceDemo .sd-admin .sd-os-nav{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  flex-wrap:nowrap;
+  gap:7px;
+  overflow-x:auto;
+  overscroll-behavior-x:contain;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+  padding:8px 2px;
+  margin:8px 0 12px;
+  border:0;
+  border-bottom:1px solid #d8e0e8;
+  border-radius:0;
+  background:rgba(247,249,251,.97);
+  backdrop-filter:blur(12px);
+}
+.serviceDemo .sd-admin .sd-os-nav::-webkit-scrollbar{display:none}
+.serviceDemo .sd-admin .sd-os-nav button{
+  flex:0 0 auto;
+  min-height:42px;
+  padding:9px 13px;
+  white-space:nowrap;
+  border-radius:10px;
+  font-size:.78rem;
+}
+.serviceDemo .sd-admin .sd-os-heading{margin:12px 0 8px;gap:12px}
+.serviceDemo .sd-admin .sd-os-heading h1{font-size:clamp(1.45rem,4vw,2rem);line-height:1.08;margin:4px 0}
+.serviceDemo .sd-admin .sd-os-heading p{margin:4px 0;font-size:.82rem}
+.serviceDemo .sd-admin .sd-admin-head{margin:8px 0;padding:10px 12px;gap:12px}
+.serviceDemo .sd-admin .sd-admin-head h2{font-size:1.1rem;margin:2px 0}
+.serviceDemo .sd-admin .sd-admin-head p{display:none}
+.serviceDemo .sd-admin .sd-admin-head-actions{gap:7px}
+.serviceDemo .sd-admin .sd-admin-head-actions .sd-button{min-height:38px;padding:7px 10px;font-size:.72rem}
+.serviceDemo .sd-admin .sd-stats{gap:8px;margin:8px 0}
+.serviceDemo .sd-admin .sd-stats article{padding:10px;border-radius:11px}
+.serviceDemo .sd-admin .sd-owner-action-desk{margin:10px 0;padding:12px}
+.serviceDemo .sd-admin .sd-owner-action-copy p{display:none}
+.serviceDemo .sd-admin .sd-owner-action-copy h2{font-size:1rem;margin:3px 0}
+.serviceDemo .sd-admin .sd-owner-action-grid{gap:8px}
+.serviceDemo .sd-admin .sd-owner-action-grid article{padding:10px;gap:8px}
+.serviceDemo .sd-admin .sd-owner-shift-details{padding:0;overflow:hidden}
+.serviceDemo .sd-admin .sd-owner-shift-details>summary{
+  display:flex;align-items:center;gap:10px;min-height:54px;padding:9px 12px;cursor:pointer;list-style:none
+}
+.serviceDemo .sd-admin .sd-owner-shift-details>summary::-webkit-details-marker{display:none}
+.serviceDemo .sd-admin .sd-owner-shift-details>summary::after{content:"＋";margin-left:auto;color:#344054;font-size:1rem;font-weight:800}
+.serviceDemo .sd-admin .sd-owner-shift-details[open]>summary::after{content:"−"}
+.serviceDemo .sd-admin .sd-owner-shift-details .sd-shift-summary-hint{font-size:.7rem;color:#526174;font-weight:700}
+.serviceDemo .sd-admin .sd-owner-shift-details:not([open]){border-left-width:4px}
+.serviceDemo .sd-admin .sd-owner-shift-details>p{margin:8px 12px 12px}
+.serviceDemo .sd-admin .sd-availability-control{margin:8px 0;padding:11px 12px;gap:10px}
+.serviceDemo .sd-admin .sd-availability-options{gap:6px}
+.serviceDemo .sd-admin .sd-availability-options button{min-height:38px;padding:7px 10px}
+.serviceDemo .sd-admin .sd-insights-deep-dive,
+.serviceDemo .sd-admin .sd-insights-activity{
+  margin:10px 0;border:1px solid #cbd5df;border-radius:13px;background:#fff;color:#202b38;overflow:hidden
+}
+.serviceDemo .sd-admin .sd-insights-deep-dive>summary,
+.serviceDemo .sd-admin .sd-insights-activity>summary{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;padding:11px 13px;cursor:pointer;list-style:none
+}
+.serviceDemo .sd-admin .sd-insights-deep-dive>summary::-webkit-details-marker,
+.serviceDemo .sd-admin .sd-insights-activity>summary::-webkit-details-marker{display:none}
+.serviceDemo .sd-admin .sd-insights-deep-dive>summary>span,
+.serviceDemo .sd-admin .sd-insights-activity>summary>span{display:grid;gap:3px}
+.serviceDemo .sd-admin .sd-insights-deep-dive>summary strong,
+.serviceDemo .sd-admin .sd-insights-activity>summary strong{color:#202b38;font-size:.88rem}
+.serviceDemo .sd-admin .sd-insights-deep-dive>summary small,
+.serviceDemo .sd-admin .sd-insights-activity>summary small{color:#526174;font-size:.72rem}
+.serviceDemo .sd-admin .sd-insights-deep-dive>summary>b,
+.serviceDemo .sd-admin .sd-insights-activity>summary>b{flex:none;color:#344054;font-size:.72rem}
+.serviceDemo .sd-admin .sd-insights-deep-dive[open]>summary,
+.serviceDemo .sd-admin .sd-insights-activity[open]>summary{border-bottom:1px solid #d8e0e8;background:#f5f7f9}
+.serviceDemo .sd-admin .sd-insights-deep-dive>section,
+.serviceDemo .sd-admin .sd-insights-deep-dive>.sd-capacity-playground{margin:12px}
+.serviceDemo .sd-admin .sd-insights-activity .sd-local-activity-feed{margin:0 12px 12px}
+.serviceDemo .sd-admin .sd-insights-activity .sd-local-analytics-boundary{margin:0 12px 12px}
+.serviceDemo .sd-admin .sd-capacity-reference>.sd-panel-head{margin-bottom:8px}
+.serviceDemo .sd-admin .sd-capacity-reference>.sd-admin-help{margin:6px 0 10px}
+.serviceDemo .sd-admin .sd-capacity-reference .sd-local-analytics-columns{gap:10px;margin:10px 0}
+.serviceDemo .sd-admin .sd-capacity-reference .sd-infrastructure-intro{margin:8px 0;font-size:.82rem;line-height:1.5}
+.serviceDemo .sd-admin .sd-capacity-reference .sd-live-work-snapshot{padding:12px}
+.serviceDemo .sd-admin .sd-capacity-reference .sd-live-work-grid{gap:8px}
+.serviceDemo .sd-admin .sd-capacity-reference .sd-live-work-grid article{padding:9px}
+.serviceDemo .sd-admin .sd-capacity-reference .sd-capacity-model-note{margin:10px 12px 14px}
+@media(max-width:640px){
+  .serviceDemo .sd-admin .sd-os-nav{margin:6px -2px 10px;padding:7px 2px}
+  .serviceDemo .sd-admin .sd-os-nav button{min-height:42px;padding:8px 11px;font-size:.75rem}
+  .serviceDemo .sd-admin .sd-admin-head{align-items:flex-start}
+  .serviceDemo .sd-admin .sd-admin-head-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .serviceDemo .sd-admin .sd-admin-head-actions .sd-button{width:100%}
+  .serviceDemo .sd-admin .sd-insights-deep-dive>summary,
+  .serviceDemo .sd-admin .sd-insights-activity>summary{padding:10px 11px}
+}
