@@ -181,3 +181,15 @@ Run `npm run verify:identity`, `npm run lint`, and `npm run build` when the avai
 - First-run guidance should teach the connected Store · Account · Briefcase model through a live preview and a short optional journey. Explain the owner's keys as access to customers, jobs, money, records, store presentation and insights—not simply brand-colour controls.
 - Preserve a generic, editable base. Niche-specific clones can be refined for a particular market while Iteration13 remains a flexible demonstration and template.
 - Motion and signalers clarify real state changes, respect reduced motion and never replace persistent records or truthful operational status.
+
+
+## Product-owner clarification — briefcase intent, shifts and compact account (2026-11-13)
+
+This clarification overrides any interpretation that adds an unnecessary intermediate shift-start step:
+
+- The single footer 💼 Briefcase click is explicit owner intent. It opens the owner access flow; once access is granted, that same journey automatically starts the work session/shift. There is no separate Start Shift button, no second confirmation, no extra navigation or repeated click. Do not ask the owner to click again to declare the intent already expressed by opening the Briefcase.
+- Record the session/shift start automatically at successful access. Provide one clear End session / Sign out action. Apply the configured maximum session duration and automatically expire the session at its limit. Do not confuse browser inactivity with the owner's decision to start work. If a production backend exists, record timestamps server-side; browser-local timestamps in this prototype are illustrative only and must be labelled accordingly.
+- Customers must never see private owner shift duration or staff attendance. Show only truthful business availability, the customer's request status, last update and a response estimate only when the business has actually set one.
+- Keep the customer Account compact and action-led: one clear account heading, one activity lookup, selected items only when present, the request list as the durable status record, and direct access to messages/receipts/rewards. Remove repeated headings and duplicate status/notification summaries. Remove test-notification controls and demo reminder theatre from ordinary customer-facing Account UI.
+- The chosen primary, secondary and optional highlight brand hues must all be visibly and purposefully represented across Store, Account and Briefcase, with a distinct visual treatment per surface. Do not collapse secondary/highlight into primary or use them as low-contrast text. Preserve neutral readable surfaces and WCAG AA contrast.
+- Keep the public admin entry as one icon-only footer briefcase. Do not add Admin/Staff/Login navigation or a second entry affordance. The one-word access field remains the only credential field. Production access must use server-side `ADMIN_PASSWORD`, fail closed when absent, and must not use the prototype's local demo word as production authentication.
