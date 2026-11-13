@@ -224,6 +224,16 @@ export default function Home() {
       const saved = window.localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as Partial<DemoData>;
+        // Older demo data did not persist a separate customer profile. Restore the
+        // most recently used customer so their existing local requests are visible.
+        try {
+          const savedProfile = window.localStorage.getItem("iteration13:customer-profile:v1");
+          const latestOrder = Array.isArray(parsed.orders) ? parsed.orders[0] : undefined;
+          if (!savedProfile && latestOrder) {
+            if (typeof latestOrder.customerName === "string") setCustomerName(latestOrder.customerName);
+            if (typeof latestOrder.email === "string") setEmail(latestOrder.email);
+          }
+        } catch { /* the customer can enter their email in Account */ }
         setData({ ...emptyData, ...parsed, services: Array.isArray(parsed.services) ? parsed.services : [], orders: Array.isArray(parsed.orders) ? parsed.orders : [], announcement: typeof parsed.announcement === "string" ? parsed.announcement : "", views: (Number(parsed.views) || 0) + 1, events: [...(Array.isArray(parsed.events) ? parsed.events : []), { id: "EV-"+Date.now().toString(36), kind: "visit", label: "Store visited", at: new Date().toISOString() }], receiptProfile: { ...emptyData.receiptProfile!, ...(parsed.receiptProfile || {}) } });
         setAnnouncementDraft(typeof parsed.announcement === "string" ? parsed.announcement : "");
         setAnnouncementImageDraft(typeof parsed.announcementImage === "string" ? parsed.announcementImage : "");
