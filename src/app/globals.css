@@ -3639,3 +3639,5 @@ h1 em,
 @media(max-width:420px){.sd-account-ready{padding:6px 8px}.sd-care-topline{flex-wrap:wrap}.sd-availability{margin-left:auto}.sd-care-request{flex-direction:column}.sd-care-status{align-self:flex-start}.sd-owner-shift-metrics strong{font-size:1.15rem}}
 
 .sd-account-compact .sd-account-brand-mark{position:relative;overflow:visible}.sd-account-heart{position:absolute;right:-4px;bottom:-5px;display:grid;place-items:center;width:17px;height:17px;border:2px solid #fff;border-radius:50%;background:var(--account-highlight,#c04467);color:#fff;font-size:.58rem;line-height:1}
+
+.sd-account-quick-links>button{padding:0;border:0;background:transparent;color:#344054;font:inherit;font-size:.76rem;font-weight:800;cursor:pointer}.sd-account-quick-links>button:hover{color:var(--account-brand);text-decoration:underline;text-underline-offset:3px}
