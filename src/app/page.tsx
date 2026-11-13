@@ -557,7 +557,7 @@ export default function Home() {
   }
   function openRequestForm() {
     setOrderFormOpen(true); setView("account");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.setTimeout(() => document.getElementById("service-order")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
   }
 
   function addCatalogueItem() {
