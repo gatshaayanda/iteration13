@@ -26,7 +26,8 @@ check(sw.includes('url.pathname.startsWith("/api/")') && sw.includes("const isPr
 check(sw.includes('event.data?.type === "CACHE_MEDIA"'), "service worker must accept the page's current media list");
 check(sw.includes('event.data?.type === "SKIP_WAITING"') && !sw.includes("await self.skipWaiting()"), "updates must wait for the user's explicit refresh action");
 check(sw.includes('return await cache.match(request) || await cache.match("/") || await cache.match("/offline")'), "offline public navigation must fall back to the saved app shell and offline route");
-check(pwaRegister.includes("setOffline(!navigator.onLine)") && pwaRegister.includes('window.addEventListener("offline", off)') && pwaRegister.includes('window.addEventListener("online", online)'), "offline and reconnect status must follow browser connectivity events");
+check(page.includes("setOnline(navigator.onLine)") && page.includes('window.addEventListener("offline", syncOnline)') && page.includes('window.addEventListener("online", syncOnline)'), "the compact Store offline indicator must follow browser connectivity events");
+check(pwaRegister.includes('window.addEventListener("online", online)') && pwaRegister.includes('window.removeEventListener("online", online)'), "pending notification delivery must retry when connectivity returns");
 check(!pwaRegister.includes("offlineBanner") && !page.includes("sd-offline-notice") && !pwaCss.includes(".offlineBanner"), "duplicated full-width offline/reconnect banners must stay removed");
 check(page.includes('role="status" aria-live="polite" aria-atomic="true"') && page.includes("Offline · local demo"), "the compact Store connectivity indicator must announce offline state accessibly");
 check(pwaCss.includes(".pwaUpdate{position:fixed;top:calc(env(safe-area-inset-top") && pwaCss.includes("bottom:auto"), "update-ready prompt must stay compact at the top, not cover bottom actions");
