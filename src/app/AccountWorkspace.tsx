@@ -115,7 +115,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
         <span className="sd-account-brand-mark" aria-hidden="true">{monogram}<span className="sd-account-heart">♥</span></span>
         <div><span className="sd-account-overline">{businessName}</span><strong>Customer account</strong></div>
       </div>
-      <span className="sd-account-ready"><span aria-hidden="true">●</span> Account ready</span>
+      <span className="sd-account-ready"><span aria-hidden="true">●</span> On this device</span>
     </header>
 
     <div className="sd-account-compact-intro">
@@ -124,9 +124,9 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
     </div>
 
     <section className="sd-care-card" aria-labelledby="sd-care-title">
-      <div className="sd-care-topline"><div className="sd-care-brand-icon" aria-hidden="true"><span>{monogram}</span><b>♥</b></div><div className="sd-care-heading"><span className="sd-kicker">YOUR CUSTOMER CARE</span><h2 id="sd-care-title">Care</h2></div><span className="sd-availability" style={{ "--availability-color": availabilityColor } as React.CSSProperties}><i />{availabilityLabel}</span></div>
+      <div className="sd-care-topline"><div className="sd-care-heading"><span className="sd-kicker">YOUR CUSTOMER SPACE</span><h2 id="sd-care-title">Current request</h2></div><span className="sd-availability" style={{ "--availability-color": availabilityColor } as React.CSSProperties}><i />{availabilityLabel}</span></div>
       {currentOrder ? <>
-        <div className="sd-care-request"><div><span className="sd-care-label">YOUR CURRENT REQUEST</span><h3>{currentOrder.serviceItems?.length ? currentOrder.serviceItems.map(item => item.name).join(" + ") : currentOrder.serviceName}</h3><p>Received {timeAgo(currentOrder.createdAt)} · {formatShortDate(currentOrder.createdAt)} · {currentOrder.quotedPrice ? "Quote: " + money(currentOrder.quotedPrice) : currentOrder.serviceItems?.some(item => item.price === 0) ? "Quote to be confirmed" : money(currentOrder.price)}</p></div><span className="sd-care-status">{currentOrder.status}</span></div>
+        <div className="sd-care-request"><div><span className="sd-care-label">REQUEST DETAILS</span><h3>{currentOrder.serviceItems?.length ? currentOrder.serviceItems.map(item => item.name).join(" + ") : currentOrder.serviceName}</h3><p>Received {timeAgo(currentOrder.createdAt)} · {formatShortDate(currentOrder.createdAt)} · {typeof currentOrder.quotedPrice === "number" ? "Proposed quote · " + money(currentOrder.quotedPrice) : currentOrder.serviceItems?.some(item => item.price === 0) ? "Quote to be confirmed" : "Catalogue estimate · " + money(currentOrder.price)}</p></div><span className="sd-care-status">{currentOrder.status}</span></div>
         <div className="sd-care-next"><span className="sd-care-label">WHAT HAPPENS NEXT</span><strong>{currentOrder.status === "New request" ? "Business review" : currentOrder.status === "Completed" ? "Request completed" : currentOrder.status === "Declined" ? "Request closed" : currentOrder.status === "Quote ready" ? "Your review" : currentOrder.status === "Reviewing" ? "Business reviewing" : currentOrder.status === "In progress" ? "Business working" : "Business handling"}</strong><p>{careMessage}</p>{lastBusinessUpdate && <small>Last business update · {formatShortDate(lastBusinessUpdate)}</small>}</div>
         <button type="button" className="sd-care-conversation" onClick={() => { setOpenThread(currentOrder.id); document.getElementById("care-request-" + currentOrder.id)?.scrollIntoView({behavior:"smooth",block:"start"}); }}>Open conversation <span>↗</span></button>
       </> : <div className="sd-care-next"><strong>Your next step starts here.</strong><p>{careMessage}</p></div>}
@@ -134,12 +134,12 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
 
     <div className="sd-account-quick-stats" aria-label="Account summary">
       <div><strong>{openOrders}</strong><span>Active {openOrders === 1 ? "request" : "requests"}</span></div>
-      <div><strong>{newUpdates}</strong><span>Business {newUpdates === 1 ? "update" : "updates"}</span></div>
+      <div><strong>{newUpdates}</strong><span>Business {newUpdates === 1 ? "message" : "messages"}</span></div>
       <button type="button" onClick={onNewRequest}>＋ Start a new request</button>
     </div>
 
     {selectedServices.length > 0 && <details className="sd-account-basket" open={basketOpen} onToggle={event => setBasketOpen(event.currentTarget.open)}>
-      <summary><span>Your selections · {selectedServices.length} {selectedServices.length === 1 ? "item" : "items"} · {selectedServices.some(item=>item.custom) ? "Quote required" : money(selectedServices.reduce((sum,item)=>sum+item.price,0))}</span><b>Edit</b></summary>
+      <summary><span>Selected for your next request · {selectedServices.length} {selectedServices.length === 1 ? "item" : "items"} · {selectedServices.some(item=>item.custom) ? "Quote required" : money(selectedServices.reduce((sum,item)=>sum+item.price,0))}</span><b>Edit</b></summary>
       <div className="sd-account-basket-body"><ul>{selectedServices.map(item=><li key={item.id}><span><strong>{item.name}</strong><small>{item.custom ? "Custom item · quote required" : item.price > 0 ? money(item.price) : "Price to be confirmed"}</small></span><button type="button" onClick={()=>onRemoveSelected(item.id)} aria-label={`Remove ${item.name}`}>Remove</button></li>)}</ul><div className="sd-account-basket-actions"><button type="button" className="sd-button sd-primary" onClick={onContinueRequest}>Continue with selected items →</button><button type="button" className="sd-account-secondary-action" onClick={onBrowse}>＋ Add another service</button></div></div>
     </details>}
 
@@ -154,7 +154,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
     </nav>
 
     <section className="sd-account-detail-section" id="care-requests">
-      <div className="sd-account-detail-heading"><div><span className="sd-kicker">CARE ACTIVITY</span><h2>Updates from the business</h2></div><span>{accountUpdates.length} updates</span></div>
+      <div className="sd-account-detail-heading"><div><span className="sd-kicker">RECENT ACTIVITY</span><h2>Your updates</h2></div><span>{accountUpdates.length} updates</span></div>
       {accountUpdates.length ? <ol className="sd-care-feed">{accountUpdates.slice(0,5).map(update=><li key={update.id}><span className={update.kind === "message" ? "is-message" : "is-status"} aria-hidden="true">{update.kind === "message" ? "✉" : "♥"}</span><div><strong>{update.title}</strong><p>{update.detail}</p>{update.createdAt && <time>{formatShortDate(update.createdAt)}</time>}</div></li>)}</ol> : <p className="sd-account-notification-empty">Your updates will appear here when the business responds or changes your request status.</p>}
       {filteredOrders.length > 0 && <div className="sd-care-request-list">{filteredOrders.map(order => {
         const messages = order.messages || [];
