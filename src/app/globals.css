@@ -3641,3 +3641,26 @@ h1 em,
 .sd-account-compact .sd-account-brand-mark{position:relative;overflow:visible}.sd-account-heart{position:absolute;right:-4px;bottom:-5px;display:grid;place-items:center;width:17px;height:17px;border:2px solid #fff;border-radius:50%;background:var(--account-highlight,#c04467);color:#fff;font-size:.58rem;line-height:1}
 
 .sd-account-quick-links>button{padding:0;border:0;background:transparent;color:#344054;font:inherit;font-size:.76rem;font-weight:800;cursor:pointer}.sd-account-quick-links>button:hover{color:var(--account-brand);text-decoration:underline;text-underline-offset:3px}
+
+/* Header navigation: keep Store and Account unmistakably readable. */
+.serviceDemo .sd-header nav button{
+  min-height:42px;
+  padding:9px 14px;
+  border:1px solid #17191b;
+  border-radius:9px;
+  background:#17191b;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff;
+  font-size:13px;
+  font-weight:800;
+}
+.serviceDemo .sd-header nav button:hover{
+  background:#30343a;
+  border-color:#30343a;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff;
+}
+.serviceDemo .sd-header nav button:focus-visible{
+  outline:3px solid #17191b;
+  outline-offset:3px;
+}
