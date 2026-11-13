@@ -51,7 +51,7 @@ self.addEventListener("notificationclick", (event) => {
   }));
 });
 
-const CACHE_VERSION = "iteration13-shell-v6";
+const CACHE_VERSION = "iteration13-shell-v7";
 const MEDIA_CACHE = "iteration13-media-v4";
 const SHELL_CACHE = CACHE_VERSION;
 const STATIC_LIMIT = 100;
@@ -98,7 +98,7 @@ async function precacheShell() {
       }
     } catch {}
   }));
-  try { await trimCache(SHELL_CACHE, STATIC_LIMIT); } catch {}
+  try { await trimCache(SHELL_CACHE, STATIC_LIMIT, APP_SHELL); } catch {}
 }
 
 self.addEventListener("message", event => {
@@ -191,7 +191,7 @@ async function networkFirstNavigation(request, event) {
       void caches.open(SHELL_CACHE).then(async cache => {
         try {
           await cache.put(request, response.clone());
-          await trimCache(SHELL_CACHE, PUBLIC_PAGE_LIMIT + STATIC_LIMIT);
+          await trimCache(SHELL_CACHE, PUBLIC_PAGE_LIMIT + STATIC_LIMIT, APP_SHELL);
         } catch {
           // Cache quota failures must not affect the live navigation response.
         }
@@ -307,7 +307,7 @@ async function cacheFirst(request) {
     if (response.ok) {
       try {
         await cache.put(request, response.clone());
-        await trimCache(SHELL_CACHE, STATIC_LIMIT + PUBLIC_PAGE_LIMIT);
+        await trimCache(SHELL_CACHE, STATIC_LIMIT + PUBLIC_PAGE_LIMIT, APP_SHELL);
       } catch {
         // Storage quota failures must not block a successfully fetched asset.
       }
@@ -318,9 +318,12 @@ async function cacheFirst(request) {
   }
 }
 
-async function trimCache(cacheName, maxEntries) {
+async function trimCache(cacheName, maxEntries, preservePaths = []) {
   const cache = await caches.open(cacheName);
   const keys = await cache.keys();
   if (keys.length <= maxEntries) return;
-  await Promise.all(keys.slice(0, keys.length - maxEntries).map(request => cache.delete(request)));
+  const preserved = new Set(preservePaths.map(path => new URL(path, self.location.origin).href));
+  const removable = keys.filter(request => !preserved.has(request.url));
+  const excess = keys.length - maxEntries;
+  await Promise.all(removable.slice(0, excess).map(request => cache.delete(request)));
 }
