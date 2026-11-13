@@ -18,6 +18,10 @@ type Props = {
   discountClaims: DiscountClaim[];
   receiptProfile?: ReceiptProfile;
   accentColor: string;
+  secondaryColor: string;
+  highlightColor: string;
+  availability: "available" | "limited" | "unavailable";
+  customerName?: string;
   email: string;
   setEmail: (email: string) => void;
   online: boolean;
@@ -38,22 +42,22 @@ const prettyDate = (value: string) => { try { return new Date(value).toLocaleStr
 const deadlineAt = (value: string) => new Date(`${value}T23:59:59`).getTime();
 const countdownLabel = (value: string, now: number) => { const delta = deadlineAt(value) - now; if (!Number.isFinite(delta)) return "Date not set"; if (delta < 0) return "Target date passed"; const totalMinutes = Math.floor(delta / 60000); const days = Math.floor(totalMinutes / 1440); const hours = Math.floor((totalMinutes % 1440) / 60); const minutes = totalMinutes % 60; return [days ? `${days}d` : "", `${hours}h`, `${minutes}m`].filter(Boolean).join(" "); };
 
-export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm, onNewRequest, selectedServices, onRemoveSelected, onContinueRequest }: Props) {
+export default function AccountWorkspace({ businessName, orders, discountClaims, receiptProfile, accentColor, secondaryColor, highlightColor, availability, customerName, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm, onNewRequest, selectedServices, onRemoveSelected, onContinueRequest }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [uploadingOrder, setUploadingOrder] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadNotice, setUploadNotice] = useState("");
   const [openThread, setOpenThread] = useState<string | null>(null);
-  const [clockNow, setClockNow] = useState(() => Date.now());
-  const [testNotificationState, setTestNotificationState] = useState("");
-  useEffect(() => { const timer = window.setInterval(() => setClockNow(Date.now()), 60000); return () => window.clearInterval(timer); }, []);
+  const [basketOpen, setBasketOpen] = useState(false);
+  const [lookupOpen, setLookupOpen] = useState(false);
   const normalizedEmail = email.trim().toLowerCase();
   const filteredOrders = useMemo(() => normalizedEmail ? orders.filter(order => order.email.trim().toLowerCase() === normalizedEmail) : [], [orders, normalizedEmail]);
   const matchingRewards = useMemo(() => normalizedEmail ? discountClaims.filter(claim => claim.email.trim().toLowerCase() === normalizedEmail) : [], [discountClaims, normalizedEmail]);
   const totalMessages = filteredOrders.reduce((total, order) => total + (order.messages?.length || 0), 0);
   const openOrders = filteredOrders.filter(order => !["Completed", "Declined"].includes(order.status)).length;
   const fileCount = filteredOrders.reduce((total, order) => total + (order.messages || []).filter(message => Boolean(message.attachment)).length, 0);
-  const nextDeadlineOrder = filteredOrders.filter(order => order.dueDate && !["Completed", "Declined", "Cancelled"].includes(order.status)).sort((a,b) => deadlineAt(a.dueDate)-deadlineAt(b.dueDate))[0];
+  const currentOrder = filteredOrders.find(order => !["Completed", "Declined", "Cancelled"].includes(order.status)) || filteredOrders[0];
+  const newUpdates = filteredOrders.reduce((count, order) => count + (order.messages || []).filter(message => message.from === "studio").length, 0);
   const accountUpdates = useMemo(() => filteredOrders.flatMap(order => [
     { id: order.id + ":status", title: order.serviceName + " · " + order.status, detail: order.status === "New request" ? "Your request has been received on this device and is awaiting review." : "Current request status", createdAt: order.statusUpdatedAt || order.createdAt, kind: "status" as const },
     ...(order.messages || []).filter(message => message.from === "studio").map(message => ({ id: message.id, title: "Message from " + businessName, detail: message.text || (message.attachment ? "A file was shared with your request." : "A new request message is available."), createdAt: message.createdAt, kind: "message" as const }))
@@ -64,29 +68,6 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
     onUploadProgress: progress => setUploadProgress(Math.max(0, Math.min(100, Math.round(progress)))),
     onUploadError: error => { setUploadNotice(error.message || "Upload failed. Your message has not been sent."); setUploadingOrder(null); setUploadProgress(0); },
   });
-
-  async function sendTestNotification() {
-    if (!nextDeadlineOrder) { setTestNotificationState("Add a request with a target date to preview a deadline reminder."); return; }
-    if (!("Notification" in window) || !("serviceWorker" in navigator)) { setTestNotificationState("This browser does not support persistent app notifications."); return; }
-    try {
-      let permission = Notification.permission;
-      if (permission === "default") permission = await Notification.requestPermission();
-      if (permission !== "granted") { setTestNotificationState(permission === "denied" ? "Notifications are blocked in browser settings." : "Notification permission was not granted."); return; }
-      const registration = await navigator.serviceWorker.getRegistration();
-      if (!registration) { setTestNotificationState("The app notification worker is not active yet. Reopen the installed app and try again."); return; }
-      const remaining = countdownLabel(nextDeadlineOrder.dueDate, Date.now());
-      await registration.showNotification("Test update · " + businessName, {
-        body: nextDeadlineOrder.serviceName + " · target date in " + remaining + ". This is a test notification.",
-        icon: "/iteration13-icon-192.png",
-        badge: "/iteration13-icon-192.png",
-        tag: "iteration13-account-test",
-        data: { link: "/?view=account" }
-      });
-      setTestNotificationState("Test notification sent to this device.");
-    } catch {
-      setTestNotificationState("Could not send the test notification. Check app notification permission and try again.");
-    }
-  }
 
   function sendMessage(order: WorkspaceOrder, attachment?: AccountAttachment) {
     const messageText = (drafts[order.id] || "").trim();
@@ -121,112 +102,94 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
     }
   }
 
-  return <section className="sd-account sd-account-inside sd-wrap" style={{ "--account-brand": accentColor } as React.CSSProperties}>
+  const availabilityLabel = availability === "available" ? "Business available" : availability === "limited" ? "Limited availability" : "Currently unavailable";
+  const availabilityColor = availability === "available" ? "#16866a" : availability === "limited" ? "#b7791f" : "#c04444";
+  const customerGreeting = customerName?.trim() || currentOrder?.customerName || "there";
+  const careMessage = !currentOrder ? "Your next request will appear here once you send it." : ["New request", "Received"].includes(currentOrder.status) ? "We've received your request. The business will review it and keep you updated." : ["Completed", "Declined", "Cancelled"].includes(currentOrder.status) ? "This request has reached its latest status. You can open the details whenever you need them." : "Your request is with the business. We'll let you know when there's an update.";
+  const lastBusinessUpdate = currentOrder ? [...(currentOrder.messages || [])].filter(message => message.from === "studio").sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]?.createdAt || currentOrder.statusUpdatedAt : undefined;
+  const formatShortDate = (value: string) => { try { return new Date(value).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch { return value; } };
+
+  return <section className="sd-account sd-account-inside sd-wrap sd-account-compact" style={{ "--account-brand": accentColor, "--account-secondary": secondaryColor, "--account-highlight": highlightColor } as React.CSSProperties}>
     <header className="sd-account-masthead">
       <div className="sd-account-brand-lockup">
-        <span className="sd-account-brand-mark" aria-hidden="true">{monogram}</span>
-        <div><span className="sd-account-overline">{businessName}</span><strong>Customer space</strong></div>
+        <span className="sd-account-brand-mark" aria-hidden="true">{monogram}<span className="sd-account-heart">♥</span></span>
+        <div><span className="sd-account-overline">{businessName}</span><strong>Customer account</strong></div>
       </div>
-      <span className="sd-account-view-label">CUSTOMER ACCOUNT</span>
+      <span className="sd-account-ready"><span aria-hidden="true">●</span> Account ready</span>
     </header>
 
-    <div className="sd-account-welcome sd-account-welcome-compact">
-      <div className="sd-account-welcome-copy">
-        <span className="sd-kicker">YOUR CUSTOMER ACCOUNT</span>
-        <h1>Your requests, updates & rewards.</h1>
-        <p>Your work with {businessName} — status, messages, receipts and customer perks in one place.</p>
-      </div>
-      <button className="sd-account-store-link" onClick={onBrowse}>← Back to the Store</button>
+    <div className="sd-account-compact-intro">
+      <div><span className="sd-kicker">YOUR SPACE WITH {businessName.toUpperCase()}</span><h1>Dumela, {customerGreeting}.</h1><p>Your business requests, all in one place.</p></div>
+      <button className="sd-account-store-link" onClick={onBrowse}>← Store</button>
     </div>
 
-    <nav className="sd-account-actions" aria-label="Customer account sections"><button type="button" onClick={() => document.getElementById("account-overview")?.scrollIntoView({behavior:"smooth",block:"start"})}>⌂ <span>Overview</span></button><button type="button" onClick={() => document.getElementById("account-requests")?.scrollIntoView({behavior:"smooth",block:"start"})}>▤ <span>My requests</span></button><button type="button" onClick={() => { if(filteredOrders[0]) setOpenThread(filteredOrders[0].id); document.getElementById("account-messages")?.scrollIntoView({behavior:"smooth",block:"start"}); }}>✉ <span>Messages</span></button><button type="button" onClick={() => document.getElementById("account-receipts")?.scrollIntoView({behavior:"smooth",block:"start"})}>▧ <span>Receipts</span></button><button type="button" onClick={() => document.getElementById("account-rewards")?.scrollIntoView({behavior:"smooth",block:"start"})}>✦ <span>Rewards</span></button><button type="button" className="is-primary" onClick={onNewRequest}>＋ <span>New request</span></button></nav>
-    {selectedServices.length > 0 && <section className="sd-account-selected" aria-labelledby="account-selected-title"><div><span className="sd-kicker">YOUR STORE SELECTIONS</span><h2 id="account-selected-title">Items you have selected</h2><p>These stay in your Customer Account while you browse and add more. Nothing is sent to the business until you submit a request.</p></div><ul>{selectedServices.map(item=><li key={item.id}><span><strong>{item.name}</strong><small>{item.custom ? "Custom item · quote required" : item.price > 0 ? money(item.price) : "Price to be confirmed"}</small></span><button type="button" onClick={()=>onRemoveSelected(item.id)} aria-label={`Remove ${item.name}`}>Remove</button></li>)}</ul><div className="sd-account-selected-total"><strong>{selectedServices.some(item=>item.custom) ? "Quote required for custom items" : `Starting total · ${money(selectedServices.reduce((sum,item)=>sum+item.price,0))}`}</strong><button type="button" className="sd-button sd-primary" onClick={onContinueRequest}>Continue with selected items →</button><button type="button" className="sd-account-secondary-action" onClick={onBrowse}>＋ Add another service</button></div></section>}
+    <section className="sd-care-card" aria-labelledby="sd-care-title">
+      <div className="sd-care-topline"><div className="sd-care-brand-icon" aria-hidden="true"><span>{monogram}</span><b>♥</b></div><div className="sd-care-heading"><span className="sd-kicker">YOUR CUSTOMER CARE</span><h2 id="sd-care-title">Care</h2></div><span className="sd-availability" style={{ "--availability-color": availabilityColor } as React.CSSProperties}><i />{availabilityLabel}</span></div>
+      {currentOrder ? <>
+        <div className="sd-care-request"><div><span className="sd-care-label">YOUR CURRENT REQUEST</span><h3>{currentOrder.serviceItems?.length ? currentOrder.serviceItems.map(item => item.name).join(" + ") : currentOrder.serviceName}</h3><p>{formatShortDate(currentOrder.createdAt)} · {currentOrder.quotedPrice ? "Quote: " + money(currentOrder.quotedPrice) : currentOrder.serviceItems?.some(item => item.price === 0) ? "Quote to be confirmed" : money(currentOrder.price)}</p></div><span className="sd-care-status">{currentOrder.status}</span></div>
+        <div className="sd-care-next"><span className="sd-care-label">WHAT HAPPENS NEXT</span><strong>{currentOrder.status === "New request" ? "Business review" : currentOrder.status === "Completed" ? "Request completed" : currentOrder.status === "Declined" ? "Request closed" : currentOrder.status === "Quote ready" ? "Your review" : "Business handling"}</strong><p>{careMessage}</p>{lastBusinessUpdate && <small>Last business update · {formatShortDate(lastBusinessUpdate)}</small>}</div>
+        <button type="button" className="sd-care-conversation" onClick={() => { setOpenThread(currentOrder.id); document.getElementById("care-request-" + currentOrder.id)?.scrollIntoView({behavior:"smooth",block:"start"}); }}>Open conversation <span>↗</span></button>
+      </> : <div className="sd-care-next"><strong>Your next step starts here.</strong><p>{careMessage}</p></div>}
+    </section>
+
+    <div className="sd-account-quick-stats" aria-label="Account summary">
+      <div><strong>{openOrders}</strong><span>Active {openOrders === 1 ? "request" : "requests"}</span></div>
+      <div><strong>{newUpdates}</strong><span>New {newUpdates === 1 ? "update" : "updates"}</span></div>
+      <button type="button" onClick={onNewRequest}>＋ Start a new request</button>
+    </div>
+
+    {selectedServices.length > 0 && <details className="sd-account-basket" open={basketOpen} onToggle={event => setBasketOpen(event.currentTarget.open)}>
+      <summary><span>Your selections · {selectedServices.length} {selectedServices.length === 1 ? "item" : "items"} · {money(selectedServices.reduce((sum,item)=>sum+item.price,0))}</span><b>Edit</b></summary>
+      <div className="sd-account-basket-body"><ul>{selectedServices.map(item=><li key={item.id}><span><strong>{item.name}</strong><small>{item.custom ? "Custom item · quote required" : item.price > 0 ? money(item.price) : "Price to be confirmed"}</small></span><button type="button" onClick={()=>onRemoveSelected(item.id)} aria-label={`Remove ${item.name}`}>Remove</button></li>)}</ul><div className="sd-account-basket-actions"><button type="button" className="sd-button sd-primary" onClick={onContinueRequest}>Continue with selected items →</button><button type="button" className="sd-account-secondary-action" onClick={onBrowse}>＋ Add another service</button></div></div>
+    </details>}
+
     {requestForm}
 
-    <div className="sd-account-workspace" id="account-overview">
-      <div className="sd-account-section-heading">
-        <div><span className="sd-kicker">YOUR ACTIVITY</span><h2>Requests & updates</h2></div>
-        <span className="sd-account-local-tag">YOUR ACTIVITY</span>
-      </div>
+    <nav className="sd-account-quick-links" aria-label="Your account">
+      <div><span className="sd-kicker">YOUR ACCOUNT</span><strong>View details</strong></div>
+      <a href="#care-requests">Requests</a><a href="#care-messages">Messages</a><a href="#care-receipts">Receipts</a><a href="#care-rewards">Rewards</a>
+    </nav>
 
-      <div className="sd-account-lookup">
-        <label htmlFor="account-email">Find your requests</label>
-        <div className="sd-account-lookup-row">
-          <input id="account-email" type="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="Enter the email used on your request" autoComplete="email" />
-          <span>{normalizedEmail ? `${filteredOrders.length} found` : "Email lookup"}</span>
-        </div>
-        <p>Use the same email address you entered when you sent your request on this browser.</p>
-      </div>
-
-      {normalizedEmail && <div className="sd-account-summary" aria-live="polite">
-        <article><span>In progress</span><strong>{openOrders}</strong></article>
-        <article><span>Messages</span><strong>{totalMessages}</strong></article>
-        <article><span>Shared files</span><strong>{fileCount}</strong></article>
-      </div>}
-
-      {normalizedEmail && <section className="sd-account-notifications" aria-labelledby="account-updates-title">
-        <div className="sd-account-notifications-head"><div><span className="sd-kicker">NOTIFICATION CENTRE</span><h3 id="account-updates-title">Your updates</h3></div><span>{accountUpdates.length} {accountUpdates.length === 1 ? "update" : "updates"}</span></div>
-        {accountUpdates.length ? <ol>{nextDeadlineOrder && <li key="deadline-countdown"><span className="is-status" aria-hidden="true">◷</span><div><strong>Deadline countdown · {nextDeadlineOrder.serviceName}</strong><p>Requested date in {countdownLabel(nextDeadlineOrder.dueDate, clockNow)}.</p></div></li>}{accountUpdates.map(update => <li key={update.id}><span className={update.kind === "message" ? "is-message" : "is-status"} aria-hidden="true">{update.kind === "message" ? "✉" : "↗"}</span><div><strong>{update.title}</strong><p>{update.detail}</p>{update.createdAt && <time>{prettyDate(update.createdAt)}</time>}</div></li>)}</ol> : <p className="sd-account-notification-empty">No request updates yet. Status changes and business replies will appear here when they are saved in this browser.</p>}
-        <div className="sd-account-test-notification"><div><strong>Example reminder</strong><p>{nextDeadlineOrder ? `${nextDeadlineOrder.serviceName} · target date in ${countdownLabel(nextDeadlineOrder.dueDate, clockNow)}.` : "A message can include a live countdown to your requested date."}</p>{testNotificationState && <small role="status">{testNotificationState}</small>}</div><button type="button" onClick={sendTestNotification}>Send test notification</button></div><p className="sd-account-notification-boundary">The test sends immediately to this device. Automatic deadline reminders require an active notification service and a scheduled backend.</p>
-      </section>}
-
-      {!normalizedEmail ? <div className="sd-account-empty" id="account-requests">
-        <span className="sd-account-empty-mark" aria-hidden="true">⌕</span>
-        <h3>Let’s find your activity.</h3>
-        <p>Enter your email above to look up requests saved in this browser.</p>
-        <button className="sd-button sd-primary" onClick={onBrowse}>Explore the Store</button>
-      </div> : filteredOrders.length === 0 ? <div className="sd-account-empty" id="account-requests">
-        <span className="sd-account-empty-mark" aria-hidden="true">↗</span>
-        <h3>No requests found for that email.</h3>
-        <p>Check the spelling, or return to the Store to send a new product / service request using this email.</p>
-        <button className="sd-button sd-primary" onClick={onBrowse}>Browse products / services</button>
-      </div> : <div className="sd-account-orders" id="account-requests">
-        {filteredOrders.map(order => {
-          const messages = order.messages || [];
-          const expanded = openThread === order.id;
-          const studioReplies = messages.filter(message => message.from === "studio").length;
-          return <article className="sd-account-order" key={order.id}>
-            <div className="sd-account-order-top"><span>REQUEST · {order.id}</span><b>{order.status}</b></div>
-            <div className="sd-account-order-main">
-              <div><h3>{order.serviceName}</h3><p className="sd-account-order-date">Sent {prettyDate(order.createdAt)}</p></div>
-              <strong className="sd-account-order-price">{order.quotedPrice ? money(order.quotedPrice) : order.serviceItems?.some(item => item.price === 0) ? "Quote required" : money(order.price)}</strong>
-            </div>
-            {order.serviceItems?.length ? <p className="sd-account-detail"><strong>Selected:</strong> {order.serviceItems.map(item => `${item.name} · ${item.price > 0 ? money(item.price) : order.quotedPrice ? "included in quote" : "price to be confirmed"}`).join(", ")}</p> : null}
-            {order.whatsapp ? <p className="sd-account-detail"><strong>WhatsApp:</strong> {order.whatsapp}</p> : null}
-            <p className="sd-account-detail"><strong>Requested date:</strong> {order.dueDate}</p><div className="sd-account-deadline"><span>Time until target date</span><strong>{countdownLabel(order.dueDate, clockNow)}</strong></div>
-            {order.brief && <p className="sd-account-brief">{order.brief}</p>}
+    <section className="sd-account-detail-section" id="care-requests">
+      <div className="sd-account-detail-heading"><div><span className="sd-kicker">CARE ACTIVITY</span><h2>Updates from the business</h2></div><span>{accountUpdates.length} updates</span></div>
+      {accountUpdates.length ? <ol className="sd-care-feed">{accountUpdates.slice(0,5).map(update=><li key={update.id}><span className={update.kind === "message" ? "is-message" : "is-status"} aria-hidden="true">{update.kind === "message" ? "✉" : "♥"}</span><div><strong>{update.title}</strong><p>{update.detail}</p>{update.createdAt && <time>{formatShortDate(update.createdAt)}</time>}</div></li>)}</ol> : <p className="sd-account-notification-empty">Your updates will appear here when the business responds or changes your request status.</p>}
+      {filteredOrders.length > 0 && <div className="sd-care-request-list">{filteredOrders.map(order => {
+        const messages = order.messages || [];
+        const expanded = openThread === order.id;
+        return <details className="sd-care-request-detail" id={"care-request-" + order.id} key={order.id} open={expanded}>
+          <summary><span><strong>{order.serviceName}</strong><small>{order.id} · {order.status}</small></span><b>View details</b></summary>
+          <div className="sd-care-request-body">
+            <p><strong>Submitted:</strong> {prettyDate(order.createdAt)}</p>
+            {order.serviceItems?.length ? <p><strong>Selected:</strong> {order.serviceItems.map(item => `${item.name} · ${item.price > 0 ? money(item.price) : order.quotedPrice ? "included in quote" : "price to be confirmed"}`).join(", ")}</p> : null}
+            {order.whatsapp ? <p><strong>WhatsApp:</strong> {order.whatsapp}</p> : null}
+            {order.dueDate && <p><strong>Requested date:</strong> {order.dueDate}</p>}
+            {order.brief && <p>{order.brief}</p>}
             {order.discountAmount ? <p className="sd-account-reward-line">Store reward · {money(order.discountAmount)} off</p> : null}
-            <div className="sd-account-order-actions">
-              <span>{messages.length} {messages.length === 1 ? "message" : "messages"} · {studioReplies ? "Business replied" : "Awaiting reply"}</span>
-              <button className="sd-account-secondary-action" type="button" aria-expanded={expanded} onClick={() => setOpenThread(expanded ? null : order.id)}>{expanded ? "Close conversation" : "Open conversation →"}</button>
-            </div>
-            <div><ReceiptDocument businessName={businessName} accentColor={accentColor} receiptProfile={receiptProfile} order={order} /></div>
-            {expanded && <section className="sd-account-conversation" aria-label={`Conversation for ${order.serviceName}`}>
-              <div className="sd-account-conversation-heading"><div><span className="sd-kicker">REQUEST CONVERSATION</span><h4>{order.serviceName}</h4></div><span className="sd-account-local-tag">LOCAL THREAD</span></div>
-              <p className="sd-account-demo-explainer">Messages are saved in this browser and appear in the business Admin demo on this device. They are not emailed or sent to a remote team.</p>
-              <div className="sd-account-messages" aria-live="polite">{messages.length ? messages.map(message => <article key={message.id} className={`sd-account-message is-${message.from}`}><div><strong>{message.from === "customer" ? "You" : businessName}</strong><time>{prettyDate(message.createdAt)}</time></div>{message.text && <p>{message.text}</p>}{message.attachment && <a href={message.attachment.url} target="_blank" rel="noreferrer">↗ {message.attachment.name} · Open attachment</a>}</article>) : <p className="sd-account-message-empty">No messages yet. Send a question to start the conversation in this demo.</p>}</div>
+            <div className="sd-account-order-actions"><span>{messages.length} {messages.length === 1 ? "message" : "messages"}</span><button className="sd-account-secondary-action" type="button" aria-expanded={expanded} onClick={() => setOpenThread(expanded ? null : order.id)}>{expanded ? "Close conversation" : "Open conversation →"}</button></div>
+            <div id="care-receipts"><ReceiptDocument businessName={businessName} accentColor={accentColor} receiptProfile={receiptProfile} order={order} /></div>
+            {expanded && <section className="sd-account-conversation" id="care-messages" aria-label={`Conversation for ${order.serviceName}`}>
+              <div className="sd-account-conversation-heading"><div><span className="sd-kicker">YOUR CONVERSATION</span><h4>{order.serviceName}</h4></div></div>
+              <p className="sd-account-demo-explainer">Messages are saved in this browser and appear in the business workspace on this device. They are not emailed or sent to a remote team.</p>
+              <div className="sd-account-messages" aria-live="polite">{messages.length ? messages.map(message => <article key={message.id} className={`sd-account-message is-${message.from}`}><div><strong>{message.from === "customer" ? "You" : businessName}</strong><time>{prettyDate(message.createdAt)}</time></div>{message.text && <p>{message.text}</p>}{message.attachment && <a href={message.attachment.url} target="_blank" rel="noreferrer">↗ {message.attachment.name} · Open attachment</a>}</article>) : <p className="sd-account-message-empty">No messages yet. Send a question to start the conversation.</p>}</div>
               <form className="sd-account-composer" onSubmit={event => { event.preventDefault(); sendMessage(order); }}>
                 <label htmlFor={`account-message-${order.id}`}>Write a message<textarea id={`account-message-${order.id}`} rows={3} maxLength={1200} value={drafts[order.id] || ""} onChange={event => setDrafts(current => ({ ...current, [order.id]: event.target.value }))} placeholder="Ask a question about this request…" /></label>
                 <div className="sd-account-composer-actions"><label className="sd-account-attach">＋ Attach file<input type="file" accept="image/*,video/*,application/pdf" disabled={isUploading || !online} onChange={event => attachFile(order, event)} /></label><button className="sd-button sd-primary" type="submit" disabled={isUploading || !(drafts[order.id] || "").trim()}>Send message</button></div>
                 {uploadingOrder === order.id && <div className="sd-media-progress" role="status"><div className="sd-media-progress-copy"><strong>Uploading attachment</strong><span>{uploadProgress}%</span></div><div className="sd-media-progress-track" role="progressbar" aria-label="Attachment upload progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={uploadProgress}><span style={{ width: uploadProgress + "%" }} /></div></div>}
               </form>
             </section>}
-          </article>;
-        })}
-      </div>}
+          </div>
+        </details>;
+      })}</div>}
+    </section>
 
-      <div id="account-messages" className="sd-account-nav-anchor" aria-label="Messages section" />
-      <div id="account-receipts" className="sd-account-nav-anchor" aria-label="Receipts section" />
-      <section className="sd-account-rewards" id="account-rewards">
-        <div><span className="sd-kicker">STORE REWARDS</span><h2>Your discounts</h2><p>Rewards earned in the Store are linked to this email.</p></div>
-        <div className="sd-account-reward-list">{matchingRewards.map(claim => <article key={claim.id}><strong>{claim.code}</strong><b>{money(claim.amount)} off</b><span>{claim.status}</span></article>)}</div>
-        {matchingRewards.length === 0 && <p className="sd-account-notification-empty">Rewards earned in the Store will appear here when linked to your email address.</p>}
-      </section>
+    <details className="sd-account-collapsible" id="care-rewards"><summary><span>Rewards</span><b>{matchingRewards.length ? `${matchingRewards.length} available` : "View details"}</b></summary><div><p>Rewards earned in the Store are linked to this email.</p>{matchingRewards.map(claim => <article key={claim.id}><strong>{claim.code}</strong><b>{money(claim.amount)} off</b><span>{claim.status}</span></article>)}{matchingRewards.length === 0 && <p className="sd-account-notification-empty">Rewards earned in the Store will appear here when linked to your email address.</p>}</div></details>
 
-      {announcement.trim() && <aside className="sd-account-announcement"><span className="sd-kicker">FROM {businessName.toUpperCase()}</span><h3>Business update</h3><p>{announcement}</p></aside>}
-      {uploadNotice && <p className="sd-account-feedback" role="status">{uploadNotice}</p>}
-      <p className="sd-account-boundary">This is a browser-local demo, not a secure sign-in or shared customer account. Requests and messages are stored on this device. Attachments upload to the configured file service when online; they are not queued offline.</p>
-    </div>
-    {children}
+    {announcement.trim() && <aside className="sd-account-announcement"><span className="sd-kicker">FROM {businessName.toUpperCase()}</span><h3>Business update</h3><p>{announcement}</p></aside>}
+    {uploadNotice && <p className="sd-account-feedback" role="status">{uploadNotice}</p>}
+
+    <details className="sd-account-lookup-compact" open={lookupOpen} onToggle={event => setLookupOpen(event.currentTarget.open)}><summary>{normalizedEmail ? "Using " + email : "Find your account"} <b>Change email</b></summary><div><label htmlFor="account-email">Email used on your request</label><input id="account-email" type="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="Enter your email address" autoComplete="email" /><p>Requests in this browser are matched to this email address.</p></div></details>
+
+    {children && <details className="sd-account-collapsible sd-account-optional-feature"><summary><span>Optional rewards experience</span><b>Explore</b></summary><div>{children}</div></details>}
+    <p className="sd-account-boundary">This is a browser-local demo, not a secure sign-in or shared customer account. Requests and messages are stored on this device. Attachments upload to the configured file service when online; they are not queued offline.</p>
   </section>;
 }
