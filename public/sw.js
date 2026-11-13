@@ -187,14 +187,15 @@ async function networkFirstNavigation(request, event) {
     const response = preloaded || await fetch(request);
     if (response.ok && isSafePublicHtml(request, response)) {
       // Cache writes are deliberately detached from the navigation response.
-      event.waitUntil(caches.open(SHELL_CACHE).then(async cache => {
+      // Keep cache maintenance detached so a slow disk write never delays navigation.
+      void caches.open(SHELL_CACHE).then(async cache => {
         try {
           await cache.put(request, response.clone());
           await trimCache(SHELL_CACHE, PUBLIC_PAGE_LIMIT + STATIC_LIMIT);
         } catch {
           // Cache quota failures must not affect the live navigation response.
         }
-      }).catch(() => {}));
+      }).catch(() => {});
     } else if (response.status >= 500) {
       // A transient server failure should not blank a previously cached public page.
       try {
