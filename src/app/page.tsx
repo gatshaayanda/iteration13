@@ -79,6 +79,14 @@ export default function Home() {
   const [automationCoverage, setAutomationCoverage] = useState(75);
   const [manualMinutesPerEnquiry, setManualMinutesPerEnquiry] = useState(3);
   const [promoAssignEmail, setPromoAssignEmail] = useState("");
+  const [adminUnlocked, setAdminUnlocked] = useState(false);
+  const [adminPassphrase, setAdminPassphrase] = useState("");
+  const [shiftStartedAt, setShiftStartedAt] = useState<number | null>(null);
+  const [sessionExpiresAt, setSessionExpiresAt] = useState<number | null>(null);
+  const [sessionDurationHours, setSessionDurationHours] = useState(12);
+  const [sessionNow, setSessionNow] = useState(() => Date.now());
+  const [adminLocked, setAdminLocked] = useState(false);
+  const lastAdminActivity = useRef(Date.now());
   useEffect(() => {
     try {
       const savedDuration = Number(window.localStorage.getItem("iteration13:owner-session-duration:v1"));
@@ -121,14 +129,7 @@ export default function Home() {
       window.clearInterval(timer);
     };
   }, [adminUnlocked]);
-  const [adminUnlocked, setAdminUnlocked] = useState(false);
-  const [adminPassphrase, setAdminPassphrase] = useState("");
-  const [shiftStartedAt, setShiftStartedAt] = useState<number | null>(null);
-  const [sessionExpiresAt, setSessionExpiresAt] = useState<number | null>(null);
-  const [sessionDurationHours, setSessionDurationHours] = useState(12);
-  const [sessionNow, setSessionNow] = useState(() => Date.now());
-  const [adminLocked, setAdminLocked] = useState(false);
-  const lastAdminActivity = useRef(Date.now());
+
   const [selected, setSelected] = useState<string | null>(null);
   const [orderFormOpen, setOrderFormOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
