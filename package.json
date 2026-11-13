@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run verify:identity && npm run verify:offline && next build",
+    "build": "npm run verify:identity && npm run verify:offline && npm run verify:typography && next build",
     "start": "next start",
     "lint": "eslint .",
     "verify:identity": "node scripts/verify-identity.mjs",
-    "verify:offline": "node scripts/verify-offline.mjs"
+    "verify:offline": "node scripts/verify-offline.mjs",
+    "verify:typography": "node scripts/verify-typography.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",
