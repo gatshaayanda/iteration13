@@ -4394,3 +4394,67 @@ h1 em,
   }
   .serviceDemo .sd-account-basket>summary b{padding:6px 8px}
 }
+
+
+/* Owner shift disclosure: keep the status and action aligned as one compact control. */
+.serviceDemo .sd-admin .sd-owner-shift-title{
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr) auto auto;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+  cursor:pointer;
+}
+.serviceDemo .sd-admin .sd-owner-shift-title>div{min-width:0}
+.serviceDemo .sd-admin .sd-owner-shift-title .sd-shift-live{
+  margin:0;
+  white-space:nowrap;
+}
+.serviceDemo .sd-admin .sd-shift-summary-hint{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:6px 10px;
+  border:1px solid #cbd5df;
+  border-radius:8px;
+  background:#f8fafc;
+  color:#344054;
+  font-size:.72rem;
+  font-weight:800;
+  white-space:nowrap;
+}
+.serviceDemo .sd-admin .sd-owner-shift-title .sd-kicker{
+  color:#536174!important;
+  font-size:.63rem;
+}
+.serviceDemo .sd-admin .sd-owner-shift-title strong{
+  color:#182536;
+  line-height:1.2;
+}
+.serviceDemo .sd-admin .sd-owner-shift-panel>summary::marker{content:""}
+.serviceDemo .sd-admin .sd-owner-shift-panel>summary::-webkit-details-marker{display:none}
+@media(max-width:640px){
+  .serviceDemo .sd-admin .sd-owner-shift-title{
+    grid-template-columns:38px minmax(0,1fr) auto;
+    gap:8px;
+  }
+  .serviceDemo .sd-admin .sd-owner-shift-title>.sd-shift-clock{grid-row:1/3}
+  .serviceDemo .sd-admin .sd-owner-shift-title>div{grid-column:2;grid-row:1}
+  .serviceDemo .sd-admin .sd-owner-shift-title .sd-shift-live{grid-column:2;grid-row:2;justify-self:start}
+  .serviceDemo .sd-admin .sd-owner-shift-title .sd-shift-summary-hint{grid-column:3;grid-row:1/3}
+  .serviceDemo .sd-admin .sd-owner-shift-controls{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    align-items:stretch;
+    gap:10px;
+  }
+  .serviceDemo .sd-admin .sd-owner-shift-controls label{min-width:0}
+  .serviceDemo .sd-admin .sd-owner-shift-controls select,
+  .serviceDemo .sd-admin .sd-owner-shift-controls .sd-button{width:100%}
+}
+@media(max-width:360px){
+  .serviceDemo .sd-admin .sd-owner-shift-title{grid-template-columns:34px minmax(0,1fr) auto;gap:7px}
+  .serviceDemo .sd-admin .sd-owner-shift-title .sd-shift-clock{width:34px;height:34px}
+  .serviceDemo .sd-admin .sd-shift-summary-hint{padding:6px 8px;font-size:.68rem}
+}
