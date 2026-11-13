@@ -138,7 +138,7 @@ export default function AccountWorkspace({ businessName, orders, discountClaims,
     </div>
 
     {selectedServices.length > 0 && <details className="sd-account-basket" open={basketOpen} onToggle={event => setBasketOpen(event.currentTarget.open)}>
-      <summary><span>Your selections · {selectedServices.length} {selectedServices.length === 1 ? "item" : "items"} · {money(selectedServices.reduce((sum,item)=>sum+item.price,0))}</span><b>Edit</b></summary>
+      <summary><span>Your selections · {selectedServices.length} {selectedServices.length === 1 ? "item" : "items"} · {selectedServices.some(item=>item.custom) ? "Quote required" : money(selectedServices.reduce((sum,item)=>sum+item.price,0))}</span><b>Edit</b></summary>
       <div className="sd-account-basket-body"><ul>{selectedServices.map(item=><li key={item.id}><span><strong>{item.name}</strong><small>{item.custom ? "Custom item · quote required" : item.price > 0 ? money(item.price) : "Price to be confirmed"}</small></span><button type="button" onClick={()=>onRemoveSelected(item.id)} aria-label={`Remove ${item.name}`}>Remove</button></li>)}</ul><div className="sd-account-basket-actions"><button type="button" className="sd-button sd-primary" onClick={onContinueRequest}>Continue with selected items →</button><button type="button" className="sd-account-secondary-action" onClick={onBrowse}>＋ Add another service</button></div></div>
     </details>}
 
