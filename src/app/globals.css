@@ -4621,7 +4621,7 @@ h1 em,
 .serviceDemo .sd-announcement-upload-action:hover{background:#243a57}
 .serviceDemo .sd-announcement-upload-action>span{font-size:1.05rem}
 .serviceDemo .sd-announcement-file-input{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-.serviceDemo .sd-announcement-file-input:focus-visible+.sd-announcement-upload-action{outline:3px solid #172033;outline-offset:3px}
+.serviceDemo .sd-announcement-upload-choice:focus-within .sd-announcement-upload-action{outline:3px solid #172033;outline-offset:3px}
 .serviceDemo .sd-announcement-upload-choice>small,.serviceDemo .sd-announcement-no-image{color:#526075;font-size:.76rem;line-height:1.4}
 .serviceDemo .sd-announcement-or{color:#64748b;font-size:.66rem;font-weight:900;letter-spacing:.08em}
 .serviceDemo .sd-announcement-url-choice{display:grid;gap:6px;min-width:0;color:#26364b;font-size:.79rem;font-weight:800}
