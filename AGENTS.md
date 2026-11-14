@@ -275,7 +275,7 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 
 ### Redesign architecture
 - Establish/extend coherent design tokens and reusable components before broad screen styling. Avoid accumulating arbitrary CSS overrides or !important patches. When touching an existing screen, consolidate relevant rules and remove obsolete conflicting declarations where safe.
-- Keep Store cards media-capable (image or short video), with full service/product name, complete description, fixed price or honest “Price on request”, and a clear action. Promotions/announcements remain secondary to the main customer action.
+- Keep Store cards media-capable (image or short video), with full service/product name, complete description, fixed price or honest “Price on request”, and a clear action. An announcement may lead the visual composition when present, but its action must lead directly into the real catalogue and it must never obscure or replace product/service discovery.
 - Keep Account focused on customer requests, status, next action and records. Keep the Briefcase focused on next actions, customers/jobs, money/records, Store controls and insights.
 - Connectivity/offline status should be compact and collapsible; it must not dominate the screen. Preserve the protected PWA installation experience exactly unless the owner explicitly authorizes an install change.
 - Treat weather as optional, collapsible contextual information only if a real supported data source and useful placement are verified. Never add decorative or non-functional weather controls.
