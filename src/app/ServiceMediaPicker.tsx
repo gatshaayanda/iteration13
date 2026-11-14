@@ -94,7 +94,7 @@ export default function ServiceMediaPicker({ value, type, online, onChange, onUp
   return (
     <fieldset className="sd-media-picker" disabled={isUploading}>
       <legend>Service media</legend>
-      <p className="sd-media-help">Choose what customers will see. Image and video are handled separately.</p>
+      <p className="sd-media-help">Add a product photo or a short video preview. Images can be saved for offline viewing; video playback needs a connection.</p>
       <div className="sd-media-mode" role="group" aria-label="Media type">
         <button type="button" className={type === "image" ? "is-selected" : ""} onClick={() => { onChange("", "image"); setUrlDraft(""); setMessage("Media type changed to image. Select or upload an image."); }}>Image</button>
         {allowVideo && <button type="button" className={type === "video" ? "is-selected" : ""} onClick={() => { onChange("", "video"); setUrlDraft(""); setMessage("Media type changed to video. Upload a video or add its URL."); }}>Video</button>}
@@ -110,9 +110,9 @@ export default function ServiceMediaPicker({ value, type, online, onChange, onUp
         </div>
       ) : (
         <div className="sd-media-upload">
-          <label className="sd-media-file-label" htmlFor="service-media-file">Upload a video from this device · max 16 MB</label>
+          <label className="sd-media-file-label" htmlFor="service-media-file">Upload a short video from this device · max 16 MB</label>
           <input ref={inputRef} id="service-media-file" type="file" accept="video/*" capture="environment" onChange={uploadSelected} disabled={!online || isUploading} />
-          <small>Video uploads use UploadThing (maximum 16 MB) and need internet. You can also paste a hosted video file URL below.</small>
+          <small>Short video uploads use UploadThing (maximum 16 MB) and need internet. Video previews stream online and are not saved for offline playback.</small>
           {!online && <p className="sd-media-offline">Offline: video upload is paused. Reconnect before uploading.</p>}
           <label className="sd-media-url-label" htmlFor="service-video-url">Video URL</label>
           <div className="sd-media-url-row"><input id="service-video-url" type="url" value={urlDraft} onChange={event => setUrlDraft(event.target.value)} placeholder="https://…/video.mp4" /><button type="button" onClick={applyVideoUrl}>Use URL</button></div>
