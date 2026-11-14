@@ -7,6 +7,7 @@ const account = read("../src/app/AccountWorkspace.tsx");
 const offline = read("../src/app/offline/page.tsx");
 const pwaRegister = read("../src/app/pwa-register.tsx");
 const pwaCss = read("../src/app/pwa.css");
+const globalCss = read("../src/app/globals.css");
 const installCss = read("../src/app/install-card.css");
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
@@ -31,7 +32,8 @@ check(sw.includes('return await cache.match(request) || await cache.match("/") |
 check(page.includes("setOnline(navigator.onLine)") && page.includes('window.addEventListener("offline", syncOnline)') && page.includes('window.addEventListener("online", syncOnline)'), "the compact Store offline indicator must follow browser connectivity events");
 check(pwaRegister.includes('window.addEventListener("online", online)') && pwaRegister.includes('window.removeEventListener("online", online)'), "pending notification delivery must retry when connectivity returns");
 check(!pwaRegister.includes("offlineBanner") && !page.includes("sd-offline-notice") && !pwaCss.includes(".offlineBanner"), "duplicated full-width offline/reconnect banners must stay removed");
-check(page.includes('role="status" aria-live="polite" aria-atomic="true"') && page.includes("Offline · local demo"), "the compact Store connectivity indicator must announce offline state accessibly");
+check(page.includes("Offline ready") && page.includes("Local demo mode") && page.includes("iteration13-shell-v8") && page.includes("shell.match(\"/offline\")"), "the expandable connectivity status must verify the saved app shell and explain local demo boundaries");
+check(globalCss.includes(".sd-connect-details>summary") && globalCss.includes(".sd-connect-popover") && globalCss.includes("[open]>summary"), "connectivity status must be a compact, keyboard-operable disclosure rather than a persistent banner");
 check(pwaCss.includes(".pwaUpdate{position:fixed;top:calc(env(safe-area-inset-top") && pwaCss.includes("bottom:auto"), "update-ready prompt must stay compact at the top, not cover bottom actions");
 check(sw.includes("preservePaths = []") && sw.includes("removable.slice(0, excess)") && sw.includes("trimCache(SHELL_CACHE, STATIC_LIMIT, APP_SHELL)"), "cache trimming must preserve precached app-shell routes");
 check(sw.includes('"images.unsplash.com"') && sw.includes('"utfs.io"') && sw.includes('"ufs.sh"'), "media cache must be restricted to the supported image/upload hosts");
