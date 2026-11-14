@@ -42,7 +42,7 @@ For any requested one-word staff/owner login, follow the mandatory **One-word st
 
 ## Business identity and restrained colour system (mandatory)
 
-- Show the business identity setup form immediately as the opening screen; do not put a separate marketing/choice landing page or flagship promotion in front of it. Keep the setup focused on the owner's own business identity. The Junk Park BW flagship example belongs in a separate examples/discovery area, not inside the identity form. Ask for a business name (real or fictional) and let the owner choose **one, two or three brand colours maximum**; one or two colours are complete choices, not incomplete states.
+- Show the business identity setup form immediately when the **owner deliberately enters the setup workflow**; do not put a marketing/choice landing page or flagship promotion in front of owner setup. This owner-only setup must not intercept visitors: ordinary customer/visitor entry opens the Store directly. The Junk Park BW flagship example belongs in a separate examples/discovery area, not inside the identity form. Ask for a business name (real or fictional) and let the owner choose **one, two or three brand colours maximum**; one or two colours are complete choices, not incomplete states.
 - Present this as one coupled identity: **Store · Account · Briefcase**. Show a live preview and update all three surfaces together immediately. Persist the identity using the target project's real persistence boundary; label browser-local demo persistence honestly.
 - Use the headline **“Your business in your pocket.”** Example helper copy: “Example: Metsi Wellness. Use a real or fictional name. Your Store, Account and Briefcase rebrand together instantly.”
 - In the owner workspace use the clear identity marker **“ADMIN HUB / PRIVATE BRIEFCASE”**, the same “Your business in your pocket” proposition, and a context-aware greeting based on the owner's local time. Follow it with a compact operational summary such as “Owner operations · customer requests · money”. Do not let a greeting displace urgent work or create fake activity.
@@ -253,7 +253,7 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 - Design Iteration 13 as a guided, mobile-first **Business Operating System experience**, not a generic website builder, marketing site or conventional SaaS dashboard.
 - Keep the product proposition plain-language: **“Your business in your pocket.”** The owner brings their business name, products/services and visual identity; the experience demonstrates how a connected Website, Web app and App can help customers discover, request and return.
 - Keep the hierarchy clear: **Admin Hub** is the provider/company; **i13 B.O.S.** is the product; **Iteration 13** is the interactive configuration and exploration environment.
-- The core journey is **identity → Store → customer Account/request → optional promotion/game → owner Briefcase → Admin Hub handoff**. Make the next action obvious at every stage.
+- The owner journey is **identity setup → Store → customer Account/request → optional promotion/game → owner Briefcase → Admin Hub handoff**. Ordinary visitors land directly in the Store and are never routed through owner identity setup. Make the next action obvious at every stage.
 - Prefer a light, premium, calm customer-facing Store and Account, with a more focused owner Briefcase. All three share the business identity and restrained palette.
 
 ### Screen-by-screen delivery protocol
