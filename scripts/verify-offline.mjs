@@ -17,7 +17,7 @@ check(sw.includes("navigationPreload.enable()") && sw.includes("event.preloadRes
 check(sw.includes("function isSafePublicHtml") && sw.includes('value === "cookie"') && sw.includes('value === "authorization"'), "public HTML caching must reject cookie- or authorization-varying responses");
 check(sw.includes("sensitiveQuery.test(key)") && sw.includes("responseOrigin === self.location.origin"), "public HTML caching must reject sensitive query strings and cross-origin redirects");
 check(sw.includes("response.status >= 500") && sw.includes("networkFirstNavigation(request, event)"), "cached public pages must recover from transient server errors");
-check(/const CACHE_VERSION = "iteration13-shell-v9"/.test(sw), "current Iteration 13 app-shell cache version must be v9");
+check(/const CACHE_VERSION = "iteration13-shell-v10"/.test(sw), "current Iteration 13 app-shell cache version must be v10");
 check(/const MEDIA_CACHE = "iteration13-media-v5"/.test(sw), "image-only media cache version must be v5");
 check(/const MEDIA_CACHE = "iteration13-media-v\d+"/.test(sw), "versioned media cache is missing");
 check(sw.includes('"/", "/offline"') && sw.includes('"/patterns", "/iphone-install"'), "home, offline and public utility routes must be precached");
@@ -32,7 +32,7 @@ check(sw.includes('return await cache.match(request) || await cache.match("/") |
 check(page.includes("setOnline(navigator.onLine)") && page.includes('window.addEventListener("offline", syncOnline)') && page.includes('window.addEventListener("online", syncOnline)'), "the compact Store offline indicator must follow browser connectivity events");
 check(pwaRegister.includes('window.addEventListener("online", online)') && pwaRegister.includes('window.removeEventListener("online", online)'), "pending notification delivery must retry when connectivity returns");
 check(!pwaRegister.includes("offlineBanner") && !page.includes("sd-offline-notice") && !pwaCss.includes(".offlineBanner"), "duplicated full-width offline/reconnect banners must stay removed");
-check(page.includes("Offline ready") && page.includes("Local demo mode") && page.includes("iteration13-shell-v9") && page.includes("shell.match(\"/offline\")"), "the expandable connectivity status must verify the saved app shell and explain local demo boundaries");
+check(page.includes("Offline ready") && page.includes("Local demo mode") && page.includes("iteration13-shell-v10") && page.includes("shell.match(\"/offline\")"), "the expandable connectivity status must verify the saved app shell and explain local demo boundaries");
 check(globalCss.includes(".sd-connect-details>summary") && globalCss.includes(".sd-connect-popover") && globalCss.includes("[open]>summary"), "connectivity status must be a compact, keyboard-operable disclosure rather than a persistent banner");
 check(pwaCss.includes(".pwaUpdate{position:fixed;top:calc(env(safe-area-inset-top") && pwaCss.includes("bottom:auto"), "update-ready prompt must stay compact at the top, not cover bottom actions");
 check(sw.includes("preservePaths = []") && sw.includes("removable.slice(0, excess)") && sw.includes("trimCache(SHELL_CACHE, STATIC_LIMIT, APP_SHELL)"), "cache trimming must preserve precached app-shell routes");
