@@ -924,17 +924,24 @@ export default function Home() {
   }
 
   return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--studio-accent-secondary": secondaryColor, "--studio-accent-highlight": highlightColor, "--studio-accent-ink": accentInk(themeColor), "--studio-accent-text": accentText(themeColor) } as React.CSSProperties}>
-    {!identityReady || !ready || !businessNameReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete && identityMode === "choice" ? <section className="sd-identity-choice">
-      <div className="sd-identity-choice-shell">
-        <div className="sd-identity-choice-heading"><span className="sd-kicker">ITERATION13 / BUSINESS OS</span><span className="sd-identity-choice-eyebrow">YOUR NEXT STEP</span><h1>Your business, <em>your choice.</em></h1><p>Start with a fresh business setup or deliberately reopen one you saved before. Your previous setup will not load automatically.</p></div>
-        {sharedExample && isSharedExampleWorkspace ? <div className="sd-identity-choice-grid">
-          <article className="sd-identity-choice-card is-primary"><span>01 / BUSINESS EXAMPLE</span><h2>Explore {sharedExample.businessName}</h2><p>Open the Store, customer Account and owner Briefcase using this business setup. Your exploration is saved separately in this browser.</p><button type="button" onClick={loadSharedBusinessExample}>Explore the {sharedExample.businessName} example <b aria-hidden="true">↗</b></button></article>
-          <article className="sd-identity-choice-card"><span>02 / MAKE IT YOURS</span><h2>Create your own business</h2><p>Start with a clean business identity, your own products or services and a separate local workspace.</p><button type="button" onClick={startOwnBusinessSetup}>Create my own business <b aria-hidden="true">↗</b></button></article>
-        </div> : <div className="sd-identity-choice-grid">
-          <article className="sd-identity-choice-card is-primary"><span>01 / START FRESH</span><h2>Create a new business</h2><p>Enter a new business name, choose your brand colours, set your currency and add the first product / service and its industry.</p><button type="button" onClick={startOwnBusinessSetup}>Create new business <b aria-hidden="true">↗</b></button></article>
-          <article className="sd-identity-choice-card"><span>02 / RETURN TO A SETUP</span><h2>Load previous setup</h2>{hasPreviousSetup ? <><div className="sd-identity-saved-preview"><strong>{businessName.trim() || "Your saved business"}</strong><small>{data.services.length} saved product / service{data.services.length === 1 ? "" : "s"} · {businessCurrency} · this browser</small><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div></div><p>Restore the business identity and local demo storefront saved on this device.</p><button type="button" onClick={loadPreviousBusinessSetup}>Load {businessName.trim() || "previous setup"} <b aria-hidden="true">↗</b></button></> : <><p>No previous business setup has been saved in this browser yet. Create one first and it will be available here.</p><button type="button" disabled>Nothing to load yet</button></>}</article>
-        </div>}
-        <p className="sd-identity-choice-footnote">One business is saved on this device. Load it whenever you return, or create a new one and confirm before replacing it.</p>
+    {!identityReady || !ready || !businessNameReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete && identityMode === "choice" ? <section className="sd-opening-screen">
+      <div className="sd-opening-shell">
+        <header className="sd-opening-header"><span className="sd-opening-mark">i13</span><span><strong>i13 B.O.S.</strong><small>BY ADMIN HUB</small></span><span className="sd-opening-edition">BUSINESS OPERATING SYSTEM</span></header>
+        <div className="sd-opening-hero">
+          <div className="sd-opening-copy"><span className="sd-opening-kicker">A NEW WAY TO RUN YOUR BUSINESS</span><h1>Your business.<br/><em>Connected.</em></h1><p className="sd-opening-lede">See how your business could work when your website, customer experience and owner tools are designed to work together.</p>
+            <button className="sd-opening-primary" type="button" onClick={startOwnBusinessSetup}>Build my business experience <span aria-hidden="true">↗</span></button>
+            <p className="sd-opening-note">Start with your business name, colours and first product or service. No technical setup required.</p>
+          </div>
+          <div className="sd-opening-preview" aria-label="One connected business experience">
+            <div className="sd-opening-preview-top"><span>ONE BUSINESS. THREE CONNECTED PARTS.</span><i aria-hidden="true">● ● ●</i></div>
+            <div className="sd-opening-preview-brand"><span className="sd-opening-preview-logo">M</span><div><strong>Your business</strong><small>Example identity preview</small></div><b>LIVE</b></div>
+            <div className="sd-opening-preview-panels"><article><span>01 / WEBSITE</span><strong>Your Store</strong><small>Customers discover what you offer.</small><b aria-hidden="true">↗</b></article><article><span>02 / WEB APP</span><strong>Customer Account</strong><small>Requests and updates stay together.</small><b aria-hidden="true">↗</b></article><article><span>03 / APP</span><strong>Owner Briefcase</strong><small>Run the work from one place.</small><b aria-hidden="true">↗</b></article></div>
+            <div className="sd-opening-preview-foot"><span>YOUR BUSINESS IN YOUR POCKET.</span><span>DESIGNED AROUND YOU</span></div>
+          </div>
+        </div>
+        <div className="sd-opening-bottom"><div className="sd-opening-journey"><span>HOW IT COMES TO LIFE</span><p><b>01</b> Identity <i>→</i> <b>02</b> Store <i>→</i> <b>03</b> Customer journey <i>→</i> <b>04</b> Briefcase</p></div>
+          <div className="sd-opening-return">{sharedExample && isSharedExampleWorkspace ? <button type="button" onClick={loadSharedBusinessExample}>Explore {sharedExample.businessName} example ↗</button> : hasPreviousSetup ? <button type="button" onClick={loadPreviousBusinessSetup}>Return to {businessName.trim() || "saved business"} ↗</button> : <span>New here? Start by making it yours.</span>}</div>
+        </div>
       </div>
     </section> : !identityComplete ? <section className="sd-identity-onboarding">
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "EDIT YOUR BUSINESS SETUP" : "YOUR BRIEFCASE STARTS HERE"}</span></div>
