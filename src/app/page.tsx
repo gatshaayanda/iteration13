@@ -620,7 +620,13 @@ export default function Home() {
     if (!name) { setNotice("Enter your business name to continue."); return; }
     if (!firstServiceName) { setNotice("Add at least one product or service before creating your business space."); return; }
     if (!Number.isFinite(firstServicePrice) || firstServicePrice < 0) { setNotice("Enter a valid first product / service price in " + businessCurrency + "."); return; }
-    if (serviceMediaUploading) { setNotice("Wait for the product / service media upload to finish before continuing."); return; }
+    if (serviceMediaUploading || announcementImageUploading) { setNotice("Wait for both media uploads to finish before creating your business space."); return; }
+    const announcement = announcementDraft.trim();
+    const announcementImage = announcementImageDraft.trim();
+    if (announcementImage) {
+      try { const parsed = new URL(announcementImage); if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported protocol"); }
+      catch { setNotice("Enter a valid announcement image URL or finish the thumbnail upload before continuing."); return; }
+    }
     if (serviceMedia.trim()) {
       try { const parsed = new URL(serviceMedia.trim()); if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported protocol"); }
       catch { setNotice("Enter a valid media URL or finish the upload before continuing."); return; }
@@ -629,7 +635,9 @@ export default function Home() {
     const nextServices = identityEditing && identityServiceId
       ? data.services.map(item => item.id === identityServiceId ? firstService : item)
       : [firstService];
-    const nextData = identityEditing ? { ...data, services: nextServices } : { ...emptyData, services: nextServices, views: data.views };
+    const nextData = identityEditing
+      ? { ...data, services: nextServices, announcement, announcementImage }
+      : { ...emptyData, services: nextServices, announcement, announcementImage, views: data.views };
     try {
       window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(nextData));
       window.localStorage.setItem(getStorageKey("iteration13:business-name:v1"), name.slice(0, 48));
