@@ -4810,3 +4810,87 @@ h1 em,
 @media(prefers-reduced-motion:reduce){
   .serviceDemo .sd-store-copy{animation:none}
 }
+
+
+/* Storefront art direction v12: campaign-led first impression and product-first collection. */
+.serviceDemo .sd-store-campaign{
+  position:relative;overflow:hidden;padding:clamp(14px,2.3vw,24px) 0 clamp(24px,3vw,34px);
+  background:#0b1424;
+}
+.serviceDemo .sd-store-campaign-inner{
+  display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(18px,3vw,34px);
+  min-height:clamp(270px,34vw,420px);overflow:hidden;border:1px solid #24354d;border-radius:24px;
+  background:radial-gradient(ellipse at 8% 100%,color-mix(in srgb,var(--studio-accent) 20%,transparent),transparent 48%),linear-gradient(125deg,#111d30,#101827 70%,#15243a);
+  box-shadow:0 22px 54px #050b1660;
+}
+.serviceDemo .sd-store-campaign-copy{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-width:0;padding:clamp(24px,4vw,52px)}
+.serviceDemo .sd-store-campaign-kicker{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;color:#aebed3;font-size:.72rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.serviceDemo .sd-store-campaign-kicker:before{content:"";width:22px;height:2px;background:var(--studio-accent-text)}
+.serviceDemo .sd-store-campaign-copy h1{max-width:620px;margin:0;color:#fff;font-size:clamp(2.4rem,5.4vw,4.8rem);font-weight:900;line-height:.98;letter-spacing:-.065em;text-wrap:balance;overflow-wrap:anywhere}
+.serviceDemo .sd-store-campaign-copy p{max-width:440px;margin:16px 0 24px;color:#d2dceb;font-size:1rem;line-height:1.6}
+.serviceDemo .sd-store-campaign-action{display:inline-flex;align-items:center;gap:20px;min-height:48px;padding:0 17px;border:1px solid color-mix(in srgb,var(--studio-accent) 70%,#fff);border-radius:10px;background:var(--studio-accent);color:var(--studio-accent-text);font-size:.88rem;font-weight:900;text-decoration:none;box-shadow:0 9px 26px color-mix(in srgb,var(--studio-accent) 23%,transparent);transition:transform .18s ease,filter .18s ease}
+.serviceDemo .sd-store-campaign-action:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.serviceDemo .sd-store-campaign-action:focus-visible{outline:3px solid var(--studio-accent-highlight);outline-offset:3px}
+.serviceDemo .sd-store-campaign-visual{position:relative;min-width:0;min-height:270px;overflow:hidden;background:#15233a}
+.serviceDemo .sd-store-campaign-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#10182735,transparent 35%),linear-gradient(0deg,#08111b45,transparent 40%);pointer-events:none}
+.serviceDemo .sd-store-campaign-visual>img{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;object-position:center}
+.serviceDemo .sd-campaign-art{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding:28px;background:radial-gradient(ellipse at 70% 25%,color-mix(in srgb,var(--studio-accent-highlight) 42%,transparent),transparent 34%),linear-gradient(145deg,color-mix(in srgb,var(--studio-accent) 68%,#14233a),#0b1424 75%)}
+.serviceDemo .sd-campaign-art:before,.serviceDemo .sd-campaign-art:after{content:"";position:absolute;border:1px solid #ffffff25;border-radius:50%;pointer-events:none}
+.serviceDemo .sd-campaign-art:before{width:360px;height:360px;right:-70px;top:-130px}
+.serviceDemo .sd-campaign-art:after{width:250px;height:250px;right:-15px;top:-75px}
+.serviceDemo .sd-campaign-art>span{position:relative;z-index:1;color:#ffffffb8;font-size:.72rem;font-weight:900;letter-spacing:.16em}
+.serviceDemo .sd-campaign-art>strong{position:relative;z-index:1;margin-top:12px;color:#fff;font-size:clamp(2rem,4vw,3.5rem);line-height:.98;letter-spacing:-.06em}
+.serviceDemo .sd-campaign-art>i{position:absolute;right:13%;top:24%;width:88px;height:88px;border:16px solid color-mix(in srgb,var(--studio-accent-highlight) 60%,transparent);border-radius:50%;filter:blur(1px)}
+.serviceDemo .sd-store-collection{padding-top:clamp(22px,3vw,34px);padding-bottom:42px}
+.serviceDemo .sd-store-collection .sd-storefront-bar{align-items:center;margin-bottom:18px}
+.serviceDemo .sd-store-collection .sd-storefront-title .sd-kicker{color:#68778a}
+.serviceDemo .sd-store-collection .sd-storefront-title h2{margin:5px 0 0;color:#121d2d;font-size:clamp(1.55rem,3vw,2.25rem);letter-spacing:-.05em}
+.serviceDemo .sd-store-collection .sd-storefront-signals{gap:0}
+.serviceDemo .sd-store-collection .sd-store-availability{min-height:34px;padding:7px 11px;font-size:.75rem}
+.serviceDemo .sd-store-collection .sd-store-grid.has-featured-item{grid-template-columns:minmax(0,1fr)}
+.serviceDemo .sd-store-collection .sd-store-grid.has-featured-item .sd-store-card{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(280px,.88fr);width:100%;max-width:1100px;min-height:330px;overflow:hidden;border:1px solid #d9e0e8;border-radius:20px;background:#fff;box-shadow:0 14px 42px #17203312}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-media{position:relative;display:grid;min-height:330px;height:100%;overflow:hidden;background:#101c30}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-media>img,.serviceDemo .sd-store-collection .sd-store-card .sd-service-media>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.serviceDemo .sd-store-collection .sd-store-card .sd-media-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;gap:10px;overflow:hidden;padding:clamp(24px,4vw,44px);background:radial-gradient(ellipse at 75% 20%,color-mix(in srgb,var(--studio-accent-highlight) 45%,transparent),transparent 34%),linear-gradient(140deg,color-mix(in srgb,var(--studio-accent) 75%,#17243a),#0b1424 78%)}
+.serviceDemo .sd-store-collection .sd-store-card .sd-media-placeholder:before,.serviceDemo .sd-store-collection .sd-store-card .sd-media-placeholder:after{content:"";position:absolute;border:1px solid #ffffff26;border-radius:50%;pointer-events:none}
+.serviceDemo .sd-store-collection .sd-store-card .sd-media-placeholder:before{width:320px;height:320px;right:-90px;top:-120px}
+.serviceDemo .sd-store-collection .sd-store-card .sd-media-placeholder:after{width:210px;height:210px;right:-30px;top:-65px}
+.serviceDemo .sd-store-collection .sd-store-card .sd-media-placeholder>span{position:relative;z-index:1;color:#d8e4f3;font-size:.7rem;font-weight:900;letter-spacing:.15em}
+.serviceDemo .sd-store-collection .sd-store-card .sd-media-placeholder>strong{position:relative;z-index:1;max-width:90%;color:#fff;font-size:clamp(2.2rem,4.8vw,4.5rem);line-height:.98;letter-spacing:-.06em;overflow-wrap:anywhere}
+.serviceDemo .sd-store-collection .sd-store-card .sd-media-placeholder>i{position:absolute;right:12%;top:28%;width:74px;height:74px;border:14px solid color-mix(in srgb,var(--studio-accent-highlight) 62%,transparent);border-radius:50%}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-info{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:0;padding:clamp(22px,3.6vw,42px)}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-meta{margin-bottom:12px;color:#64748b}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-title{width:100%;align-items:flex-start;gap:12px}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-title h3{color:#111d2e;font-size:clamp(1.35rem,2.4vw,1.9rem);line-height:1.1}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-title>strong{flex:none;color:var(--studio-accent);font-size:clamp(1.1rem,2vw,1.45rem);white-space:nowrap}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-info>p{margin:14px 0 22px;color:#465568;font-size:.95rem;line-height:1.65}
+.serviceDemo .sd-store-collection .sd-store-card .sd-order-button{min-height:50px;padding:0 20px;border-radius:10px;font-size:.88rem}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue,.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue{gap:18px}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-store-card,.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-store-card{overflow:hidden;border:1px solid #d9e0e8;border-radius:17px;background:#fff;box-shadow:0 10px 28px #17203310}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-service-media,.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-service-media{position:relative;height:clamp(180px,24vw,280px);overflow:hidden;background:#101c30}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-service-media>img,.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-service-media>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-service-info,.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-service-info{padding:18px}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-media-placeholder,.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-media-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:20px;background:linear-gradient(140deg,color-mix(in srgb,var(--studio-accent) 70%,#17243a),#0b1424)}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-media-placeholder>span,.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-media-placeholder>span{color:#d8e4f3;font-size:.66rem;font-weight:900;letter-spacing:.14em}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-media-placeholder>strong,.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-media-placeholder>strong{color:#fff;font-size:1.8rem;line-height:1.05}
+@media(max-width:720px){
+  .serviceDemo .sd-store-campaign{padding:10px 0 18px}
+  .serviceDemo .sd-store-campaign-inner{grid-template-columns:minmax(0,1fr);gap:0;border-radius:17px}
+  .serviceDemo .sd-store-campaign-copy{padding:24px 22px 20px}
+  .serviceDemo .sd-store-campaign-kicker{margin-bottom:12px;font-size:.65rem}
+  .serviceDemo .sd-store-campaign-copy h1{font-size:clamp(2.15rem,9vw,3.1rem)}
+  .serviceDemo .sd-store-campaign-copy p{margin:12px 0 17px;font-size:.94rem}
+  .serviceDemo .sd-store-campaign-visual{min-height:190px;height:clamp(190px,55vw,270px)}
+  .serviceDemo .sd-campaign-art{padding:20px}
+  .serviceDemo .sd-store-collection{padding-top:20px}
+  .serviceDemo .sd-store-collection .sd-storefront-bar{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+  .serviceDemo .sd-store-collection .sd-storefront-title h2{font-size:1.55rem}
+  .serviceDemo .sd-store-collection .sd-store-grid.has-featured-item .sd-store-card{grid-template-columns:minmax(0,1fr);min-height:0}
+  .serviceDemo .sd-store-collection .sd-store-card .sd-service-media{height:clamp(220px,64vw,310px);min-height:0}
+  .serviceDemo .sd-store-collection .sd-store-card .sd-service-info{padding:19px}
+  .serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue,.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue{grid-template-columns:minmax(0,1fr);gap:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  .serviceDemo .sd-store-campaign-action{transition:none}
+  .serviceDemo .sd-store-campaign-action:hover{transform:none}
+}
