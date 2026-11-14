@@ -4648,3 +4648,46 @@ h1 em,
 @media(prefers-reduced-motion:reduce){
   .serviceDemo .sd-store-hero-visual{transform:none}
 }
+
+
+/* Storefront editorial opening — identity first, catalogue-led, no duplicate featured listing. */
+.serviceDemo .sd-store-home{
+  position:relative;overflow:hidden;
+  padding:clamp(38px,7vw,82px) 0 clamp(38px,6vw,66px);
+  background:radial-gradient(ellipse at 88% 12%,color-mix(in srgb,var(--studio-accent) 19%,transparent),transparent 42%),linear-gradient(135deg,#111b2a 0%,#101722 58%,#172235 100%);
+  border-bottom:1px solid #29394d;
+}
+.serviceDemo .sd-store-intro{display:block;max-width:1080px;margin:0 auto}
+.serviceDemo .sd-store-copy{max-width:920px;animation:sd-store-editorial-in .62s cubic-bezier(.2,.7,.2,1) both}
+.serviceDemo .sd-store-welcome{display:inline-flex;align-items:center;gap:9px;margin:0 0 22px;color:color-mix(in srgb,var(--studio-accent) 72%,#fff);font-size:.82rem;font-weight:850;letter-spacing:.045em}
+.serviceDemo .sd-store-welcome>span{display:grid;place-items:center;width:30px;height:30px;border:1px solid color-mix(in srgb,var(--studio-accent) 55%,#64748b);border-radius:10px;background:color-mix(in srgb,var(--studio-accent) 17%,#172235);color:var(--studio-accent-text)}
+.serviceDemo .sd-store-intro h1{max-width:900px;margin:0 0 19px;font-size:clamp(2.7rem,7.4vw,5.7rem);line-height:.98;letter-spacing:-.072em;text-wrap:balance}
+.serviceDemo .sd-store-intro h1 em{color:var(--studio-accent-text);font-style:normal}
+.serviceDemo .sd-store-intro p:not(.sd-store-welcome){max-width:600px;margin:0;color:#d3dce8;font-size:clamp(.98rem,1.5vw,1.08rem);line-height:1.65}
+.serviceDemo .sd-store-home .sd-hero-actions{display:flex;align-items:center;gap:14px;margin-top:28px}
+.serviceDemo .sd-store-home .sd-hero-primary{min-height:52px;padding:0 21px;border-radius:12px;font-size:.91rem;box-shadow:0 8px 24px color-mix(in srgb,var(--studio-accent) 18%,transparent);transition:transform .2s ease,box-shadow .2s ease,background-color .2s ease}
+.serviceDemo .sd-store-home .sd-hero-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px color-mix(in srgb,var(--studio-accent) 24%,transparent)}
+.serviceDemo .sd-store-promo{padding:12px 0;background:#f4f6f8}
+.serviceDemo .sd-store-promo .sd-wrap{display:flex;align-items:center;gap:15px;min-width:0;padding:14px 17px;border:1px solid #d9e0e8;border-left:4px solid var(--studio-accent);border-radius:14px;background:#fff;box-shadow:0 5px 18px #1017220b}
+.serviceDemo .sd-store-promo .sd-promo-mark{display:grid;place-items:center;flex:none;width:38px;height:38px;margin:0;border-radius:11px;background:color-mix(in srgb,var(--studio-accent) 14%,#fff);color:var(--studio-accent);font-size:1.15rem}
+.serviceDemo .sd-store-promo .sd-promo-copy{flex:1;min-width:0}
+.serviceDemo .sd-store-promo .sd-promo-copy>span{color:#526075;font-size:.68rem;font-weight:900;letter-spacing:.11em}
+.serviceDemo .sd-store-promo .sd-promo-copy>p{margin:4px 0 0;color:#172033;font-size:.94rem;line-height:1.5;font-weight:650}
+.serviceDemo .sd-store-promo .sd-announcement-thumb{flex:none;width:76px;height:76px;object-fit:cover;border-radius:10px}
+@keyframes sd-store-editorial-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){
+  .serviceDemo .sd-store-home{padding:34px 0 38px}
+  .serviceDemo .sd-store-welcome{margin-bottom:18px;font-size:.78rem}
+  .serviceDemo .sd-store-intro h1{max-width:560px;margin-bottom:15px;font-size:clamp(2.65rem,11.4vw,4rem)}
+  .serviceDemo .sd-store-intro p:not(.sd-store-welcome){font-size:.96rem;line-height:1.58}
+  .serviceDemo .sd-store-home .sd-hero-actions{margin-top:23px}
+  .serviceDemo .sd-store-home .sd-hero-primary{width:100%;justify-content:center}
+  .serviceDemo .sd-store-promo{padding:10px 0}
+  .serviceDemo .sd-store-promo .sd-wrap{gap:11px;padding:12px}
+  .serviceDemo .sd-store-promo .sd-announcement-thumb{width:64px;height:64px}
+}
+@media(prefers-reduced-motion:reduce){
+  .serviceDemo .sd-store-copy{animation:none}
+  .serviceDemo .sd-store-home .sd-hero-primary{transition:none}
+  .serviceDemo .sd-store-home .sd-hero-primary:hover{transform:none}
+}
