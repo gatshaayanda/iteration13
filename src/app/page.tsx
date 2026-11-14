@@ -985,25 +985,11 @@ export default function Home() {
         </div>
       </div>
     {pendingConfirm?.kind === "overwrite-business" && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-onboarding-overwrite-title" aria-describedby="sd-onboarding-overwrite-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-onboarding-overwrite-title">Replace the saved business?</h2><p id="sd-onboarding-overwrite-description">This replaces the current business name, colours, currency and products / services. Its saved customer requests, messages and owner notes on this device will also be cleared. This cannot be undone.</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep existing setup</button><button type="button" className="sd-button sd-primary" onClick={() => { setPendingConfirm(null); completeBusinessIdentity(true); }}>Replace and create</button></div></section></div>}</section> : <>
-    <div className="sd-topline"><div className="sd-wrap"><span className="sd-platform-signature"><strong>i13 B.O.S.</strong><i>BY ADMIN HUB</i></span><details className="sd-connect-details"><summary className={(online ? "sd-connect" : "sd-connect is-offline") + (offlineShellReady ? " is-offline-ready" : "")} aria-label={offlineShellReady ? "App shell saved on this device; open details" : online ? "Browser-local demo; open details" : "Offline mode; open details"}><i />{offlineShellReady ? "App shell saved" : online ? "Demo mode" : "Offline mode"}<span className="sd-connect-chevron" aria-hidden="true">⌄</span></summary><div className="sd-connect-popover"><strong>{offlineShellReady ? "The Store can reopen offline on this device." : "This is a browser-local demo."}</strong><span>{offlineShellReady ? "The app interface is saved on this device. When an update is ready, use Refresh to switch to the new version." : "Your demo workspace is stored in this browser."}</span><span>Business edits stay on this device. Uploads and cloud-connected actions still need internet.</span></div></details></div></div>
+    <div className="sd-topline"><div className="sd-wrap"><details className="sd-connect-details"><summary className={(online ? "sd-connect" : "sd-connect is-offline") + (offlineShellReady ? " is-offline-ready" : "")} aria-label={offlineShellReady ? "App shell saved on this device; open details" : online ? "Browser-local demo; open details" : "Offline mode; open details"}><i />{offlineShellReady ? "App shell saved" : online ? "Demo mode" : "Offline mode"}<span className="sd-connect-chevron" aria-hidden="true">⌄</span></summary><div className="sd-connect-popover"><strong>{offlineShellReady ? "The Store can reopen offline on this device." : "This is a browser-local demo."}</strong><span>{offlineShellReady ? "The app interface is saved on this device. When an update is ready, use Refresh to switch to the new version." : "Your demo workspace is stored in this browser."}</span><span>Business edits stay on this device. Uploads and cloud-connected actions still need internet.</span></div></details></div></div>
     <header className="sd-header"><div className="sd-wrap sd-nav"><button className="sd-brand" onClick={() => { setView("shop"); setNotice(""); window.scrollTo({top:0,behavior:"smooth"}); }} aria-label="Back to Store"><span className="sd-logo">{(businessName.trim() || "YB").slice(0,2).toUpperCase()}</span><span><strong>{businessName || "Your Business"}</strong><small>STORE</small></span></button><nav aria-label="Main navigation"><button onClick={() => { setView("shop"); setNotice(""); }}>Store</button><button onClick={() => { recordDemoJourney("Customer account opened"); recordActivity("account", "Customer account opened"); setView("account"); setNotice(""); }}>Account <span className="sd-count">{data.orders.length}</span></button></nav></div></header>
 
 
     {view === "shop" && <>
-      {(data.announcement.trim() || data.announcementImage) && <section className="sd-store-home sd-store-campaign" aria-label="Business announcement">
-        <div className="sd-wrap sd-store-campaign-inner">
-          <div className="sd-store-campaign-copy">
-            <span className="sd-store-campaign-kicker">{businessName || "THE BUSINESS"} <i aria-hidden="true"/> ANNOUNCEMENT</span>
-            <h1>{data.announcement.trim() || "A note from the business."}</h1>
-            <p>Discover the current offering.</p>
-            <a className="sd-store-campaign-action" href="#services"><span>Browse offerings</span><span className="sd-action-mark" aria-hidden="true">↘</span></a>
-          </div>
-          {data.announcementImage && <div className="sd-store-campaign-visual">
-            <div className="sd-campaign-art" aria-hidden="true"><i/><b>{businessName || " "}</b></div>
-            <img src={data.announcementImage} alt="" loading="eager" onError={event => { event.currentTarget.hidden = true; }} />
-          </div>}
-        </div>
-      </section>}
       <section className="sd-services sd-wrap sd-digital-store sd-store-collection" id="services">
         <div className="sd-storefront-bar">
           <div className="sd-storefront-title"><div><span className="sd-kicker">THE STORE</span><h2>Available offerings</h2></div></div>
@@ -1012,6 +998,7 @@ export default function Home() {
         <div className={"sd-service-grid sd-store-grid "+(activeServices.length === 1 ? "has-featured-item" : activeServices.length > 4 ? "has-catalogue" : "has-small-catalogue")}>
           {activeServices.length ? activeServices.map((service,index)=><article className="sd-service-card sd-store-card" key={service.id}>
             <div className={"sd-service-media sd-media-"+(index%4)+(service.mediaType==="video"?" is-video":"")}>
+              {index === 0 && (data.announcement.trim() || data.announcementImage) && <div className="sd-product-announcement" aria-label="Business announcement">{data.announcementImage && <img src={data.announcementImage} alt="" loading="lazy" onError={event => { event.currentTarget.hidden = true; }} />}<span><small>ANNOUNCEMENT</small><strong>{data.announcement.trim() || "A note from the business"}</strong></span></div>}
               <div className="sd-media-placeholder" aria-hidden="true"><span>{businessName || "THE STORE"}</span><strong>{service.name}</strong><i/></div>
               {service.media&&service.mediaType==="video"?<video src={service.media} controls muted playsInline preload="metadata"/>:service.media?<img src={service.media} alt={service.name+" preview"} loading="lazy" onError={event => { event.currentTarget.hidden = true; }}/>:null}
               {service.media&&service.mediaType==="video"&&<span className="sd-service-media-badge">VIDEO PREVIEW</span>}
