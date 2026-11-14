@@ -4661,3 +4661,18 @@ h1 em,
 @media(prefers-reduced-motion:reduce){
  .serviceDemo .sd-opening-primary,.serviceDemo .sd-opening-tabs button{transition:none}
 }
+
+
+/* Flagship invitation on the first-run identity screen: a genuine external example, not a fake preview control. */
+.serviceDemo .sd-flagship-invitation{display:flex;align-items:center;justify-content:space-between;gap:20px;max-width:1180px;margin:18px auto 0;padding:18px 20px;border:1px solid #cbd9d2;border-radius:16px;background:linear-gradient(110deg,#edf5f0 0%,#f8faf8 72%);color:#172b24}
+.serviceDemo .sd-flagship-copy{min-width:0}
+.serviceDemo .sd-flagship-copy>span{display:block;color:#28624c;font-size:.7rem;font-weight:900;letter-spacing:.1em;line-height:1.4}
+.serviceDemo .sd-flagship-copy>strong{display:block;margin-top:5px;color:#172b24;font-size:1.05rem;line-height:1.3}
+.serviceDemo .sd-flagship-copy>p{max-width:690px;margin:5px 0 0;color:#45594e;font-size:.86rem;line-height:1.5}
+.serviceDemo .sd-flagship-invitation>a{display:inline-flex;align-items:center;justify-content:center;gap:14px;flex:none;min-height:46px;padding:11px 15px;border:0;border-radius:10px;background:#26745d;color:#fff;font-size:.86rem;font-weight:900;text-decoration:none}
+.serviceDemo .sd-flagship-invitation>a:hover{background:#1e604d}
+.serviceDemo .sd-flagship-invitation>a:focus-visible{outline:3px solid #172033;outline-offset:3px}
+@media(max-width:640px){
+ .serviceDemo .sd-flagship-invitation{align-items:stretch;flex-direction:column;gap:12px;margin-top:12px;padding:15px}
+ .serviceDemo .sd-flagship-invitation>a{width:100%}
+}
