@@ -125,6 +125,7 @@ export default function Home() {
   const [shareLink, setShareLink] = useState("");
   const [ready, setReady] = useState(false);
   const [online, setOnline] = useState(true);
+  const [offlineShellReady, setOfflineShellReady] = useState(false);
   const [view, setView] = useState<"shop" | "account" | "login" | "admin">("shop");
   const [demoJourney, setDemoJourney] = useState<string[]>(["Storefront preview"]);
 
@@ -379,6 +380,27 @@ export default function Home() {
     if (!ready) return;
     try { window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(data)); } catch { setNotice("The browser could not save this change locally. Check available storage."); }
   }, [data, ready]);
+
+  useEffect(() => {
+    let active = true;
+    const inspectOfflineShell = async () => {
+      if (!("serviceWorker" in navigator) || !("caches" in window)) return;
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const shell = await caches.open("iteration13-shell-v8");
+        const [home, offlinePage] = await Promise.all([shell.match("/"), shell.match("/offline")]);
+        if (active) setOfflineShellReady(Boolean(registration.active && home && offlinePage));
+      } catch {
+        if (active) setOfflineShellReady(false);
+      }
+    };
+    void inspectOfflineShell();
+    navigator.serviceWorker?.addEventListener("controllerchange", inspectOfflineShell);
+    return () => {
+      active = false;
+      navigator.serviceWorker?.removeEventListener("controllerchange", inspectOfflineShell);
+    };
+  }, []);
 
   useEffect(() => {
     if (!ready || !("serviceWorker" in navigator)) return;
@@ -941,7 +963,7 @@ export default function Home() {
         </div>
       </div>
     {pendingConfirm?.kind === "overwrite-business" && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-onboarding-overwrite-title" aria-describedby="sd-onboarding-overwrite-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-onboarding-overwrite-title">Replace the saved business?</h2><p id="sd-onboarding-overwrite-description">This replaces the current business name, colours, currency and products / services. Its saved customer requests, messages and owner notes on this device will also be cleared. This cannot be undone.</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep existing setup</button><button type="button" className="sd-button sd-primary" onClick={() => { setPendingConfirm(null); completeBusinessIdentity(true); }}>Replace and create</button></div></section></div>}</section> : <>
-    <div className="sd-topline"><div className="sd-wrap"><span>ITERATION13 <i className="sd-topline-divider">/</i> BUSINESS PREVIEW</span><span className={online ? "sd-connect" : "sd-connect is-offline"} role="status" aria-live="polite" aria-atomic="true"><i />{online ? "Demo ready" : "Offline · local demo"}</span></div></div>
+    <div className="sd-topline"><div className="sd-wrap"><span>ITERATION13 <i className="sd-topline-divider">/</i> BUSINESS PREVIEW</span><details className="sd-connect-details"><summary className={(online ? "sd-connect" : "sd-connect is-offline") + (offlineShellReady ? " is-offline-ready" : "")} aria-label={offlineShellReady ? "Offline app shell is saved on this device; open details" : online ? "Local demo status; open details" : "Offline mode; open details"}><i />{offlineShellReady ? "Offline ready" : online ? "Local demo" : "Offline mode"}<span className="sd-connect-chevron" aria-hidden="true">⌄</span></summary><div className="sd-connect-popover"><strong>{offlineShellReady ? "This app shell is saved on this device." : "Local demo mode"}</strong><span>{offlineShellReady ? "The public Store shell can reopen without a connection." : "Your demo workspace is stored in this browser."}</span><span>Business edits stay on this device. Uploads and cloud-connected actions need internet.</span></div></details></div></div>
     <header className="sd-header"><div className="sd-wrap sd-nav"><button className="sd-brand" onClick={() => { setView("shop"); setNotice(""); window.scrollTo({top:0,behavior:"smooth"}); }} aria-label="Back to Store"><span className="sd-logo">{(businessName.trim() || "YB").slice(0,2).toUpperCase()}</span><span><strong>{businessName || "Your Business"}</strong><small>STORE</small></span></button><nav aria-label="Main navigation"><button onClick={() => { setView("shop"); setNotice(""); }}>Store</button><button onClick={() => { recordDemoJourney("Customer account opened"); recordActivity("account", "Customer account opened"); setView("account"); setNotice(""); }}>Account <span className="sd-count">{data.orders.length}</span></button></nav></div></header>
 
 
