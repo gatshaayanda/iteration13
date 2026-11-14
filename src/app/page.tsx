@@ -923,6 +923,7 @@ export default function Home() {
     {!identityReady || !ready || !businessNameReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete ? <section className="sd-identity-onboarding">
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "EDIT YOUR BUSINESS SETUP" : "YOUR BRIEFCASE STARTS HERE"}</span></div>
       {!identityEditing && <aside className="sd-flagship-invitation" aria-label="Explore the flagship business example"><div className="sd-flagship-copy"><span>FLAGSHIP EXPERIENCE / EXPLORE BEFORE YOU BUILD</span><strong>See a business operating as a complete B.O.S.</strong><p>Visit the Junk Park BW example, explore the customer experience and owner tools, then return here to create your own.</p></div><a href="https://iteration13.vercel.app/" target="_blank" rel="noopener noreferrer">Explore Junk Park BW <span aria-hidden="true">↗</span></a></aside>}
+      {!identityEditing && hasPreviousSetup && <div className="sd-identity-resume-row"><span>Already started on this device?</span><button type="button" onClick={loadPreviousBusinessSetup}>Continue saved business: {businessName.trim() || "Your business"} ↗</button></div>}
       <div className="sd-identity-onboarding-layout">
         <div className="sd-identity-onboarding-copy">
           <span className="sd-kicker">LIVE BUSINESS IDENTITY / MAKE IT YOURS</span>
