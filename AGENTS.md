@@ -285,3 +285,10 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 - Approved starting point: the opening identity/entry screen only.
 - Delivery model: one screen at a time; owner QA between screens.
 - Do not begin the next screen until the owner approves the current screen or supplies corrections.
+
+## Storefront presentation guardrails — November 2026
+- The Store header already carries the business identity. Do not repeat it as a breadcrumb such as “Business name / THE STORE”; use a simple section label without slash separators.
+- Keep the Store introduction compact so the catalogue remains the primary customer action. Do not repeat availability in both the catalogue summary and every listing card.
+- A single published listing is valid content, not a reason to fabricate a second offer. Present one item as a deliberate featured card; use a balanced grid only when multiple real listings exist.
+- Announcement artwork is optional supporting media. If an image fails to load, hide the broken image while preserving the announcement text; never allow browser alt-text fallback to appear as visible broken-image copy. Keep announcement styling secondary to the catalogue.
+- For storefront presentation changes that alter the offline shell, update the app-shell version in `src/app/page.tsx`, `public/sw.js`, and `scripts/verify-offline.mjs` together. Preserve the existing user-approved refresh lifecycle.
