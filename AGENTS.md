@@ -292,3 +292,13 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 - A single published listing is valid content, not a reason to fabricate a second offer. Present one item as a deliberate featured card; use a balanced grid only when multiple real listings exist.
 - Announcement artwork is optional supporting media. If an image fails to load, hide the broken image while preserving the announcement text; never allow browser alt-text fallback to appear as visible broken-image copy. Keep announcement styling secondary to the catalogue.
 - For storefront presentation changes that alter the offline shell, update the app-shell version in `src/app/page.tsx`, `public/sw.js`, and `scripts/verify-offline.mjs` together. Preserve the existing user-approved refresh lifecycle.
+
+
+## Storefront art direction — November 2026
+- Do not keep iterating the same generic hero + announcement strip + catalogue template when visual QA rejects it. Reconsider the composition and first impression, not just spacing and borders.
+- When an announcement exists, present it as the campaign-led hero: the actual announcement copy is the headline and the uploaded image is prominent supporting artwork. Do not duplicate it in a second announcement strip. If the image fails, retain a designed brand-colour visual fallback; never expose image alt text as visible fallback copy.
+- When no announcement exists, let the collection lead immediately; do not insert a generic marketing headline just to fill space.
+- The Store collection should foreground real service/product imagery, complete name, full price and the real next action. If no media is supplied, use a deliberate typographic brand-colour treatment based on the item name, not repeated initials, emojis, indices or fake product photography.
+- Keep internal/demo counters out of the customer storefront. Preserve selected-item persistence and the customer Account workflow; do not discard or reset a customer's selection merely to simplify the presentation.
+- Keep the announcement and catalogue compact on mobile while giving the actual offer/product enough visual weight to feel intentionally art-directed. Respect reduced-motion and accessible contrast/focus states.
+- Any storefront shell change must bump and synchronize the shell version in `src/app/page.tsx`, `public/sw.js`, and `scripts/verify-offline.mjs`; preserve the approved update/refresh lifecycle.
