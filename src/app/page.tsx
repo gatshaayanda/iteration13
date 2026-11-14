@@ -595,6 +595,7 @@ export default function Home() {
     url.search = "";
     url.hash = "";
     url.searchParams.set("example", token);
+    url.searchParams.set("sample", "1");
     const link = url.toString();
     setShareLink(link);
     if (navigator.clipboard?.writeText) {
