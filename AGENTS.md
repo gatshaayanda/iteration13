@@ -282,7 +282,7 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 - Distinguish browser-local demo behavior from real cloud persistence, analytics, messaging, payments, hosting entitlements and production security. Never imply cross-device sync or production readiness without evidence.
 
 ### Current redesign checkpoint
-- Approved starting point: the opening identity/entry screen only.
+- Current customer-facing redesign target: the Store. Ordinary visitors enter the Store directly; owner identity setup remains a separate owner-only workflow.
 - Delivery model: one screen at a time; owner QA between screens.
 - Do not begin the next screen until the owner approves the current screen or supplies corrections.
 
