@@ -32,9 +32,9 @@ When asked to adopt/use Iteration 13 as a reference, do not restart a full found
 
 This path is the default for both new and existing project adaptations. Follow the longer foundation/cloning SOP only when the task actually creates a new repository or changes its foundation.
 
-## First experience: establish the business identity
+## Owner setup and visitor entry are separate
 
-For Iteration 13 itself and new Business OS builds, the first guided action is to name and brand the business—not to browse the sample catalogue first.
+The owner’s first guided setup action is to name and brand the business. This is not a customer landing page: ordinary visitors must be dropped directly into the Store, with no separate i13 welcome screen, identity form or product-selection interstitial. The Store is the visitor’s first experience; owner identity setup is entered deliberately by the owner.
 
 1. Enter a real or fictional business name (example: **Metsi Wellness**).
 2. Select one, two or three brand colours maximum. One colour is a valid finished palette; the third is optional.
