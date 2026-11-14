@@ -75,12 +75,23 @@ These rules complement—not replace—the PWA installation lock and other proje
 
 ## Iteration 13 Business OS product contract
 
-- Iteration 13 demonstrates one business product: **Store → Briefcase → Login**. Store is customer-facing; Briefcase is the owner's Business OS; Login is the one-word owner entry. The logo remains a discreet owner-workspace affordance; never add a public "Admin" navigation destination.
+- Iteration 13 demonstrates one business product: **Store → Briefcase → Login**. Store is customer-facing; Briefcase is the owner's Business OS; Login is the one-word owner entry. The **Admin Hub B.O.S. Briefcase symbol is the product mark and PWA icon**; use the existing briefcase artwork consistently to identify the owner workspace. Keep it a discreet owner-workspace affordance in customer-facing navigation; never add a public "Admin" navigation destination.
 - The owner Briefcase owns Store CRUD (services/products, prices, media, visibility, announcements), business theme, customer records, jobs/orders, receipts/BUR-ready exports, calendar, custom priorities, insights/projections, settings and My Notes. Expose only functions that are implemented; label prototype/local behavior clearly.
 - Business theme means a selectable accent colour/palette and custom colour, not only light/dark. Apply it consistently and preserve accessible contrast.
 - Demonstrate the BoardSignal-derived 25 GB monthly capacity benchmark and high-volume customer-day use case as supplied by the product owner. Explain that provider plan, file storage, bandwidth, database operations, API calls, messaging and AI usage are distinct. Never imply unlimited capacity or live metering without telemetry.
 - Keep actual receipts/confirmed sales separate from quotes, unpaid work and projected sales. Owner-defined job priorities must be based on persisted preferences and actual job states. WhatsApp invitations must be customer-scoped, revocable and tied to the correct customer/domain.
 - The current demo remains browser-local. No real Gmail owner authentication, shared server records, live 25 GB metering, cross-device sync, customer WhatsApp delivery or BUR compliance is implied until implemented and verified. Never enter real customer records into this demo.
+
+## i13 B.O.S. opening experience and symbol
+
+- The opening screen combines a **live product preview** with an **experience-first sample business**. The sample is explicitly labelled as fictional/example content and must never be confused with the visitor's saved business.
+- Store, Customer Account and Owner Briefcase preview selectors are real accessible controls. Each selection changes the preview content; do not style static explanatory cards to look tappable. Provide visible selected, focus and pressed states.
+- The sample-business action opens a working, isolated browser-local example using the existing shared-example namespace. It must not overwrite, rename or merge with the visitor's saved business, orders, customer data or owner workspace.
+- The primary action starts the visitor's own business identity setup. The saved-business action is separate and must say **“Continue saved business: [business name]”**; never label it as another product-tour stage.
+- The Admin Hub B.O.S. Briefcase symbol is the actual suitcase/briefcase artwork already used by the PWA icon. Reuse that asset for the Owner Briefcase identity in the opening preview and journey. Do not substitute a generic emoji, unrelated illustration or text-only mark. It represents the owner workspace and the installed app.
+- Only show controls that perform the advertised action. Keep explanatory labels and journey stages non-interactive unless they are wired to a real action. A visitor should immediately understand which one action starts setup, which action explores the sample, and which action returns to saved work.
+- Screen-by-screen redesign is the release workflow: implement one agreed screen, push it to `main`, report the exact commit and checks, then stop for product-owner QA. Do not redesign the next screen until the product owner reviews the current checkpoint and supplies feedback.
+- Opening-screen QA must include 320, 360, 390, 430 and desktop widths; keyboard operation of all three preview tabs; sample-example isolation; first-time setup; returning saved-business path; horizontal text and no clipping/overflow.
 
 ## Mandatory Business OS adaptation contract
 
