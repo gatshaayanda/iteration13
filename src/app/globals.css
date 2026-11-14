@@ -2892,9 +2892,9 @@ h1 em,
 .sd-store-demo-note{display:flex;align-items:center;gap:10px;margin:18px 0 0;color:#c2cee0;font-size:.74rem;line-height:1.45}
 .sd-store-demo-note strong{flex:none;color:#9dbfff;font-size:.63rem;letter-spacing:.12em}
 .sd-store-demo-note span{padding-left:10px;border-left:1px solid #4a5d77}
-.sd-identity-preview-grid article>span{grid-column:1;grid-row:1;color:#657187;font-size:.63rem;font-weight:900;letter-spacing:.07em}
-.sd-identity-preview-grid article>strong{grid-column:2;grid-row:1;color:#172033;font-size:1rem}
-.sd-identity-preview-grid article>p{grid-column:2;grid-row:2;margin:-5px 0 0;color:#526075;font-size:.78rem;line-height:1.4}
+.sd-identity-preview-grid article>span{color:#657187;font-size:.63rem;font-weight:900;letter-spacing:.07em}
+.sd-identity-preview-grid article>strong{color:#172033;font-size:1rem}
+.sd-identity-preview-grid article>p{margin:-5px 0 0;color:#526075;font-size:.78rem;line-height:1.4}
 .sd-footer .sd-owner-entry-copy small{letter-spacing:.08em}
 @media(max-width:760px){
  .sd-store-home{padding:22px 0 16px}
@@ -4504,3 +4504,48 @@ h1 em,
 .sd-identity-currency>p{margin:0;color:#526075;font-size:.75rem;line-height:1.5}
 .sd-identity-currency-options>button:focus-visible{outline:3px solid #172033;outline-offset:3px}
 @media(max-width:390px){.sd-identity-currency{padding:12px}.sd-identity-currency-options{grid-template-columns:1fr}.sd-identity-currency-options>button{min-height:58px}}
+
+/* Identity preview: keep numbered Store / Account / Briefcase labels horizontal at every width. */
+.serviceDemo .sd-identity-preview-grid article{
+  display:flex!important;flex-wrap:wrap;align-items:baseline;gap:5px 12px;min-width:0;
+}
+.serviceDemo .sd-identity-preview-grid article>span,
+.serviceDemo .sd-identity-preview-grid article>strong{
+  flex:0 0 auto;grid-column:auto!important;grid-row:auto!important;
+  writing-mode:horizontal-tb!important;text-orientation:mixed!important;
+  white-space:nowrap;word-break:normal!important;overflow-wrap:normal!important;
+}
+.serviceDemo .sd-identity-preview-grid article>p{
+  flex:1 0 100%;grid-column:auto!important;grid-row:auto!important;
+  margin:0!important;min-width:0;word-break:normal!important;overflow-wrap:break-word;
+}
+
+/* Store catalogue cards: give product imagery the visual priority and a consistent crop. */
+.serviceDemo .sd-store-card .sd-service-media{
+  height:auto;aspect-ratio:16/10;min-height:150px;max-height:260px;isolation:isolate;background:#e9edf3;
+}
+.serviceDemo .sd-store-card .sd-service-media>img,
+.serviceDemo .sd-store-card .sd-service-media>video{
+  position:relative;z-index:0;width:100%;height:100%;object-fit:cover;
+}
+.serviceDemo .sd-store-card .sd-service-media::after{
+  content:"";position:absolute;inset:45% 0 0;z-index:1;
+  background:linear-gradient(180deg,transparent,rgba(12,18,28,.24));pointer-events:none;
+}
+.serviceDemo .sd-store-card .sd-service-index,.serviceDemo .sd-store-card .sd-service-emoji{z-index:3}
+.serviceDemo .sd-store-card .sd-service-media-badge{
+  position:absolute;top:12px;right:12px;z-index:4;display:inline-flex;align-items:center;
+  min-height:28px;padding:5px 9px;border:1px solid rgba(255,255,255,.65);border-radius:999px;
+  background:rgba(17,25,38,.78);color:#fff;font-size:.7rem;font-weight:900;letter-spacing:.06em;
+  backdrop-filter:blur(8px);
+}
+.serviceDemo .sd-store-card .sd-service-info{
+  display:grid;grid-template-rows:auto auto 1fr auto;gap:0;min-width:0;
+}
+.serviceDemo .sd-store-card .sd-service-meta{font-size:.75rem;letter-spacing:.045em}
+.serviceDemo .sd-store-card .sd-service-title{align-items:start;min-width:0}
+.serviceDemo .sd-store-card .sd-service-title h3{min-width:0;overflow-wrap:break-word;word-break:normal}
+.serviceDemo .sd-store-card .sd-service-info>p{overflow-wrap:break-word;word-break:normal}
+@media(max-width:640px){
+  .serviceDemo .sd-store-card .sd-service-media{min-height:180px;max-height:280px}
+}
