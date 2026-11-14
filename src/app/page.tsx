@@ -532,18 +532,33 @@ export default function Home() {
     if (!sharedExample) return;
     switchSharedWorkspace("example");
     const saved = window.localStorage.getItem(getStorageKey(STORAGE_KEY));
+    let exampleData: DemoData;
     if (saved) {
       try {
         const parsed = JSON.parse(saved) as Partial<DemoData>;
-        setData({ ...emptyData, ...parsed, services: Array.isArray(parsed.services) ? parsed.services : [], orders: Array.isArray(parsed.orders) ? parsed.orders : [], events: Array.isArray(parsed.events) ? parsed.events : [], receiptProfile: { ...emptyData.receiptProfile!, ...(parsed.receiptProfile || {}) } });
-        setAnnouncementDraft(typeof parsed.announcement === "string" ? parsed.announcement : "");
-        setAnnouncementImageDraft(typeof parsed.announcementImage === "string" ? parsed.announcementImage : "");
-        setRewardTitleDraft(typeof parsed.rewardTitle === "string" ? parsed.rewardTitle : emptyData.rewardTitle || "Take a quick lap.");
-        setRewardDescriptionDraft(typeof parsed.rewardDescription === "string" ? parsed.rewardDescription : emptyData.rewardDescription || "");
-        setRewardImageDraft(typeof parsed.rewardImage === "string" ? parsed.rewardImage : "");
-        setRewardDiscountDraft(String(Number(parsed.discountAmount) > 0 ? Number(parsed.discountAmount) : 5));
+        exampleData = { ...emptyData, ...parsed, services: Array.isArray(parsed.services) ? parsed.services : [], orders: Array.isArray(parsed.orders) ? parsed.orders : [], events: Array.isArray(parsed.events) ? parsed.events : [], receiptProfile: { ...emptyData.receiptProfile!, ...(parsed.receiptProfile || {}) } };
       } catch { setNotice("The saved example could not be loaded. Reload the shared link and try again."); return; }
+    } else {
+      const incoming = sharedExample.data || {};
+      exampleData = {
+        ...emptyData,
+        ...incoming,
+        services: Array.isArray(incoming.services) ? incoming.services : [],
+        orders: [],
+        events: [],
+        views: 0,
+        receiptProfile: { ...emptyData.receiptProfile! },
+      };
     }
+    setData(exampleData);
+    setAnnouncementDraft(exampleData.announcement || "");
+    setAnnouncementImageDraft(exampleData.announcementImage || "");
+    setRewardTitleDraft(exampleData.rewardTitle || emptyData.rewardTitle || "Take a quick lap.");
+    setRewardDescriptionDraft(exampleData.rewardDescription || emptyData.rewardDescription || "");
+    setRewardImageDraft(exampleData.rewardImage || "");
+    setRewardDiscountDraft(String(Number(exampleData.discountAmount) > 0 ? Number(exampleData.discountAmount) : 5));
+    try { window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(exampleData)); }
+    catch { setNotice("The example loaded, but this browser could not save its local copy. Your changes may not persist."); }
     setBusinessName(sharedExample.businessName);
     setBusinessCurrency(sharedExample.currency);
     setBrandColors(sharedExample.brandColors);
