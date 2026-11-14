@@ -101,8 +101,8 @@ export default function ServiceMediaPicker({ value, type, online, onChange, onUp
       </div>
       {type === "image" ? (
         <div className="sd-media-upload">
-          <label className="sd-media-file-label" htmlFor="service-media-file">Upload an image from this device or camera · max 4 MB</label>
-          <input ref={inputRef} id="service-media-file" type="file" accept="image/*" capture="environment" onChange={uploadSelected} disabled={isUploading} />
+          <label className="sd-media-file-label" htmlFor="service-media-file">Choose an image from your photo library or device files · max 4 MB</label>
+          <input ref={inputRef} id="service-media-file" type="file" accept="image/*" onChange={uploadSelected} disabled={isUploading} />
           <small>Images upload to UploadThing (maximum 4 MB). Internet is required to finish uploading; choosing a file alone does not publish it.</small>
           {!online && <p className="sd-media-offline">Offline: image upload is paused. Reconnect before uploading.</p>}
           <label className="sd-media-url-label" htmlFor="service-image-url">Or use an existing image URL</label>
@@ -110,8 +110,8 @@ export default function ServiceMediaPicker({ value, type, online, onChange, onUp
         </div>
       ) : (
         <div className="sd-media-upload">
-          <label className="sd-media-file-label" htmlFor="service-media-file">Upload a short video from this device · max 16 MB</label>
-          <input ref={inputRef} id="service-media-file" type="file" accept="video/*" capture="environment" onChange={uploadSelected} disabled={!online || isUploading} />
+          <label className="sd-media-file-label" htmlFor="service-media-file">Choose a video from your device library or files · max 16 MB</label>
+          <input ref={inputRef} id="service-media-file" type="file" accept="video/*" onChange={uploadSelected} disabled={!online || isUploading} />
           <small>Short video uploads use UploadThing (maximum 16 MB) and need internet. Video previews stream online and are not saved for offline playback.</small>
           {!online && <p className="sd-media-offline">Offline: video upload is paused. Reconnect before uploading.</p>}
           <label className="sd-media-url-label" htmlFor="service-video-url">Video URL</label>
