@@ -7,6 +7,7 @@ const account = read("../src/app/AccountWorkspace.tsx");
 const offline = read("../src/app/offline/page.tsx");
 const pwaRegister = read("../src/app/pwa-register.tsx");
 const pwaCss = read("../src/app/pwa.css");
+const installCss = read("../src/app/install-card.css");
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
 
@@ -15,7 +16,8 @@ check(sw.includes("navigationPreload.enable()") && sw.includes("event.preloadRes
 check(sw.includes("function isSafePublicHtml") && sw.includes('value === "cookie"') && sw.includes('value === "authorization"'), "public HTML caching must reject cookie- or authorization-varying responses");
 check(sw.includes("sensitiveQuery.test(key)") && sw.includes("responseOrigin === self.location.origin"), "public HTML caching must reject sensitive query strings and cross-origin redirects");
 check(sw.includes("response.status >= 500") && sw.includes("networkFirstNavigation(request, event)"), "cached public pages must recover from transient server errors");
-check(/const CACHE_VERSION = "iteration13-shell-v7"/.test(sw), "current Iteration 13 app-shell cache version must be v7");
+check(/const CACHE_VERSION = "iteration13-shell-v8"/.test(sw), "current Iteration 13 app-shell cache version must be v8");
+check(/const MEDIA_CACHE = "iteration13-media-v5"/.test(sw), "image-only media cache version must be v5");
 check(/const MEDIA_CACHE = "iteration13-media-v\d+"/.test(sw), "versioned media cache is missing");
 check(sw.includes('"/", "/offline"') && sw.includes('"/patterns", "/iphone-install"'), "home, offline and public utility routes must be precached");
 check(sw.includes("for (const match of html.matchAll") && sw.includes("/_next\\/static\\/"), "app-shell HTML must discover and precache its versioned Next.js assets");
@@ -35,7 +37,9 @@ check(sw.includes("preservePaths = []") && sw.includes("removable.slice(0, exces
 check(sw.includes('"images.unsplash.com"') && sw.includes('"utfs.io"') && sw.includes('"ufs.sh"'), "media cache must be restricted to the supported image/upload hosts");
 check(sw.includes("const MEDIA_LIMIT = 24") && sw.includes("const MEDIA_MAX_BYTES = 4 * 1024 * 1024"), "media cache must enforce 24 entries and a 4 MB per-image limit");
 check(sw.includes('if (cached) return cached') && sw.includes('return Response.error()'), "media and navigation fetches must retain an offline fallback");
-check(page.includes('type: "CACHE_MEDIA"') && page.includes("data.services.map") && page.includes("data.announcementImage"), "Store service and announcement media must be prepared for offline use");
+check(page.includes('type: "CACHE_MEDIA"') && page.includes("data.services.filter(service => service.mediaType !== \"video\")") && page.includes("data.announcementImage"), "only offline-eligible service images and announcement media must be prepared for offline use");
+check(sw.includes('startsWith("image/")'), "media cache must reject videos and other non-image responses");
+check(installCss.includes(".i13-install-card{position:relative") && !installCss.includes(".i13-install-card{position:fixed"), "install card must stay in document flow rather than cover bottom actions");
 check(page.includes('window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(data))'), "customer/admin demo changes must be synchronously saved before success feedback");
 check(account.includes("if (!online || !navigator.onLine)") && account.includes("Upload"), "offline account messaging must stay available while uploads are blocked");
 check(offline.includes("not queued for server delivery") && offline.includes("images") && offline.toLowerCase().includes("video streaming"), "offline guidance must explain image caching, video limits and non-sync boundaries");
