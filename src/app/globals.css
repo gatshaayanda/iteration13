@@ -4549,3 +4549,16 @@ h1 em,
 @media(max-width:640px){
   .serviceDemo .sd-store-card .sd-service-media{min-height:180px;max-height:280px}
 }
+
+/* Connectivity is a quiet, expandable proof of the local/offline capability. */
+.serviceDemo .sd-connect-details{position:relative;display:inline-flex;align-items:center;z-index:20;letter-spacing:normal}
+.serviceDemo .sd-connect-details>summary{list-style:none;display:inline-flex;align-items:center;gap:6px;min-height:25px;padding:3px 7px;border:1px solid rgba(216,243,106,.22);border-radius:999px;background:rgba(255,255,255,.055);font-size:.66rem;font-weight:800;cursor:pointer;white-space:nowrap}
+.serviceDemo .sd-connect-details>summary::-webkit-details-marker{display:none}
+.serviceDemo .sd-connect-details>summary .sd-connect-chevron{font-size:.82rem;opacity:.65;transition:transform .16s ease}
+.serviceDemo .sd-connect-details[open]>summary .sd-connect-chevron{transform:rotate(180deg)}
+.serviceDemo .sd-connect-details .sd-connect.is-offline-ready{color:#b9f2d0}
+.serviceDemo .sd-connect-details .sd-connect.is-offline-ready i{background:#62c781}
+.serviceDemo .sd-connect-popover{position:absolute;top:calc(100% + 8px);right:0;width:min(290px,calc(100vw - 32px));display:grid;gap:6px;padding:12px 13px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:#202326;color:#f7f8f5;box-shadow:0 12px 28px rgba(0,0,0,.24);letter-spacing:normal;white-space:normal}
+.serviceDemo .sd-connect-popover strong{font-size:.76rem;line-height:1.35}
+.serviceDemo .sd-connect-popover span{font-size:.7rem;line-height:1.45;color:#d0d4d0}
+.serviceDemo .sd-connect-details>summary:focus-visible{outline:2px solid #b9f2d0;outline-offset:3px}
