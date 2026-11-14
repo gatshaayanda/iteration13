@@ -386,7 +386,7 @@ export default function Home() {
       if (!("serviceWorker" in navigator) || !("caches" in window)) return;
       try {
         const registration = await navigator.serviceWorker.ready;
-        const shell = await caches.open("iteration13-shell-v8");
+        const shell = await caches.open("iteration13-shell-v9");
         const [home, offlinePage] = await Promise.all([shell.match("/"), shell.match("/offline")]);
         if (active) setOfflineShellReady(Boolean(registration.active && home && offlinePage));
       } catch {
@@ -985,7 +985,7 @@ export default function Home() {
         </div>
       </div>
     {pendingConfirm?.kind === "overwrite-business" && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-onboarding-overwrite-title" aria-describedby="sd-onboarding-overwrite-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-onboarding-overwrite-title">Replace the saved business?</h2><p id="sd-onboarding-overwrite-description">This replaces the current business name, colours, currency and products / services. Its saved customer requests, messages and owner notes on this device will also be cleared. This cannot be undone.</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep existing setup</button><button type="button" className="sd-button sd-primary" onClick={() => { setPendingConfirm(null); completeBusinessIdentity(true); }}>Replace and create</button></div></section></div>}</section> : <>
-    <div className="sd-topline"><div className="sd-wrap"><span>ITERATION13 <i className="sd-topline-divider">/</i> BUSINESS PREVIEW</span><details className="sd-connect-details"><summary className={(online ? "sd-connect" : "sd-connect is-offline") + (offlineShellReady ? " is-offline-ready" : "")} aria-label={offlineShellReady ? "Offline app shell is saved on this device; open details" : online ? "Local demo status; open details" : "Offline mode; open details"}><i />{offlineShellReady ? "Offline ready" : online ? "Local demo" : "Offline mode"}<span className="sd-connect-chevron" aria-hidden="true">⌄</span></summary><div className="sd-connect-popover"><strong>{offlineShellReady ? "This app shell is saved on this device." : "Local demo mode"}</strong><span>{offlineShellReady ? "The public Store shell can reopen without a connection." : "Your demo workspace is stored in this browser."}</span><span>Business edits stay on this device. Uploads and cloud-connected actions need internet.</span></div></details></div></div>
+    <div className="sd-topline"><div className="sd-wrap"><span>ITERATION13 <i className="sd-topline-divider">/</i> BUSINESS PREVIEW</span><details className="sd-connect-details"><summary className={(online ? "sd-connect" : "sd-connect is-offline") + (offlineShellReady ? " is-offline-ready" : "")} aria-label={offlineShellReady ? "Offline app shell is saved on this device; open details" : online ? "Local demo status; open details" : "Offline mode; open details"}><i />{offlineShellReady ? "Offline ready" : online ? "Local demo" : "Offline mode"}<span className="sd-connect-chevron" aria-hidden="true">⌄</span></summary><div className="sd-connect-popover"><strong>{offlineShellReady ? "This app shell is saved on this device." : "Local demo mode"}</strong><span>{offlineShellReady ? "The latest saved Store shell can reopen without a connection. New releases download in the background; choose Refresh when prompted to switch this device to the updated offline version." : "Your demo workspace is stored in this browser."}</span><span>Business edits stay on this device. Uploads and cloud-connected actions need internet.</span></div></details></div></div>
     <header className="sd-header"><div className="sd-wrap sd-nav"><button className="sd-brand" onClick={() => { setView("shop"); setNotice(""); window.scrollTo({top:0,behavior:"smooth"}); }} aria-label="Back to Store"><span className="sd-logo">{(businessName.trim() || "YB").slice(0,2).toUpperCase()}</span><span><strong>{businessName || "Your Business"}</strong><small>STORE</small></span></button><nav aria-label="Main navigation"><button onClick={() => { setView("shop"); setNotice(""); }}>Store</button><button onClick={() => { recordDemoJourney("Customer account opened"); recordActivity("account", "Customer account opened"); setView("account"); setNotice(""); }}>Account <span className="sd-count">{data.orders.length}</span></button></nav></div></header>
 
 
@@ -994,13 +994,22 @@ export default function Home() {
         <div className="sd-wrap">
           <div className="sd-store-intro">
             <div className="sd-store-copy">
-              <span className="sd-kicker"><span aria-hidden="true">💼</span> {businessName.toUpperCase()} / CUSTOMER STORE</span>
-              <h1>Your business <em>in your pocket.</em></h1>
-              <p>Explore products and services from {businessName.trim() || "the business"}, choose what you need and continue in your Customer Account. Your updates stay together in one place.</p>
+              <span className="sd-kicker"><span aria-hidden="true">✦</span> {businessName.toUpperCase()} / OFFICIAL STORE</span>
+              <h1>Discover what <em>{businessName.trim() || "we"} has for you.</em></h1>
+              <p>Browse the collection, see clear prices and choose what you need. Your selections and updates stay together in your Customer Account.</p>
               <div className="sd-hero-actions">
-                <button type="button" className="sd-hero-primary" onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth", block: "start" })}>Explore products / services <span aria-hidden="true">↘</span></button>
+                <button type="button" className="sd-hero-primary" onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth", block: "start" })}>Browse the collection <span aria-hidden="true">↘</span></button>
+                <span className="sd-store-hero-note"><span aria-hidden="true">✓</span> A simpler way to do business</span>
               </div>
             </div>
+            <aside className="sd-store-hero-visual" aria-label={featuredService ? "Featured item: " + featuredService.name : businessName + " store"}>
+              <div className="sd-store-hero-visual-top"><span className="sd-store-hero-monogram">{(businessName.trim() || "YB").slice(0,2).toUpperCase()}</span><span><strong>{businessName.trim() || "Your Business"}</strong><small>YOUR STORE, ONLINE & OFFLINE</small></span><i aria-hidden="true">✦</i></div>
+              {featuredService ? <div className="sd-store-hero-feature">
+                <div className="sd-store-hero-feature-media">{featuredService.media && featuredService.mediaType === "image" ? <img src={featuredService.media} alt="" /> : <span aria-hidden="true">{serviceEmoji(featuredService.name)}</span>}</div>
+                <div className="sd-store-hero-feature-copy"><span>FEATURED IN THE STORE</span><strong>{featuredService.name}</strong><b>{money(featuredService.price)}</b></div>
+              </div> : <div className="sd-store-hero-empty"><span aria-hidden="true">🛍️</span><strong>Your next find starts here.</strong><small>Explore the products and services below.</small></div>}
+              <div className="sd-store-hero-foot"><span><i aria-hidden="true" /> {data.availability === "unavailable" ? "Currently unavailable" : data.availability === "limited" ? "Limited availability" : "Ready to explore"}</span><span>{activeServices.length} {activeServices.length === 1 ? "listing" : "listings"}</span></div>
+            </aside>
           </div>
 
         </div>
