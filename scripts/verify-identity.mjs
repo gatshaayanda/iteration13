@@ -6,6 +6,8 @@ const ignoredDirs = new Set([".git","node_modules",".next","coverage"]);
 const ignoredFiles = new Set(["AGENTS.md","scripts/verify-identity.mjs"]);
 const textExtensions = new Set([".ts",".tsx",".js",".mjs",".css",".json",".webmanifest",".md",".yml",".yaml",".txt",".html",".svg"]);
 const failures = [];
+const page = read("src/app/page.tsx");
+check(page.includes('url.searchParams.set("sample", "1")'), "shared business example links must launch visitors directly into the Store");
 function walk(dir) {
   const files = [];
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
