@@ -386,7 +386,7 @@ export default function Home() {
       if (!("serviceWorker" in navigator) || !("caches" in window)) return;
       try {
         const registration = await navigator.serviceWorker.ready;
-        const shell = await caches.open("iteration13-shell-v10");
+        const shell = await caches.open("iteration13-shell-v11");
         const [home, offlinePage] = await Promise.all([shell.match("/"), shell.match("/offline")]);
         if (active) setOfflineShellReady(Boolean(registration.active && home && offlinePage));
       } catch {
@@ -993,14 +993,14 @@ export default function Home() {
         <div className="sd-wrap">
           <div className="sd-store-intro">
             <div className="sd-store-copy">
-              <p className="sd-store-welcome">{businessName.trim() || "Your business"} <span aria-hidden="true">/</span> THE STORE</p>
+              <p className="sd-store-welcome">THE STORE</p>
               <h1>Made to be <em>explored.</em></h1>
-              <p>Browse the products and services available today. Clear prices, useful details and a simple next step.</p>
+              <p>Browse what’s on offer, see clear prices and choose what you need.</p>
             </div>
           </div>
         </div>
       </section>
-      {(data.announcement.trim() || data.announcementImage) && <section className="sd-announcement sd-store-promo" aria-label="Business announcement"><div className="sd-wrap"><div className="sd-promo-copy"><span>FROM THE BUSINESS</span>{data.announcement.trim() && <p>{data.announcement}</p>}</div>{data.announcementImage && <img className="sd-announcement-thumb" src={data.announcementImage} alt="Business announcement" loading="lazy" />}</div></section>}
+      {(data.announcement.trim() || data.announcementImage) && <section className="sd-announcement sd-store-promo" aria-label="Business announcement"><div className="sd-wrap"><div className="sd-promo-copy"><span>FROM THE BUSINESS</span>{data.announcement.trim() && <p>{data.announcement}</p>}</div>{data.announcementImage && <img className="sd-announcement-thumb" src={data.announcementImage} alt="Announcement artwork" loading="lazy" onError={event => { event.currentTarget.hidden = true; }} />}</div></section>}
       <section className="sd-services sd-wrap sd-digital-store" id="services">
         <div className="sd-storefront-bar">
           <div className="sd-storefront-title"><div><span className="sd-kicker">THE CATALOGUE</span><h2>Products &amp; services</h2></div></div>
@@ -1009,7 +1009,7 @@ export default function Home() {
         <div className={"sd-service-grid sd-store-grid "+(activeServices.length === 1 ? "has-featured-item" : activeServices.length > 4 ? "has-catalogue" : "has-small-catalogue")}>
           {activeServices.length ? activeServices.map((service,index)=><article className="sd-service-card sd-store-card" key={service.id}>
             <div className={"sd-service-media sd-media-"+(index%4)+(service.mediaType==="video"?" is-video":"")} data-label={service.name}>{service.media&&service.mediaType==="video"?<video src={service.media} controls muted playsInline preload="metadata"/>:service.media?<img src={service.media} alt={service.name+" preview"} loading="lazy"/>:<div className="sd-media-placeholder"><span>{businessName.toUpperCase()}</span><strong>{serviceEmoji(service.name)} {service.name}</strong></div>}{service.media&&service.mediaType==="video"&&<span className="sd-service-media-badge">VIDEO PREVIEW</span>}<span className="sd-service-emoji" aria-hidden="true">{serviceEmoji(service.name)}</span><span className="sd-service-index">{String(index+1).padStart(2,"0")}</span></div>
-            <div className="sd-service-info"><div className="sd-service-meta"><span>{service.industry || "PRODUCT / SERVICE"}</span><span>AVAILABLE</span></div><div className="sd-service-title"><h3>{service.name}</h3><strong>{money(service.price)}</strong></div><p>{service.description}</p><button className="sd-order-button" onClick={()=>beginOrder(service)}>Select service <span aria-hidden="true">↗</span></button></div>
+            <div className="sd-service-info"><div className="sd-service-meta"><span>{service.industry || "PRODUCT / SERVICE"}</span></div><div className="sd-service-title"><h3>{service.name}</h3><strong>{money(service.price)}</strong></div><p>{service.description}</p><button className="sd-order-button" onClick={()=>beginOrder(service)}>Select service <span aria-hidden="true">↗</span></button></div>
           </article>) : <div className="sd-store-empty"><span aria-hidden="true">🛍️</span><strong>Something is being prepared.</strong><p>Products and services will appear here when the business publishes its catalogue.</p></div>}
         </div>
       </section>
