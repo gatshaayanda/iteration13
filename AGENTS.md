@@ -233,3 +233,43 @@ The Care / Shift / Availability work is implemented in the prototype source on `
 - `src/app/page.tsx`: owner Shift/session lifecycle, configurable maximum duration, inactivity lock, separate manual/automatic end events, and owner-controlled availability.
 - `src/app/globals.css`: responsive Care and Shift styling plus intentional primary/secondary/highlight palette roles.
 - This is still a browser-local prototype. The required acceptance checks above remain a human QA checkpoint; do not mark the experience production-secure or deployed until verified.
+## Guided UI redesign and owner-QA release sequence (mandatory)
+
+The product owner has approved a top-down, screen-by-screen redesign of the Iteration 13 opening experience. All future chats must follow this sequence and must not redesign multiple screens ahead of the owner's QA checkpoint.
+
+### Product direction
+- Design Iteration 13 as a guided, mobile-first **Business Operating System experience**, not a generic website builder, marketing site or conventional SaaS dashboard.
+- Keep the product proposition plain-language: **“Your business in your pocket.”** The owner brings their business name, products/services and visual identity; the experience demonstrates how a connected Website, Web app and App can help customers discover, request and return.
+- Keep the hierarchy clear: **Admin Hub** is the provider/company; **i13 B.O.S.** is the product; **Iteration 13** is the interactive configuration and exploration environment.
+- The core journey is **identity → Store → customer Account/request → optional promotion/game → owner Briefcase → Admin Hub handoff**. Make the next action obvious at every stage.
+- Prefer a light, premium, calm customer-facing Store and Account, with a more focused owner Briefcase. All three share the business identity and restrained palette.
+
+### Screen-by-screen delivery protocol
+1. Inspect the current screen, its state/data dependencies, navigation, responsive behavior, existing design tokens/components and protected adjacent workflows.
+2. Implement only the opening screen or next screen explicitly agreed for the current QA round. Do not pre-emptively redesign later screens.
+3. Preserve working behavior and data contracts. Do not remove or fake setup persistence, service creation, customer requests, owner workflows, share isolation, media upload, offline behavior or PWA installation.
+4. Review the actual diff and run available focused checks, typecheck, lint, identity verification and build where feasible. Report precisely what ran and what did not.
+5. Push the completed screen to main when authorized. Give the owner the commit and a concise QA checklist. Stop and wait for their findings/approval before moving to the next screen.
+6. When QA feedback arrives, inspect the actual deployed/source state, reproduce the first failure where possible, fix it, re-verify, and only then proceed.
+
+### Global readability and layout acceptance — release blocker
+- **No vertical text anywhere.** Do not use vertical writing modes, rotated labels, character-by-character wrapping, narrow grid tracks, forced word breaks or layout constraints that collapse words vertically. Keep all text horizontal.
+- Use min-width: 0 only where it supports a healthy responsive layout; do not let it collapse content into unreadable columns. Use minmax(0,1fr) with sensible minimums and stack controls when necessary.
+- Long business names, service names and labels must wrap naturally at word boundaries. Avoid word-break:break-all, overflow-wrap:anywhere on ordinary copy, fixed-height text containers, clipped text and line clamping for essential content.
+- Normal body/control text must remain at least 14 CSS px; secondary metadata generally at least 12 CSS px. Maintain WCAG 2.2 AA contrast: 4.5:1 normal text, 3:1 qualifying large text and meaningful non-text controls.
+- Keep touch controls approximately 44–48 CSS px high where practical. Preserve visible focus, semantic controls, keyboard access, reduced-motion support and truthful loading/empty/error/success states.
+- Design mobile-first and verify at 320, 360, 390, 430, 768, 1024 and 1440 CSS px. Test unusually long names, empty and populated catalogues, one and multiple services, and all primary navigation actions.
+- Compactness comes from removing redundant decoration and reorganising information—not shrinking text, hiding content or clipping it.
+
+### Redesign architecture
+- Establish/extend coherent design tokens and reusable components before broad screen styling. Avoid accumulating arbitrary CSS overrides or !important patches. When touching an existing screen, consolidate relevant rules and remove obsolete conflicting declarations where safe.
+- Keep Store cards media-capable (image or short video), with full service/product name, complete description, fixed price or honest “Price on request”, and a clear action. Promotions/announcements remain secondary to the main customer action.
+- Keep Account focused on customer requests, status, next action and records. Keep the Briefcase focused on next actions, customers/jobs, money/records, Store controls and insights.
+- Connectivity/offline status should be compact and collapsible; it must not dominate the screen. Preserve the protected PWA installation experience exactly unless the owner explicitly authorizes an install change.
+- Treat weather as optional, collapsible contextual information only if a real supported data source and useful placement are verified. Never add decorative or non-functional weather controls.
+- Distinguish browser-local demo behavior from real cloud persistence, analytics, messaging, payments, hosting entitlements and production security. Never imply cross-device sync or production readiness without evidence.
+
+### Current redesign checkpoint
+- Approved starting point: the opening identity/entry screen only.
+- Delivery model: one screen at a time; owner QA between screens.
+- Do not begin the next screen until the owner approves the current screen or supplies corrections.
