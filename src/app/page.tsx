@@ -274,8 +274,6 @@ export default function Home() {
   const [themeReady, setThemeReady] = useState(false);
   const [identityReady, setIdentityReady] = useState(false);
   const [identityComplete, setIdentityComplete] = useState(false);
-  const [identityMode, setIdentityMode] = useState<"choice" | "setup">("choice");
-  const [openingPreviewTab, setOpeningPreviewTab] = useState<"store" | "account" | "briefcase">("store");
   const sampleLaunchHandled = useRef(false);
   const [hasPreviousSetup, setHasPreviousSetup] = useState(false);
   const [identityEditing, setIdentityEditing] = useState(false);
@@ -314,7 +312,6 @@ export default function Home() {
       setHasPreviousSetup(window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true");
       // Never auto-open an old business. Every visit starts with an explicit choice.
       setIdentityComplete(false);
-      setIdentityMode("choice");
     } catch { /* identity remains at the accessible default */ }
     setThemeReady(true);
     setIdentityReady(true);
@@ -490,7 +487,6 @@ export default function Home() {
   }
   function openBusinessSetup() {
     const firstService = data.services[0];
-    setIdentityMode("setup");
     setServiceName(firstService?.name || "");
     setServiceIndustry(firstService?.industry || "");
     setServicePrice(String(firstService?.price ?? 100));
@@ -518,7 +514,6 @@ export default function Home() {
     setServiceActive(true);
     setIdentityServiceId(null);
     setIdentityEditing(false);
-    setIdentityMode("setup");
     setIdentityComplete(false);
     setNotice("");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -576,18 +571,7 @@ export default function Home() {
     setNotice(`You are exploring the ${sharedExample.businessName} example. Your changes stay in this browser and do not affect the owner's business.`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-  function startOwnBusinessSetup() {
-    if (sharedExample) {
-      switchSharedWorkspace("own");
-      setHasPreviousSetup(window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true");
-      setCustomerName("");
-      setEmail("");
-      setWhatsapp("");
-      setSelectedServiceIds([]);
-      setOwnerNotes("");
-    }
-    startNewBusinessSetup();
-  }
+
   function shareBusinessExample() {
     const snapshot: SharedExample = {
       id: "example-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8),
@@ -623,41 +607,6 @@ export default function Home() {
     setView("shop");
     setNotice(`Loaded ${businessName.trim() || "your previous business"} from this browser. You can continue where you left off.`);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-  function exploreSampleBusiness() {
-    const snapshot: SharedExample = {
-      id: "i13-sample-metsi-wellness-v1",
-      businessName: "Metsi Wellness",
-      currency: "BWP",
-      brandColors: ["#26745d", "#d9a66f"],
-      data: {
-        services: [{
-          id: "metsi-signature-session",
-          name: "Signature wellness session",
-          industry: "Wellness",
-          price: 450,
-          description: "A restorative, one-to-one wellness session shaped around your needs.",
-          media: "",
-          mediaType: "image",
-          active: true,
-        }],
-        availability: "available",
-        announcement: "A calmer moment, made for you.",
-        announcementImage: "",
-        discountAmount: 5,
-        rewardTitle: "A little reward.",
-        rewardDescription: "Explore the sample customer journey.",
-        rewardImage: "",
-        rewardActive: false,
-      },
-    };
-    const url = new URL(window.location.href);
-    url.search = "";
-    url.hash = "";
-    url.searchParams.set("example", encodeSharedExample(snapshot));
-    url.searchParams.set("workspace", "example");
-    url.searchParams.set("sample", "1");
-    window.location.assign(url.toString());
   }
 
   function completeBusinessIdentity(confirmedOverwrite = false) {
@@ -971,63 +920,9 @@ export default function Home() {
   }
 
   return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--studio-accent-secondary": secondaryColor, "--studio-accent-highlight": highlightColor, "--studio-accent-ink": accentInk(themeColor), "--studio-accent-text": accentText(themeColor) } as React.CSSProperties}>
-    {!identityReady || !ready || !businessNameReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete && identityMode === "choice" ? <section className="sd-opening-screen">
-      <div className="sd-opening-shell">
-        <header className="sd-opening-header">
-          <img className="sd-opening-mark" src="/iteration13-icon.svg" alt="" />
-          <span><strong>i13 B.O.S.</strong><small>BY ADMIN HUB</small></span>
-          <span className="sd-opening-edition">BUSINESS OPERATING SYSTEM</span>
-        </header>
-        <div className="sd-opening-hero">
-          <div className="sd-opening-copy">
-            <span className="sd-opening-kicker">A NEW WAY TO RUN YOUR BUSINESS</span>
-            <h1>Your business.<br/><em>Connected.</em></h1>
-            <p className="sd-opening-lede">See how your business could work when your website, customer experience and owner tools work together.</p>
-            <button className="sd-opening-primary" type="button" onClick={startOwnBusinessSetup}>Build my business experience <span aria-hidden="true">↗</span></button>
-            <p className="sd-opening-note">Start with your business name, colours and first product or service. No technical setup required.</p>
-          </div>
-          <div className="sd-opening-preview" aria-label="Interactive preview of a sample business">
-            <div className="sd-opening-preview-top"><span>EXPLORE A SAMPLE BUSINESS</span><i aria-hidden="true">INTERACTIVE PREVIEW</i></div>
-            <div className="sd-opening-preview-brand">
-              <span className="sd-opening-preview-logo">M</span>
-              <div><strong>Metsi Wellness</strong><small>Fictional example · BWP</small></div>
-              <b>DEMO</b>
-            </div>
-            <div className="sd-opening-preview-tabs" role="tablist" aria-label="Sample business preview">
-              <button type="button" aria-pressed={openingPreviewTab === "store"} className={openingPreviewTab === "store" ? "is-active" : ""} onClick={() => setOpeningPreviewTab("store")}>Store</button>
-              <button type="button" aria-pressed={openingPreviewTab === "account"} className={openingPreviewTab === "account" ? "is-active" : ""} onClick={() => setOpeningPreviewTab("account")}>Customer Account</button>
-              <button type="button" aria-pressed={openingPreviewTab === "briefcase"} className={openingPreviewTab === "briefcase" ? "is-active" : ""} onClick={() => setOpeningPreviewTab("briefcase")}><img src="/iteration13-icon.svg" alt="" /> Owner Briefcase</button>
-            </div>
-            <div className="sd-opening-preview-content" aria-live="polite">
-              {openingPreviewTab === "store" ? <div className="sd-opening-store-preview">
-                <span className="sd-opening-preview-label">CUSTOMER WEBSITE / STORE</span>
-                <h2>Metsi Wellness</h2>
-                <p>A calmer moment, made for you.</p>
-                <article><span className="sd-opening-service-art">✦</span><div><strong>Signature wellness session</strong><small>One-to-one wellness · P450</small></div><b>View</b></article>
-                <span className="sd-opening-preview-hint">Customers discover your offer and choose what they need.</span>
-              </div> : openingPreviewTab === "account" ? <div className="sd-opening-account-preview">
-                <span className="sd-opening-preview-label">CUSTOMER WEB APP / ACCOUNT</span>
-                <h2>Your account</h2>
-                <article><span className="sd-opening-account-dot">1</span><div><strong>Your requests, together</strong><small>Follow updates, messages and records in one place.</small></div></article>
-                <span className="sd-opening-preview-hint">Customers can return without repeating the whole conversation.</span>
-              </div> : <div className="sd-opening-briefcase-preview">
-                <span className="sd-opening-preview-label">OWNER APP / PRIVATE WORKSPACE</span>
-                <div className="sd-opening-briefcase-heading"><img src="/iteration13-icon.svg" alt="" /><div><strong>ADMIN HUB</strong><small>PRIVATE BRIEFCASE</small></div></div>
-                <h2>Run the work from one place.</h2>
-                <div className="sd-opening-briefcase-stats"><span><b>Today</b><small>Next actions</small></span><span><b>Customers</b><small>Requests & updates</small></span><span><b>Money</b><small>Records & receipts</small></span></div>
-                <span className="sd-opening-preview-hint">The Briefcase is the Admin Hub B.O.S. symbol and the icon for the installed app.</span>
-              </div>}
-            </div>
-            <button type="button" className="sd-opening-explore" onClick={exploreSampleBusiness}>Explore the Metsi Wellness example <span aria-hidden="true">↗</span></button>
-          </div>
-        </div>
-        <div className="sd-opening-bottom">
-          <div className="sd-opening-journey"><span>HOW IT COMES TO LIFE</span><p><b>01</b> Identity <i>→</i> <b>02</b> Store <i>→</i> <b>03</b> Customer journey <i>→</i> <b>04</b> <img src="/iteration13-icon.svg" alt="" /> Briefcase</p></div>
-          <div className="sd-opening-return">{sharedExample && isSharedExampleWorkspace ? <button type="button" onClick={loadSharedBusinessExample}>Explore {sharedExample.businessName} example ↗</button> : hasPreviousSetup ? <button type="button" onClick={loadPreviousBusinessSetup}>Continue saved business: {businessName.trim() || "Your business"} ↗</button> : <span>New here? Start by making it yours.</span>}</div>
-        </div>
-      </div>
-    </section> : !identityComplete ? <section className="sd-identity-onboarding">
+    {!identityReady || !ready || !businessNameReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete ? <section className="sd-identity-onboarding">
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "EDIT YOUR BUSINESS SETUP" : "YOUR BRIEFCASE STARTS HERE"}</span></div>
+      {!identityEditing && <aside className="sd-flagship-invitation" aria-label="Explore the flagship business example"><div className="sd-flagship-copy"><span>FLAGSHIP EXPERIENCE / EXPLORE BEFORE YOU BUILD</span><strong>See a business operating as a complete B.O.S.</strong><p>Visit the Junk Park BW example, explore the customer experience and owner tools, then return here to create your own.</p></div><a href="https://iteration13.vercel.app/" target="_blank" rel="noopener noreferrer">Explore Junk Park BW <span aria-hidden="true">↗</span></a></aside>}
       <div className="sd-identity-onboarding-layout">
         <div className="sd-identity-onboarding-copy">
           <span className="sd-kicker">LIVE BUSINESS IDENTITY / MAKE IT YOURS</span>
