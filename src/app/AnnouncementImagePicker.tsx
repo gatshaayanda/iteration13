@@ -51,7 +51,7 @@ export default function AnnouncementImagePicker({ value, online, onChange, onUpl
       return;
     }
     if (!file.type.startsWith("image/")) {
-      setMessage("Choose an image file.");
+      setMessage("Choose an image file (JPG, PNG or WebP).");
       event.target.value = "";
       return;
     }
@@ -76,12 +76,18 @@ export default function AnnouncementImagePicker({ value, online, onChange, onUpl
   return (
     <fieldset className="sd-announcement-image-picker" disabled={isUploading}>
       <legend>Announcement thumbnail <span className="sd-optional">OPTIONAL</span></legend>
-      <p className="sd-admin-help">Add a small, relevant image that helps customers recognise the update. Keep the subject clear when cropped.</p>
-      <label className="sd-media-file-label" htmlFor={fileInputId}>Upload an image · max 4 MB</label>
-      <input ref={inputRef} id={fileInputId} type="file" accept="image/*" onChange={uploadSelected} />
-      {!online && <small className="sd-media-offline">Offline: reconnect before uploading an image.</small>}
-      <label className="sd-media-url-label" htmlFor={urlInputId}>Or use an existing image URL</label>
-      <input id={urlInputId} type="url" value={value} onChange={(event) => { onChange(event.target.value); setMessage(""); }} placeholder="https://…/image.jpg" />
+      <p className="sd-admin-help">A small, relevant image helps customers recognise your update. Keep the main subject near the centre so it still looks clear when cropped.</p>
+      <div className="sd-announcement-image-options">
+        <div className="sd-announcement-upload-choice">
+          <label className="sd-announcement-upload-action" htmlFor={fileInputId}><span aria-hidden="true">↑</span>{value ? "Replace image" : "Choose an image"}</label>
+          <input ref={inputRef} className="sd-announcement-file-input" id={fileInputId} type="file" accept="image/*" onChange={uploadSelected} />
+          <small>JPG, PNG or WebP · max 4 MB</small>
+        </div>
+        <span className="sd-announcement-or" aria-hidden="true">OR</span>
+        <label className="sd-announcement-url-choice" htmlFor={urlInputId}>Paste an image link<input id={urlInputId} type="url" value={value} onChange={(event) => { onChange(event.target.value); setMessage(""); }} placeholder="https://…/image.jpg" /></label>
+      </div>
+      {!online && <small className="sd-media-offline">You’re offline. Reconnect to upload a new image; you can still paste an existing image link.</small>}
+      {!value && !isUploading && <small className="sd-announcement-no-image">No thumbnail added. That’s fine — this image is optional.</small>}
       {isUploading && <div className="sd-media-progress" role="status" aria-live="polite"><div className="sd-media-progress-copy"><strong>Uploading thumbnail</strong><span>{progress}%</span></div><div className="sd-media-progress-track" role="progressbar" aria-label="Thumbnail upload progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}><span style={{ width: progress + "%" }} /></div></div>}
       {message && <p className="sd-media-status" role="status">{message}</p>}
       {value && <div className="sd-announcement-image-current"><img src={value} alt="Announcement thumbnail preview" onError={(event) => { event.currentTarget.style.display = "none"; }} /><button type="button" onClick={() => { onChange(""); setMessage("Thumbnail removed. Publish the announcement to apply the change."); }}>Remove thumbnail</button></div>}
