@@ -51,8 +51,8 @@ self.addEventListener("notificationclick", (event) => {
   }));
 });
 
-const CACHE_VERSION = "iteration13-shell-v7";
-const MEDIA_CACHE = "iteration13-media-v4";
+const CACHE_VERSION = "iteration13-shell-v8";
+const MEDIA_CACHE = "iteration13-media-v5";
 const SHELL_CACHE = CACHE_VERSION;
 const STATIC_LIMIT = 100;
 const PUBLIC_PAGE_LIMIT = 12;
@@ -140,7 +140,7 @@ async function cacheMediaUrl(value) {
   try {
     const response = await fetch(request);
     const declaredSize = Number(response.headers.get("content-length") || 0);
-    if (response.ok && response.type !== "opaque" && declaredSize > 0 && declaredSize <= MEDIA_MAX_BYTES) {
+    if (response.ok && response.type !== "opaque" && (response.headers.get("content-type") || "").startsWith("image/") && declaredSize > 0 && declaredSize <= MEDIA_MAX_BYTES) {
       await cache.put(request, response.clone());
       await trimCache(MEDIA_CACHE, MEDIA_LIMIT);
     }
@@ -270,7 +270,7 @@ async function cacheMediaRequest(request, event) {
     const readableRequest = new Request(request, { mode: "cors", credentials: "omit" });
     const response = await fetch(readableRequest);
     const declaredSize = Number(response.headers.get("content-length") || 0);
-    if (response.ok && response.type !== "opaque" && declaredSize > 0 && declaredSize <= MEDIA_MAX_BYTES) {
+    if (response.ok && response.type !== "opaque" && (response.headers.get("content-type") || "").startsWith("image/") && declaredSize > 0 && declaredSize <= MEDIA_MAX_BYTES) {
       await cache.put(request, response.clone());
       await trimCache(MEDIA_CACHE, MEDIA_LIMIT);
     }
