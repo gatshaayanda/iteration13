@@ -472,7 +472,6 @@ export default function Home() {
   }
 
   const activeServices = data.services.filter(service => service.active);
-  const featuredService = activeServices[0];
   const currentHour = new Date().getHours();
   const ownerGreeting = currentHour < 12 ? "Good morning" : currentHour < 17 ? "Good afternoon" : "Good evening";
   function toggleBrandColor(color: string) {
@@ -994,27 +993,17 @@ export default function Home() {
         <div className="sd-wrap">
           <div className="sd-store-intro">
             <div className="sd-store-copy">
-              <span className="sd-kicker"><span aria-hidden="true">✦</span> {businessName.toUpperCase()} / OFFICIAL STORE</span>
+              <p className="sd-store-welcome"><span aria-hidden="true">✦</span> Welcome to {businessName.trim() || "our store"}</p>
               <h1>Discover what <em>{businessName.trim() || "we"} has for you.</em></h1>
-              <p>Browse the collection, see clear prices and choose what you need. Your selections and updates stay together in your Customer Account.</p>
+              <p>Explore our products and services, find what feels right and see clear prices before you choose.</p>
               <div className="sd-hero-actions">
-                <button type="button" className="sd-hero-primary" onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth", block: "start" })}>Browse the collection <span aria-hidden="true">↘</span></button>
-                <span className="sd-store-hero-note"><span aria-hidden="true">✓</span> A simpler way to do business</span>
+                <button type="button" className="sd-hero-primary" onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" })}>Browse the collection <span aria-hidden="true">↘</span></button>
               </div>
             </div>
-            <aside className="sd-store-hero-visual" aria-label={featuredService ? "Featured item: " + featuredService.name : businessName + " store"}>
-              <div className="sd-store-hero-visual-top"><span className="sd-store-hero-monogram">{(businessName.trim() || "YB").slice(0,2).toUpperCase()}</span><span><strong>{businessName.trim() || "Your Business"}</strong><small>YOUR STORE, ONLINE & OFFLINE</small></span><i aria-hidden="true">✦</i></div>
-              {featuredService ? <div className="sd-store-hero-feature">
-                <div className="sd-store-hero-feature-media">{featuredService.media && featuredService.mediaType === "image" ? <img src={featuredService.media} alt="" /> : <span aria-hidden="true">{serviceEmoji(featuredService.name)}</span>}</div>
-                <div className="sd-store-hero-feature-copy"><span>FEATURED IN THE STORE</span><strong>{featuredService.name}</strong><b>{money(featuredService.price)}</b></div>
-              </div> : <div className="sd-store-hero-empty"><span aria-hidden="true">🛍️</span><strong>Your next find starts here.</strong><small>Explore the products and services below.</small></div>}
-              <div className="sd-store-hero-foot"><span><i aria-hidden="true" /> {data.availability === "unavailable" ? "Currently unavailable" : data.availability === "limited" ? "Limited availability" : "Ready to explore"}</span><span>{activeServices.length} {activeServices.length === 1 ? "listing" : "listings"}</span></div>
-            </aside>
           </div>
-
         </div>
       </section>
-      {(data.announcement.trim() || data.announcementImage) && <section className="sd-announcement sd-store-promo" aria-label="Business announcement"><div className="sd-wrap"><div className="sd-promo-mark" aria-hidden="true">🎁</div><div className="sd-promo-copy"><span><span aria-hidden="true">✦</span> SPECIAL / BUSINESS UPDATE</span><p>{data.announcement}</p></div>{data.announcementImage && <img className="sd-announcement-thumb" src={data.announcementImage} alt={data.announcement.slice(0, 120) || "Announcement thumbnail"} loading="lazy" />}<span className="sd-promo-status">LATEST NOTE</span></div></section>}
+      {(data.announcement.trim() || data.announcementImage) && <section className="sd-announcement sd-store-promo" aria-label="Business announcement"><div className="sd-wrap"><div className="sd-promo-mark" aria-hidden="true">✦</div><div className="sd-promo-copy"><span>ANNOUNCEMENT</span><p>{data.announcement}</p></div>{data.announcementImage && <img className="sd-announcement-thumb" src={data.announcementImage} alt={data.announcement.slice(0, 120) || "Announcement thumbnail"} loading="lazy" />}</div></section>}
       <section className="sd-services sd-wrap sd-digital-store" id="services">
         <div className="sd-storefront-bar">
           <div className="sd-storefront-title"><span className="sd-storefront-icon" aria-hidden="true">🛍️</span><div><span className="sd-kicker">{businessName.toUpperCase()} / STORE</span><h2>Explore the collection</h2></div></div>
