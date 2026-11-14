@@ -28,6 +28,7 @@ Preserve proven PWA behavior deliberately; do not blindly copy the source app's 
 - Make the whole browser-facing identity project-specific: manifest name/short name, icons, colors, metadata, install text, offline copy, URLs and service-worker cache prefixes. Search the entire repository for the old app name, assets and project IDs.
 - Version the service worker intentionally. Delete only obsolete caches belonging to this app. Never use cached public shells to serve private account, request, message, token or admin content. Do not broadly cache authenticated responses.
 - Keep a distinct, honest offline route and safe update/recovery behavior. Cached UI does not prove that a write was sent or accepted. Where relevant, show local/queued/syncing/confirmed/failed states and prevent duplicate writes on retry.
+- Keep connectivity awareness peripheral: use a compact, persistent status indicator and action-specific feedback rather than a screen-covering or bottom-fixed offline banner. Reserve interruptive notices for urgent, actionable events; make update prompts dismissible and user-controlled. This follows visibility-of-status guidance while reducing unnecessary task interruption.
 - Maintain accessible labels, keyboard and focus behavior, visible focus, contrast, touch targets and reduced-motion support.
 - Do not impose The Plug's account-first journey or embedded-browser gate on another product automatically. Preserve the mechanism, then adapt product policy deliberately.
 
