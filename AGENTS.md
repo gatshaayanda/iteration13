@@ -42,7 +42,7 @@ For any requested one-word staff/owner login, follow the mandatory **One-word st
 
 ## Business identity and restrained colour system (mandatory)
 
-- Treat business identity setup as the first product interaction, before visitors explore the demo or sample modules. Ask for a business name (real or fictional) and let the owner choose **one, two or three brand colours maximum**; one or two colours are complete choices, not incomplete states.
+- Show the business identity setup form immediately as the opening screen; do not put a separate marketing/choice landing page in front of it. A prominent, clearly secondary **flagship example invitation** must also be available before the visitor enters details, opening the working Junk Park BW example in a new tab so the visitor can explore first and return to the untouched setup form. Ask for a business name (real or fictional) and let the owner choose **one, two or three brand colours maximum**; one or two colours are complete choices, not incomplete states.
 - Present this as one coupled identity: **Store · Account · Briefcase**. Show a live preview and update all three surfaces together immediately. Persist the identity using the target project's real persistence boundary; label browser-local demo persistence honestly.
 - Use the headline **“Your business in your pocket.”** Example helper copy: “Example: Metsi Wellness. Use a real or fictional name. Your Store, Account and Briefcase rebrand together instantly.”
 - In the owner workspace use the clear identity marker **“ADMIN HUB / PRIVATE BRIEFCASE”**, the same “Your business in your pocket” proposition, and a context-aware greeting based on the owner's local time. Follow it with a compact operational summary such as “Owner operations · customer requests · money”. Do not let a greeting displace urgent work or create fake activity.
@@ -84,14 +84,15 @@ These rules complement—not replace—the PWA installation lock and other proje
 
 ## i13 B.O.S. opening experience and symbol
 
-- The opening screen combines a **live product preview** with an **experience-first sample business**. The sample is explicitly labelled as fictional/example content and must never be confused with the visitor's saved business.
-- Store, Customer Account and Owner Briefcase preview selectors are real accessible controls. Each selection changes the preview content; do not style static explanatory cards to look tappable. Provide visible selected, focus and pressed states.
-- The sample-business action opens a working, isolated browser-local example using the existing shared-example namespace. It must not overwrite, rename or merge with the visitor's saved business, orders, customer data or owner workspace.
-- The primary action starts the visitor's own business identity setup. The saved-business action is separate and must say **“Continue saved business: [business name]”**; never label it as another product-tour stage.
-- The Admin Hub B.O.S. Briefcase symbol is the actual suitcase/briefcase artwork already used by the PWA icon. Reuse that asset for the Owner Briefcase identity in the opening preview and journey. Do not substitute a generic emoji, unrelated illustration or text-only mark. It represents the owner workspace and the installed app.
-- Only show controls that perform the advertised action. Keep explanatory labels and journey stages non-interactive unless they are wired to a real action. A visitor should immediately understand which one action starts setup, which action explores the sample, and which action returns to saved work.
+- The first screen is the **business identity setup form itself**: “ITERATION13 / BUSINESS OS”, “YOUR BRIEFCASE STARTS HERE”, business name, currency, one-to-three brand colours, first customer offer, media option and live Store / Account / Briefcase preview. Do not insert a separate generic landing or choice screen before it.
+- The first screen must offer a prominent but secondary **Flagship experience** invitation before the visitor enters any details. It opens the working Junk Park BW example at `https://iteration13.vercel.app/` in a new tab, preserving the visitor's in-progress setup in the original tab. Label it clearly as an example, not the visitor's saved business.
+- The visitor can inspect the example first, return to the still-empty setup form, and then enter their own details. Do not silently prefill or overwrite their setup with example data. If a future, verified share-snapshot import is added, it must be a separate explicit action and preserve the visitor's own saved data.
+- The live identity preview updates Store, Customer Account and Owner Briefcase together as the visitor types/selects. The Admin Hub B.O.S. Briefcase symbol is the actual artwork already used by the PWA icon; reuse it to identify the owner workspace and installed app. Do not substitute a generic emoji, unrelated illustration or text-only mark.
+- Only show controls that perform the advertised action. Keep explanatory labels and journey stages non-interactive unless wired to a real action. The primary action creates the visitor's Business OS; the flagship link explores Junk Park BW; a saved-business action, when present, must say **“Continue saved business: [business name]”**.
+- The sample/example must never be confused with the visitor's saved business. Do not overwrite, rename or merge the visitor's saved business, orders, customer data or owner workspace when opening an example.
 - Screen-by-screen redesign is the release workflow: implement one agreed screen, push it to `main`, report the exact commit and checks, then stop for product-owner QA. Do not redesign the next screen until the product owner reviews the current checkpoint and supplies feedback.
-- Opening-screen QA must include 320, 360, 390, 430 and desktop widths; keyboard operation of all three preview tabs; sample-example isolation; first-time setup; returning saved-business path; horizontal text and no clipping/overflow.
+- Opening-screen QA must include 320, 360, 390, 430 and desktop widths; keyboard operation of the flagship link and setup controls; opening the example in a separate tab; returning to the untouched setup form; first-time setup; existing saved-business safety; horizontal text and no clipping/overflow.
+
 
 ## Mandatory Business OS adaptation contract
 
