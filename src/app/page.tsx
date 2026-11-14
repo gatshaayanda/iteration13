@@ -949,7 +949,14 @@ export default function Home() {
               <p className="sd-identity-placeholder-note">An image or short video is optional. Upload one to make the listing stand out, or leave it empty for a branded placeholder.</p>
             </div>
           </section>
-          <button type="button" className="sd-identity-continue" onClick={() => completeBusinessIdentity()} disabled={!ready || serviceMediaUploading}>{serviceMediaUploading ? "Uploading product / service media…" : identityEditing ? "Save business setup" : "Create my Business OS"} <span>↗</span></button>
+          <section className="sd-identity-first-service sd-identity-announcement-setup" aria-labelledby="sd-first-announcement-title">
+            <div className="sd-identity-step-heading"><span>05 / CUSTOMER NOTICE · OPTIONAL</span><strong id="sd-first-announcement-title">Have something to announce?</strong><p>Prepare a launch special, seasonal promotion, limited-time discount, new product or service update, or an important business notice. You can leave this blank and publish announcements later from your Briefcase.</p></div>
+            <div className="sd-identity-service-fields">
+              <label>Announcement <span className="sd-identity-optional">Optional</span><textarea rows={4} maxLength={1200} value={announcementDraft} onChange={event => setAnnouncementDraft(event.target.value)} placeholder="Example: 15% off all bookings made before 30 November. Include the offer amount, dates and any important terms so customers know exactly what is being offered…" /></label>
+              <AnnouncementImagePicker value={announcementImageDraft} online={online} onChange={setAnnouncementImageDraft} onUploadingChange={setAnnouncementImageUploading} />
+            </div>
+          </section>
+          <button type="button" className="sd-identity-continue" onClick={() => completeBusinessIdentity()} disabled={!ready || serviceMediaUploading || announcementImageUploading}>{serviceMediaUploading ? "Uploading product / service media…" : announcementImageUploading ? "Uploading announcement thumbnail…" : identityEditing ? "Save business setup" : "Create my Business OS"} <span>↗</span></button>
           <p className="sd-identity-local-note">Save your setup on this device, then explore the working Store, customer Account and owner Briefcase. Nothing syncs across devices.</p>{identityEditing && <button type="button" className="sd-small-button" onClick={() => { setIdentityEditing(false); setIdentityServiceId(null); setIdentityComplete(true); }}>Cancel editing</button>}
         </div>
         <div className="sd-identity-live-preview" aria-label="Live preview of your Store, Account and Briefcase">
