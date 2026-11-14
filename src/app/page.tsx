@@ -276,6 +276,7 @@ export default function Home() {
   const [identityComplete, setIdentityComplete] = useState(false);
   const [identityMode, setIdentityMode] = useState<"choice" | "setup">("choice");
   const [openingPreviewTab, setOpeningPreviewTab] = useState<"store" | "account" | "briefcase">("store");
+  const sampleLaunchHandled = useRef(false);
   const [hasPreviousSetup, setHasPreviousSetup] = useState(false);
   const [identityEditing, setIdentityEditing] = useState(false);
   const [identityServiceId, setIdentityServiceId] = useState<string | null>(null);
@@ -654,6 +655,8 @@ export default function Home() {
     url.search = "";
     url.hash = "";
     url.searchParams.set("example", encodeSharedExample(snapshot));
+    url.searchParams.set("workspace", "example");
+    url.searchParams.set("sample", "1");
     window.location.assign(url.toString());
   }
 
@@ -702,6 +705,13 @@ export default function Home() {
       setNotice("Your business setup could not be saved on this device. Check browser storage and try again.");
     }
   }
+  useEffect(() => {
+    if (!sharedExample || !isSharedExampleWorkspace || identityComplete || sampleLaunchHandled.current) return;
+    if (new URLSearchParams(window.location.search).get("sample") !== "1") return;
+    sampleLaunchHandled.current = true;
+    loadSharedBusinessExample();
+  }, [sharedExample, isSharedExampleWorkspace, identityComplete]);
+
   const paidTotal = data.orders.reduce((sum, order) => sum + (order.paidAmount || 0), 0);
   const completedUnpaid = data.orders.filter(order => order.status === "Completed").reduce((sum, order) => sum + Math.max(0, order.price - (order.paidAmount || 0)), 0);
   
