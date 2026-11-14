@@ -705,6 +705,8 @@ export default function Home() {
       setNotice("Your business setup could not be saved on this device. Check browser storage and try again.");
     }
   }
+  // This one-shot launch reuses the shared-example loader; the ref prevents repeat work.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!sharedExample || !isSharedExampleWorkspace || identityComplete || sampleLaunchHandled.current) return;
     if (new URLSearchParams(window.location.search).get("sample") !== "1") return;
