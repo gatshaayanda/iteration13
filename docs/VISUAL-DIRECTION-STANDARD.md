@@ -118,7 +118,7 @@ Visual polish must help people understand that the application is doing useful w
 
 ## Restrained business identity and colour system
 
-The first guided interaction is business identity setup: name the business, select one to three brand colours, and preview the coupled Store · Account · Briefcase. Do this before inviting visitors to explore the demo catalogue or modules. Use “Your business in your pocket.” as the shared product proposition. See [BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md](./BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md) for the full contract.
+The owner’s guided setup is business identity: name the business, select one to three brand colours, and preview the coupled Store · Account · Briefcase. Keep this separate from visitor entry. Ordinary visitors land directly in the Store; never put identity setup, an i13 welcome page or a module-selection interstitial in front of them. Use “Your business in your pocket.” as the shared product proposition. See [BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md](./BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md) for the full contract.
 
 Limit the **brand palette** to a maximum of three hues (primary, secondary, optional highlight). This does not mean the whole interface may contain only three literal colours: readable text/surface neutrals, borders, disabled states and semantic status tokens remain necessary. They must be disciplined and consistent, not treated as extra brand colours. Keep colour roles distinct and avoid using all accents at equal strength.
 
