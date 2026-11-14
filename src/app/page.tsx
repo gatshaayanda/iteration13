@@ -536,7 +536,14 @@ export default function Home() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved) as Partial<DemoData>;
-        exampleData = { ...emptyData, ...parsed, services: Array.isArray(parsed.services) ? parsed.services : [], orders: Array.isArray(parsed.orders) ? parsed.orders : [], events: Array.isArray(parsed.events) ? parsed.events : [], receiptProfile: { ...emptyData.receiptProfile!, ...(parsed.receiptProfile || {}) } };
+        const savedServices = Array.isArray(parsed.services) ? parsed.services : [];
+        const sharedServices = Array.isArray(sharedExample.data?.services) ? sharedExample.data.services : [];
+        // The app's initial hydration can create an empty visitor-local record before the visitor opens the shared example.
+        // Treat that untouched empty record as first visit so the catalogue embedded in the link is not shadowed.
+        const useSharedSnapshot = savedServices.length === 0 && sharedServices.length > 0 && (!Array.isArray(parsed.orders) || parsed.orders.length === 0);
+        exampleData = useSharedSnapshot
+          ? { ...emptyData, ...sharedExample.data, services: sharedServices, orders: [], events: [], views: 0, receiptProfile: { ...emptyData.receiptProfile! } }
+          : { ...emptyData, ...parsed, services: savedServices, orders: Array.isArray(parsed.orders) ? parsed.orders : [], events: Array.isArray(parsed.events) ? parsed.events : [], receiptProfile: { ...emptyData.receiptProfile!, ...(parsed.receiptProfile || {}) } };
       } catch { setNotice("The saved example could not be loaded. Reload the shared link and try again."); return; }
     } else {
       const incoming = sharedExample.data || {};
