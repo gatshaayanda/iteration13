@@ -975,18 +975,18 @@ export default function Home() {
             <p className="sd-opening-note">Start with your business name, colours and first product or service. No technical setup required.</p>
           </div>
           <div className="sd-opening-preview" aria-label="Interactive preview of a sample business">
-            <div className="sd-opening-preview-top"><span>EXPLORE A SAMPLE BUSINESS</span><i aria-hidden="true">LIVE PREVIEW</i></div>
+            <div className="sd-opening-preview-top"><span>EXPLORE A SAMPLE BUSINESS</span><i aria-hidden="true">INTERACTIVE PREVIEW</i></div>
             <div className="sd-opening-preview-brand">
               <span className="sd-opening-preview-logo">M</span>
-              <div><strong>Metsi Wellness</strong><small>Example business · Botswana</small></div>
+              <div><strong>Metsi Wellness</strong><small>Fictional example · BWP</small></div>
               <b>DEMO</b>
             </div>
             <div className="sd-opening-preview-tabs" role="tablist" aria-label="Sample business preview">
-              <button type="button" role="tab" aria-selected={openingPreviewTab === "store"} className={openingPreviewTab === "store" ? "is-active" : ""} onClick={() => setOpeningPreviewTab("store")}>Store</button>
-              <button type="button" role="tab" aria-selected={openingPreviewTab === "account"} className={openingPreviewTab === "account" ? "is-active" : ""} onClick={() => setOpeningPreviewTab("account")}>Customer Account</button>
-              <button type="button" role="tab" aria-selected={openingPreviewTab === "briefcase"} className={openingPreviewTab === "briefcase" ? "is-active" : ""} onClick={() => setOpeningPreviewTab("briefcase")}><img src="/iteration13-icon.svg" alt="" /> Owner Briefcase</button>
+              <button type="button" aria-pressed={openingPreviewTab === "store"} className={openingPreviewTab === "store" ? "is-active" : ""} onClick={() => setOpeningPreviewTab("store")}>Store</button>
+              <button type="button" aria-pressed={openingPreviewTab === "account"} className={openingPreviewTab === "account" ? "is-active" : ""} onClick={() => setOpeningPreviewTab("account")}>Customer Account</button>
+              <button type="button" aria-pressed={openingPreviewTab === "briefcase"} className={openingPreviewTab === "briefcase" ? "is-active" : ""} onClick={() => setOpeningPreviewTab("briefcase")}><img src="/iteration13-icon.svg" alt="" /> Owner Briefcase</button>
             </div>
-            <div className="sd-opening-preview-content" role="tabpanel" aria-live="polite">
+            <div className="sd-opening-preview-content" aria-live="polite">
               {openingPreviewTab === "store" ? <div className="sd-opening-store-preview">
                 <span className="sd-opening-preview-label">CUSTOMER WEBSITE / STORE</span>
                 <h2>Metsi Wellness</h2>
