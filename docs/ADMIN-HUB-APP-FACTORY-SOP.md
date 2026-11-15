@@ -124,6 +124,10 @@ The sole public admin entry point is **one clickable 💼 briefcase icon only**,
 
 Preserve proven customer journeys, authentication, booking/order flows, uploads, offline behavior, games, admin CRUD and other golden features unless the brief explicitly authorizes a change. A branding-only task does not authorize workflow rewrites.
 
+## 7A. Design intelligence handoff
+
+Before substantial visual implementation or redesign, read [docs/DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md](./DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md) from Iteration 13 and apply it within the target project's own `AGENTS.md` and design system. Select a justified dominant visual genre, research relevant task flows, inspect existing tokens/components before changes, and verify the rendered result at mobile and desktop sizes. For substantial products, provide a development-only rendered design-system showcase where practical. Adapt the standard to the target stack; do not add shadcn, Expo, Rive or other dependencies solely because they are referenced. Preserve proven source behavior and existing design direction unless evidence supports a change.
+
 ## 8. Product and visual implementation standard
 
 Read [VISUAL-DIRECTION-STANDARD.md](./VISUAL-DIRECTION-STANDARD.md) before visual planning or visual QA, and open the canonical `docs/assets/washride-home-reference.jpeg` image itself. Read [OPERATIONAL-TRANSPARENCY-STANDARD.md](./OPERATIONAL-TRANSPARENCY-STANDARD.md) when designing meaningful workflows and their loading, progress, status, activity and outcome communication. Both standards apply together: visual craft makes the product inviting; operational transparency makes its real value understandable. Apply consistent craftsmanship, not a universal theme:
