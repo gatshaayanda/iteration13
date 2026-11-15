@@ -133,10 +133,10 @@ export default function AccountWorkspace({ businessName, currency, orders, disco
       </> : <div className="sd-care-next"><strong>Your next step starts here.</strong><p>{careMessage}</p><button type="button" className="sd-care-empty-action" onClick={selectedServices.length ? onContinueRequest : onBrowse}>{selectedServices.length ? `Continue with ${selectedServices.length} selected ${selectedServices.length === 1 ? "item" : "items"} →` : "Browse the Store →"}</button></div>}
     </section>
 
-    <div className="sd-account-quick-stats" aria-label="Account summary">
+    <div className={"sd-account-quick-stats" + (!currentOrder || selectedServices.length ? " has-no-action" : "")} aria-label="Account summary">
       <div><strong>{openOrders}</strong><span>Active {openOrders === 1 ? "request" : "requests"}</span></div>
       <div><strong>{newUpdates}</strong><span>Business {newUpdates === 1 ? "message" : "messages"}</span></div>
-      <button type="button" onClick={selectedServices.length ? onContinueRequest : onNewRequest}>{selectedServices.length ? "Continue selected request →" : "＋ Start another request"}</button>
+      {currentOrder && !selectedServices.length && <button type="button" onClick={onNewRequest}>＋ Start another request</button>}
     </div>
 
     {selectedServices.length > 0 && <details className="sd-account-basket" open={basketOpen} onToggle={event => setBasketOpen(event.currentTarget.open)}>
