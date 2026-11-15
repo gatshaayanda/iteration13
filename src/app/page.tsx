@@ -403,7 +403,15 @@ export default function Home() {
       } else if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setBrandColors([savedTheme]);
       const params = new URLSearchParams(window.location.search);
       const resuming = params.get("resume") === "1";
-      const hasSavedIdentity = window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true";
+      const savedName = window.localStorage.getItem(getStorageKey("iteration13:business-name:v1")) || "";
+      let savedCatalogue = false;
+      try {
+        const rawBusiness = window.localStorage.getItem(getStorageKey(STORAGE_KEY));
+        const parsedBusiness = rawBusiness ? JSON.parse(rawBusiness) as Partial<DemoData> : null;
+        savedCatalogue = Boolean(parsedBusiness && Array.isArray(parsedBusiness.services) && parsedBusiness.services.length > 0);
+      } catch { /* an unreadable record is never treated as a recoverable business */ }
+      const hasSavedIdentity = window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true"
+        || Boolean(savedName.trim() && savedName.trim() !== "Your Business" && savedCatalogue);
       setHasPreviousSetup(hasSavedIdentity);
       setIdentityComplete(resuming && hasSavedIdentity);
     } catch { /* identity remains at the accessible default */ }
@@ -727,10 +735,53 @@ export default function Home() {
     const url = new URL(window.location.href); url.searchParams.delete("explore"); url.searchParams.delete("view"); url.hash = ""; window.location.assign(url.toString());
   }
   function loadPreviousBusinessSetup() {
-    setIdentityComplete(true);
-    setView("shop");
-    setNotice(`Loaded ${businessName.trim() || "your previous business"} from this browser. You can continue where you left off.`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Restore the saved owner identity and first listing after the new-business
+    // form has temporarily cleared its inputs. Never write to storage here.
+    try {
+      const savedName = window.localStorage.getItem(getStorageKey("iteration13:business-name:v1"));
+      const savedCurrency = window.localStorage.getItem(getStorageKey(CURRENCY_KEY));
+      const savedPalette = window.localStorage.getItem(getStorageKey("iteration13:business-palette:v1"));
+      const savedTheme = window.localStorage.getItem(getStorageKey("iteration13:store-theme:v1"));
+      const savedData = window.localStorage.getItem(getStorageKey(STORAGE_KEY));
+      const parsed = savedData ? JSON.parse(savedData) as Partial<DemoData> : null;
+      const services = Array.isArray(parsed?.services) ? parsed.services : [];
+      const firstService = services[0];
+      if (savedName) setBusinessName(savedName.slice(0, 48));
+      if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency);
+      if (savedPalette) {
+        const parsedPalette: unknown = JSON.parse(savedPalette);
+        if (Array.isArray(parsedPalette)) {
+          const validPalette = [...new Set(parsedPalette.filter((value): value is string => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value)))].slice(0, 3);
+          if (validPalette.length) setBrandColors(validPalette);
+        }
+      } else if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setBrandColors([savedTheme]);
+      if (firstService) {
+        setServiceName(firstService.name || "");
+        setServiceIndustry(firstService.industry || "");
+        setServicePrice(String(firstService.price ?? 0));
+        setServiceDescription(firstService.description || "");
+        setServiceMedia(firstService.media || "");
+        setServiceMediaType(firstService.mediaType === "video" ? "video" : "image");
+        setServiceActive(firstService.active !== false);
+        setIdentityServiceId(firstService.id || null);
+      }
+      setAnnouncementDraft(parsed?.announcement || "");
+      setAnnouncementImageDraft(parsed?.announcementImage || "");
+      setAnnouncementEnabledDraft(typeof parsed?.announcementActive === "boolean" ? parsed.announcementActive : Boolean(parsed?.announcement?.trim() || parsed?.announcementImage));
+      setRewardTitleDraft(parsed?.rewardTitle || emptyData.rewardTitle || "Race for a discount.");
+      setRewardDescriptionDraft(parsed?.rewardDescription || emptyData.rewardDescription || "");
+      setRewardImageDraft(parsed?.rewardImage || "");
+      setRewardDiscountDraft(String(Number(parsed?.discountAmount) > 0 ? Number(parsed?.discountAmount) : 5));
+      setIdentityEditing(false);
+      setSetupPathChosen(false);
+      setHasPreviousSetup(true);
+      setIdentityComplete(true);
+      setView("shop");
+      setNotice(`Restored ${savedName?.trim() || "your previous business"} from this device. Your saved catalogue and customer records were left untouched.`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      setNotice("The previous business could not be read. Nothing was changed; your saved data has not been cleared.");
+    }
   }
 
   function completeBusinessIdentity(confirmedOverwrite = false) {
@@ -1069,11 +1120,11 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "BUSINESS IDENTITY" : "SETUP · STORE · ACCOUNT · BRIEFCASE"}</span></div>
       {!setupPathChosen && !identityEditing ? <section className="sd-identity-entry" aria-labelledby="sd-identity-entry-title">
         <span className="sd-kicker">YOUR BUSINESS · ONE CONNECTED SYSTEM</span>
-        <h1 id="sd-identity-entry-title">Make it yours. <em>Start here.</em></h1>
-        <p>You do not need to fill anything in to see how the Business OS works. Start with your own business, or continue in the last saved business.</p>
+        <h1 id="sd-identity-entry-title">Your business. <em>Your choice.</em></h1>
+        <p>Create a new business, or use a previous business saved on this device. Choosing a new setup will not replace the previous one until you confirm that action.</p>
         <div className="sd-identity-entry-actions">
-          <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Build my Business OS</h2><p>Set up your business name, first offer and brand. Add the details as you go.</p></div><button type="button" onClick={beginBusinessSetup}>Set up my business <span aria-hidden="true">↗</span></button></article>
-          <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Continue Your Business instead</h2><p>Open the last saved business. Its Store, customer Account and owner Briefcase are ready to use.</p></div><button type="button" className="sd-identity-entry-continue" onClick={continueYourBusiness}>Continue your business <span aria-hidden="true">↗</span></button><small>No setup required · Your own business data stays separate</small></article>
+          <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Create a new business</h2><p>Set up a separate business name, first offer and brand. Your previous business is not changed unless you explicitly replace it.</p></div><button type="button" onClick={beginBusinessSetup}>Create a business <span aria-hidden="true">↗</span></button></article>
+          {hasPreviousSetup && <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Use a previous business</h2><p>Reopen the business saved on this device, including its Store, services, customer Account and owner Briefcase.</p></div><button type="button" className="sd-identity-entry-continue" onClick={continueYourBusiness}>Use previous business <span aria-hidden="true">↗</span></button><small>No setup required · Existing business data stays untouched</small></article>}
         </div>
       </section> : <>
       <section className="sd-identity-progress" aria-label={`Setup progress: ${setupCompletedCount} of 4 complete`}>
@@ -1098,7 +1149,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
             <div className="sd-identity-preview-footer"><span>YOUR BRAND PALETTE</span><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div><small>One identity · three connected areas</small></div>
           </div>
         </details>
-        {!identityEditing && hasPreviousSetup && <button type="button" onClick={loadPreviousBusinessSetup}>Continue {businessName.trim() || "your business"} ↗</button>}
+        {!identityEditing && hasPreviousSetup && <button type="button" className="sd-identity-continue" onClick={loadPreviousBusinessSetup}>Use previous business · {businessName.trim() || "your business"} ↗</button>}
       </div>
       <div className="sd-identity-onboarding-layout">
         <div className="sd-identity-onboarding-copy">
