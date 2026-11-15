@@ -128,6 +128,37 @@ Preserve proven customer journeys, authentication, booking/order flows, uploads,
 
 Before substantial visual implementation or redesign, read [docs/DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md](./DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md) from Iteration 13 and apply it within the target project's own `AGENTS.md` and design system. Select a justified dominant visual genre, research relevant task flows, inspect existing tokens/components before changes, and verify the rendered result at mobile and desktop sizes. For substantial products, provide a development-only rendered design-system showcase where practical. Adapt the standard to the target stack; do not add shadcn, Expo, Rive or other dependencies solely because they are referenced. Preserve proven source behavior and existing design direction unless evidence supports a change.
 
+## 7B. Mandatory design genre and project direction gate
+
+This checkpoint applies to **every new app** and every **material visual/experience update** to an existing app. It must be completed before substantial screen implementation; do not treat it as optional inspiration or leave it to be inferred from screenshots after the UI is built.
+
+### Required decision
+
+1. Understand the supplied business brief: what the business does, who it serves, its positioning, the customer's primary journey, staff/owner tasks and real operating constraints. Verify what is already established in the target repository.
+2. Choose one dominant genre from the five canonical art-direction lenses:
+   - **Quiet** — restrained, calm, legible confidence.
+   - **Character** — distinctive personality, warmth and expressive interaction.
+   - **Atmosphere** — immersive imagery, depth, lighting and emotional composition.
+   - **Data** — operational precision, information hierarchy and useful density.
+   - **Loud** — high-impact promotional energy and strong visual statements.
+3. Write a short rationale connecting the dominant genre to the business, audience and primary tasks. Name any secondary genre expressions and the specific surfaces/tasks where they belong. These five lenses are useful and consistent vocabulary, not an exhaustive taxonomy or fixed templates.
+4. Translate the decision into a concise project-specific design-direction brief covering identity/positioning, typography and hierarchy, colour/surfaces, imagery, composition/density, motion/interaction, accessibility/performance constraints, and relevant product/task-flow references.
+5. Record the decision in the target project's `AGENTS.md` and `DESIGN.md` (or an equivalent existing design-system document) before substantial UI work. Do not create duplicate competing design systems.
+
+### New app versus existing app
+
+- **New app:** complete the business understanding and genre decision after inspecting the selected source/foundation but before designing/building substantial customer or admin screens. The direction must be specific to the new business, not inherited blindly from the foundation.
+- **Existing app / update:** inspect its current visual direction, tokens, components and proven customer/staff journeys. Preserve the established direction for local fixes. For a material redesign or changed audience/positioning, deliberately confirm or revise the genre and document why. Never redesign an existing app merely because another genre is fashionable.
+- **Every update:** check the affected screen and adjacent journeys against the recorded direction. A small copy, spacing or defect fix does not require a new genre workshop; it must still respect the established design system.
+
+### Apply it across the whole product
+
+The genre is not a homepage skin. Apply the project direction to the complete relevant journey: public Store/landing, service/product discovery, request/booking/order, customer Account, staff/owner Briefcase, records/receipts, notifications and meaningful states. Secondary expressions may vary by task (for example, Quiet customer details + Data operational queue + Loud campaign announcement) while shared identity, tokens, components, accessibility and interaction conventions remain coherent.
+
+### Stop/go and verification
+
+Do not begin substantial visual implementation until the dominant genre, rationale and secondary expressions are recorded. If the business brief lacks a genuinely essential decision, make an evidence-based recommendation and ask one focused question rather than inventing the answer. During QA, verify that the rendered screens and real interactions express the selected direction without sacrificing task clarity, readability, accessibility, performance or business truth. Follow [DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md](./DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md) for the full definitions, research method, design-system discipline and review checklist.
+
 ## 8. Product and visual implementation standard
 
 Read [VISUAL-DIRECTION-STANDARD.md](./VISUAL-DIRECTION-STANDARD.md) before visual planning or visual QA, and open the canonical `docs/assets/washride-home-reference.jpeg` image itself. Read [OPERATIONAL-TRANSPARENCY-STANDARD.md](./OPERATIONAL-TRANSPARENCY-STANDARD.md) when designing meaningful workflows and their loading, progress, status, activity and outcome communication. Both standards apply together: visual craft makes the product inviting; operational transparency makes its real value understandable. Apply consistent craftsmanship, not a universal theme:
