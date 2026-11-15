@@ -611,6 +611,7 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function startNewBusinessSetup() {
+    setSetupPathChosen(true);
     setBusinessName("");
     setBusinessCurrency("BWP");
     setBrandColors(["#2458e8"]);
