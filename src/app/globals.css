@@ -5902,8 +5902,7 @@ h1 em,
 .serviceDemo .sd-identity-entry-card p{margin:6px 0 0;color:#526075;font-size:14px;line-height:1.45}
 .serviceDemo .sd-identity-entry-card>button{display:flex;min-height:48px;width:100%;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding:12px 14px;border:0;border-radius:9px;background:#172033;color:#fff;font-size:15px;font-weight:800;text-align:left;cursor:pointer}
 .serviceDemo .sd-identity-entry-card>button:focus-visible{outline:3px solid #2458e8;outline-offset:3px}
-.serviceDemo .sd-identity-entry-card>button.sd-identity-entry-explore{border:1px solid #cbd5e1;background:#fff;color:#172033}
-.serviceDemo .sd-identity-entry-card>button.sd-identity-entry-secondary{min-height:38px;margin-top:-5px;padding:7px 0;background:transparent;color:#344054;font-size:13px;font-weight:700}
+.serviceDemo .sd-identity-entry-card>button.sd-identity-entry-continue{border:1px solid #cbd5e1;background:#fff;color:#172033}
 .serviceDemo .sd-identity-entry-card>small{color:#657187;font-size:12px;line-height:1.4}
 .serviceDemo .sd-explore-banner{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px max(16px,calc((100vw - 1180px)/2));border-bottom:1px solid #d8e0ea;background:#f6f8fb}
 .serviceDemo .sd-explore-banner>div{display:grid;gap:3px;min-width:0}
