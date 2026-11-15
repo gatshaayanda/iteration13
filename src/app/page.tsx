@@ -1102,7 +1102,8 @@ export default function Home() {
     if (commitData(current => ({ ...current, orders: current.orders.map(order => order.id === id ? { ...order, messages: [...(order.messages || []), message] } : order) }), "Studio reply saved to this browser's demo thread.")) setAdminReplyDrafts(current => ({ ...current, [id]: "" }));
   }
 
-    const setupChecklist = [
+    const savedBusinessName = savedBusinessOptions[0]?.name || businessName.trim() || "Business";
+  const setupChecklist = [
     { label: "Business name", complete: Boolean(businessName.trim()) },
     { label: "Pricing currency", complete: supportedCurrencies.includes(businessCurrency as typeof supportedCurrencies[number]) },
     { label: "Brand colours", complete: brandColors.length >= 1 && brandColors.length <= 3 },
@@ -1119,7 +1120,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
         <p>Create a new business, or use a previous business saved on this device. Choosing a new setup will not replace the previous one until you confirm that action.</p>
         <div className="sd-identity-entry-actions">
           <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Create a new business</h2><p>Set up a separate business name, first offer and brand. Your previous business is not changed unless you explicitly replace it.</p></div><button type="button" onClick={beginBusinessSetup}>Create a business <span aria-hidden="true">↗</span></button></article>
-          {hasPreviousSetup && <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Use a previous business</h2><p>Reopen a business saved on this device, including its Store, services, customer Account and owner Briefcase.</p></div><button type="button" className="sd-identity-entry-continue" onClick={continueYourBusiness}>Use previous business <span aria-hidden="true">↗</span></button><small>No setup required · Existing business data stays untouched</small></article>}
+          {hasPreviousSetup && <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Continue Your {savedBusinessName} exploration instead</h2><p>Open the last saved business. Its Store, customer Account and owner Briefcase are ready to use.</p></div><button type="button" className="sd-identity-entry-continue" onClick={continueYourBusiness}>Continue Your {savedBusinessName} <span aria-hidden="true">↗</span></button></article>}
           {showPreviousBusinessPicker && <div className="sd-identity-entry-card sd-identity-saved-business-list"><h2>Choose a saved business</h2><p>These business records were found in this browser. Choose the one you want to reopen.</p>{savedBusinessOptions.map(option => <button type="button" className="sd-identity-entry-continue" key={option.suffix || "default"} onClick={() => openSavedBusinessWorkspace(option.suffix)}>{option.name} · {option.serviceCount} services · {option.customerCount} customer records ↗</button>)}</div>}
         </div>
       </section> : <>
