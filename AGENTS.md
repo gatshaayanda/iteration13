@@ -381,9 +381,10 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 - Clearly mark each essential and explain what remains. The final Create my Business OS action is the single dominant, full-width primary action; disable it until all four essentials are ready. Keep browser-local persistence wording adjacent and honest.
 
 
-## Opening choice and explore-first flow — November 2026
-- Present two clear paths before showing the setup form: **Build my Business OS** and **Explore Business OS first**. Do not make continuing a previous sample/business appear to be the only available action.
-- Show setup progress and the form only after the setup path is selected. Keep four-essential progress, collapsed live preview and optional announcement rules.
-- Explore opens a working, clearly labelled sample Store that can be used to submit a request and inspect the connected Account and owner Briefcase. The sample uses a dedicated :explore browser-local storage namespace and must never overwrite or merge with the owner saved business data.
-- Keep an obvious **Create my own business** action in the sample workspace. Returning removes the exploration query and returns to the owner independent setup state.
-- Verify both entry paths, sample request flow, owner visibility, return path, previous-business continuation and data isolation. Keep Setup as the current QA checkpoint; do not begin Account or Briefcase redesign before owner approval.
+## Opening choice and continue-business flow — November 2026
+- Present two clear paths before showing the setup form: **01 Build my Business OS** and **02 Continue Your Business instead**. Remove the separate “Explore Business OS first” invitation and do not duplicate the continue action under option 01.
+- Option 01 opens the existing progressive business identity setup. Keep the four-essential progress, collapsed live preview and optional announcement rules.
+- Option 02 resumes the last saved business in this browser, including its existing Store, customer Account, owner Briefcase and saved activity. If no owner business has been saved yet, open the existing persistent TrailWise workspace as the ready-to-use Business OS; do not create a second sample or label the workspace as an example.
+- Keep TrailWise data in its dedicated :explore browser-local namespace so it never overwrites or merges with the owner's separately saved business. Preserve the existing TrailWise data and requests when continuing; do not reseed an already saved workspace.
+- Keep an obvious **Build my own business** action inside TrailWise. Returning removes the exploration query and returns to the independent setup state.
+- Verify both entry paths, continuation of saved data, TrailWise fallback, request-to-Account/Briefcase flow, return path and data isolation. Keep Setup as the current QA checkpoint; do not begin Account or Briefcase redesign before owner approval.
