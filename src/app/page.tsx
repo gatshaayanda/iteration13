@@ -18,6 +18,7 @@ type JourneyEvent = { id: string; event: string; screen: string; at: string; ses
 type DemoData = { services: Service[]; orders: DemoOrder[]; journeyEvents?: JourneyEvent[]; availability?: "available" | "limited" | "unavailable"; announcement: string; announcementActive?: boolean; announcementImage?: string; views: number; events?: DemoEvent[]; discountAmount?: number; rewardTitle?: string; rewardDescription?: string; rewardImage?: string; rewardActive?: boolean; discountClaims?: DiscountClaim[]; receiptProfile?: { legalName: string; registration: string; address: string; phone: string; footer: string } };
 type SharedExample = { id: string; businessName: string; currency: string; brandColors: string[]; data: Partial<DemoData> };
 const STORAGE_KEY = "iteration13:service-demo:v1";
+const SETUP_DRAFT_KEY = "iteration13:business-setup-draft:v1";
 const CUSTOMER_SELECTION_KEY = "iteration13:customer-selected-services:v1";
 
 const emptyData: DemoData = { services: [], orders: [], availability: "available", announcement: "", announcementActive: false, announcementImage: "", views: 0, events: [], discountAmount: 5, rewardTitle: "Race for a discount.", rewardDescription: "Drive for eight seconds. Keep it clean to unlock the published discount on your next request.", rewardImage: "", rewardActive: true, discountClaims: [], receiptProfile: { legalName: "Your Business", registration: "", address: "", phone: "", footer: "Thank you for your business." } };
@@ -405,6 +406,7 @@ export default function Home() {
   const [businessName, setBusinessName] = useState("Your Business");
   const [businessCurrency, setBusinessCurrency] = useState("BWP");
   const [businessNameReady, setBusinessNameReady] = useState(false);
+  const [setupDraftReady, setSetupDraftReady] = useState(false);
 
   useEffect(() => {
     try {
@@ -419,6 +421,41 @@ export default function Home() {
     try { window.localStorage.setItem(getStorageKey("iteration13:business-name:v1"), businessName.trim().slice(0, 48) || "Your Business"); }
     catch { setNotice("Business name could not be saved on this device."); }
   }, [businessName, businessNameReady, identityComplete]);
+
+  useEffect(() => {
+    try {
+      const rawDraft = window.localStorage.getItem(getStorageKey(SETUP_DRAFT_KEY));
+      if (rawDraft) {
+        const draft = JSON.parse(rawDraft) as Record<string, unknown>;
+        if (typeof draft.businessName === "string") setBusinessName(draft.businessName.slice(0, 48));
+        if (typeof draft.businessCurrency === "string" && supportedCurrencies.includes(draft.businessCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(draft.businessCurrency);
+        if (Array.isArray(draft.brandColors)) setBrandColors(draft.brandColors.filter((value): value is string => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value)).slice(0, 3));
+        if (typeof draft.serviceName === "string") setServiceName(draft.serviceName.slice(0, 80));
+        if (typeof draft.serviceIndustry === "string") setServiceIndustry(draft.serviceIndustry.slice(0, 80));
+        if (typeof draft.servicePrice === "string") setServicePrice(draft.servicePrice.slice(0, 30));
+        if (typeof draft.serviceDescription === "string") setServiceDescription(draft.serviceDescription.slice(0, 1200));
+        if (typeof draft.serviceMedia === "string") setServiceMedia(draft.serviceMedia.slice(0, 2000));
+        if (draft.serviceMediaType === "image" || draft.serviceMediaType === "video") setServiceMediaType(draft.serviceMediaType);
+        if (typeof draft.serviceActive === "boolean") setServiceActive(draft.serviceActive);
+        if (typeof draft.announcementDraft === "string") setAnnouncementDraft(draft.announcementDraft.slice(0, 2000));
+        if (typeof draft.announcementImageDraft === "string") setAnnouncementImageDraft(draft.announcementImageDraft.slice(0, 2000));
+        if (typeof draft.announcementEnabledDraft === "boolean") setAnnouncementEnabledDraft(draft.announcementEnabledDraft);
+        if (new URLSearchParams(window.location.search).get("setupDraft") === "1") setSetupPathChosen(true);
+      }
+    } catch { /* an invalid draft must never block the normal setup */ }
+    setSetupDraftReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!setupDraftReady || !setupPathChosen || identityComplete) return;
+    try {
+      window.localStorage.setItem(getStorageKey(SETUP_DRAFT_KEY), JSON.stringify({
+        businessName, businessCurrency, brandColors, serviceName, serviceIndustry, servicePrice,
+        serviceDescription, serviceMedia, serviceMediaType, serviceActive, announcementDraft,
+        announcementImageDraft, announcementEnabledDraft, updatedAt: new Date().toISOString(),
+      }));
+    } catch { setNotice("Your unfinished setup could not be saved on this device. Free some browser storage before continuing."); }
+  }, [setupDraftReady, setupPathChosen, identityComplete, businessName, businessCurrency, brandColors, serviceName, serviceIndustry, servicePrice, serviceDescription, serviceMedia, serviceMediaType, serviceActive, announcementDraft, announcementImageDraft, announcementEnabledDraft]);
 
   useEffect(() => {
     try { const savedCurrency = window.localStorage.getItem(getStorageKey(CURRENCY_KEY)); if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency); } catch { /* default to BWP */ }
@@ -581,6 +618,7 @@ export default function Home() {
     const url = new URL("/", window.location.origin);
     const restore = new URLSearchParams(window.location.search).get("restore") || "";
     if (restore === ":explore" || /^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(restore)) url.searchParams.set("restore", restore);
+    if (new URLSearchParams(window.location.search).get("setupDraft") === "1") url.searchParams.set("setupDraft", "1");
     if (view === "account") url.searchParams.set("view", "account");
     else if (view === "login") url.hash = "#login";
     else if (view === "admin") url.hash = "#admin";
@@ -763,6 +801,20 @@ export default function Home() {
     window.location.assign(url.toString());
   }
   function continueYourBusiness() {
+    try {
+      const draft = window.localStorage.getItem(getStorageKey(SETUP_DRAFT_KEY));
+      if (draft) {
+        const parsed = JSON.parse(draft) as { businessName?: unknown; serviceName?: unknown; updatedAt?: unknown };
+        if ((typeof parsed.businessName === "string" && parsed.businessName.trim()) || (typeof parsed.serviceName === "string" && parsed.serviceName.trim())) {
+          const url = new URL(window.location.href);
+          ["explore", "example", "sample", "view", "resume"].forEach(key => url.searchParams.delete(key));
+          url.searchParams.set("setupDraft", "1");
+          url.hash = "";
+          window.location.assign(url.toString());
+          return;
+        }
+      }
+    } catch { setNotice("The unfinished setup draft could not be read. Existing saved businesses have not been changed."); return; }
     const discovered = findSavedBusinessWorkspaces();
     setSavedBusinessOptions(discovered);
     // The TrailWise workspace the owner was actively building is the intended
@@ -817,6 +869,7 @@ export default function Home() {
       window.localStorage.setItem(getStorageKey("iteration13:store-theme:v1"), themeColor);
       window.localStorage.setItem(getStorageKey(CURRENCY_KEY), businessCurrency);
       window.localStorage.setItem(getStorageKey("iteration13:identity-complete:v1"), "true");
+      window.localStorage.removeItem(getStorageKey(SETUP_DRAFT_KEY));
       if (!identityEditing && confirmedOverwrite) {
         window.localStorage.removeItem(getStorageKey("iteration13:owner-notes:v1"));
         window.localStorage.removeItem(getStorageKey("iteration13:account-extras:v1"));
