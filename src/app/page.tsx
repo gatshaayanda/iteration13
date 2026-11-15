@@ -77,7 +77,8 @@ function getSharedWorkspaceMode(): "example" | "own" {
 function getStorageKey(key: string): string {
   const shared = readSharedExampleFromUrl();
   if (shared) return `${key}:visitor:${shared.id}:${getSharedWorkspaceMode()}`;
-  
+  const restore = new URLSearchParams(window.location.search).get("restore") || "";
+  if (/^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(restore)) return `${key}${restore}`;
   return key;
 }
 function encodeSharedExample(value: SharedExample): string {
@@ -87,6 +88,33 @@ function encodeSharedExample(value: SharedExample): string {
   return window.btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 const supportedCurrencies = ["BWP", "USD", "GBP", "EUR", "ZAR", "INR"] as const;
+type SavedBusinessWorkspace = { suffix: string; name: string; serviceCount: number; customerCount: number };
+function findSavedBusinessWorkspaces(): SavedBusinessWorkspace[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const suffixes = new Set<string>([""]);
+    for (let index = 0; index < window.localStorage.length; index++) {
+      const key = window.localStorage.key(index) || "";
+      if (!key.startsWith(STORAGE_KEY + ":visitor:")) continue;
+      const suffix = key.slice(STORAGE_KEY.length);
+      if (/^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(suffix)) suffixes.add(suffix);
+    }
+    const found: SavedBusinessWorkspace[] = [];
+    for (const suffix of suffixes) {
+      const raw = window.localStorage.getItem(STORAGE_KEY + suffix);
+      const name = (window.localStorage.getItem("iteration13:business-name:v1" + suffix) || "").trim();
+      const identityComplete = window.localStorage.getItem("iteration13:identity-complete:v1" + suffix) === "true";
+      let parsed: Partial<DemoData> | null = null;
+      try { parsed = raw ? JSON.parse(raw) as Partial<DemoData> : null; } catch { continue; }
+      const services = Array.isArray(parsed?.services) ? parsed.services : [];
+      const orders = Array.isArray(parsed?.orders) ? parsed.orders : [];
+      const isInjectedTrailWiseSeed = services.length === 1 && services[0]?.id === "trailwise-guided-walk" && orders.length === 0;
+      if ((!identityComplete && (!name || services.length === 0)) || (isInjectedTrailWiseSeed && !identityComplete)) continue;
+      found.push({ suffix, name: name || "Saved business", serviceCount: services.length, customerCount: orders.length });
+    }
+    return found;
+  } catch { return []; }
+}
 const getBusinessCurrency = () => {
   if (typeof window === "undefined") return "USD";
   try { const value = window.localStorage.getItem(getStorageKey(CURRENCY_KEY)); return supportedCurrencies.includes(value as typeof supportedCurrencies[number]) ? value! : "USD"; }
@@ -367,6 +395,8 @@ export default function Home() {
   const [identityComplete, setIdentityComplete] = useState(false);
   const sampleLaunchHandled = useRef(false);
   const [hasPreviousSetup, setHasPreviousSetup] = useState(false);
+  const [savedBusinessOptions, setSavedBusinessOptions] = useState<SavedBusinessWorkspace[]>([]);
+  const [showPreviousBusinessPicker, setShowPreviousBusinessPicker] = useState(false);
   const [setupPathChosen, setSetupPathChosen] = useState(false);
   const [identityEditing, setIdentityEditing] = useState(false);
   const [identityServiceId, setIdentityServiceId] = useState<string | null>(null);
@@ -403,16 +433,12 @@ export default function Home() {
       } else if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setBrandColors([savedTheme]);
       const params = new URLSearchParams(window.location.search);
       const resuming = params.get("resume") === "1";
-      const savedName = window.localStorage.getItem(getStorageKey("iteration13:business-name:v1")) || "";
-      let savedCatalogue = false;
-      try {
-        const rawBusiness = window.localStorage.getItem(getStorageKey(STORAGE_KEY));
-        const parsedBusiness = rawBusiness ? JSON.parse(rawBusiness) as Partial<DemoData> : null;
-        savedCatalogue = Boolean(parsedBusiness && Array.isArray(parsedBusiness.services) && parsedBusiness.services.length > 0);
-      } catch { /* an unreadable record is never treated as a recoverable business */ }
-      const hasSavedIdentity = window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true"
-        || Boolean(savedName.trim() && savedName.trim() !== "Your Business" && savedCatalogue);
-      setHasPreviousSetup(hasSavedIdentity);
+      const discovered = findSavedBusinessWorkspaces();
+      setSavedBusinessOptions(discovered);
+      const currentSuffix = params.get("restore") || "";
+      const currentWorkspaceExists = discovered.some(option => option.suffix === currentSuffix);
+      const hasSavedIdentity = currentWorkspaceExists || window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true";
+      setHasPreviousSetup(discovered.length > 0 || hasSavedIdentity);
       setIdentityComplete(resuming && hasSavedIdentity);
     } catch { /* identity remains at the accessible default */ }
     setThemeReady(true);
@@ -723,13 +749,24 @@ export default function Home() {
     if (hasPreviousSetup) startNewBusinessSetup();
     else setSetupPathChosen(true);
   }
-  function continueYourBusiness() {
-    // Resume the original owner workspace in its existing browser-local storage.
+  function openSavedBusinessWorkspace(suffix: string) {
     const url = new URL(window.location.href);
-    ["explore", "example", "sample", "view"].forEach(key => url.searchParams.delete(key));
+    ["explore", "example", "sample", "view", "resume"].forEach(key => url.searchParams.delete(key));
+    if (/^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(suffix)) url.searchParams.set("restore", suffix);
+    else url.searchParams.delete("restore");
     url.searchParams.set("resume", "1");
     url.hash = "";
     window.location.assign(url.toString());
+  }
+  function continueYourBusiness() {
+    const discovered = findSavedBusinessWorkspaces();
+    setSavedBusinessOptions(discovered);
+    if (discovered.length === 1) openSavedBusinessWorkspace(discovered[0].suffix);
+    else if (discovered.length > 1) setShowPreviousBusinessPicker(true);
+    else setNotice("No previous business was found in this browser. Your saved browser data has not been changed.");
+  }
+  function loadPreviousBusinessSetup() {
+    continueYourBusiness();
   }
   function returnToBusinessSetup() {
     const url = new URL(window.location.href); url.searchParams.delete("explore"); url.searchParams.delete("view"); url.hash = ""; window.location.assign(url.toString());
@@ -1124,7 +1161,8 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
         <p>Create a new business, or use a previous business saved on this device. Choosing a new setup will not replace the previous one until you confirm that action.</p>
         <div className="sd-identity-entry-actions">
           <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Create a new business</h2><p>Set up a separate business name, first offer and brand. Your previous business is not changed unless you explicitly replace it.</p></div><button type="button" onClick={beginBusinessSetup}>Create a business <span aria-hidden="true">↗</span></button></article>
-          {hasPreviousSetup && <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Use a previous business</h2><p>Reopen the business saved on this device, including its Store, services, customer Account and owner Briefcase.</p></div><button type="button" className="sd-identity-entry-continue" onClick={continueYourBusiness}>Use previous business <span aria-hidden="true">↗</span></button><small>No setup required · Existing business data stays untouched</small></article>}
+          {hasPreviousSetup && <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Use a previous business</h2><p>Reopen a business saved on this device, including its Store, services, customer Account and owner Briefcase.</p></div><button type="button" className="sd-identity-entry-continue" onClick={continueYourBusiness}>Use previous business <span aria-hidden="true">↗</span></button><small>No setup required · Existing business data stays untouched</small></article>}
+          {showPreviousBusinessPicker && <div className="sd-identity-entry-card sd-identity-saved-business-list"><h2>Choose a saved business</h2><p>These business records were found in this browser. Choose the one you want to reopen.</p>{savedBusinessOptions.map(option => <button type="button" className="sd-identity-entry-continue" key={option.suffix || "default"} onClick={() => openSavedBusinessWorkspace(option.suffix)}>{option.name} · {option.serviceCount} services · {option.customerCount} customer records ↗</button>)}</div>}
         </div>
       </section> : <>
       <section className="sd-identity-progress" aria-label={`Setup progress: ${setupCompletedCount} of 4 complete`}>
