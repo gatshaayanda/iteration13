@@ -94,3 +94,15 @@ The prototype now has \`src/app/ServiceGuide.tsx\`, a genericized and locally de
 - Chat shortcuts call the existing customer/admin state handlers; they do not introduce a second order model or Firebase integration.
 
 This implementation is a **candidate reusable pattern**. It still needs real browser/mobile and offline QA before promotion. For future apps, preserve the interaction architecture but replace app-specific options and callbacks; do not copy this demo's services or insecure demo-admin assumption.
+
+
+## Iteration 13 screen-aware guide — November 2026
+
+The current implementation is mounted from `src/app/page.tsx` and receives a deterministic screen key from the real page state (Store, customer Account, request form, or a Briefcase tab). It can therefore offer a short contextual next step without inferring intent from message contents.
+
+- The guide remains closed by default. Screen changes may produce a small, collapsible hint beside the launcher; no hint opens the panel or blocks the screen.
+- Hints are session-scoped, limited to three per tab, shown only for a new screen context, and separated by a minimum 35-second interval. They disappear after a short period and can be dismissed immediately.
+- The guide's local funnel events record screen context and action names only. Typed message content is not written to funnel analytics. History remains optional tab-session UI state.
+- Mobile uses a bottom sheet capped at 72dvh rather than a full-screen takeover.
+- The guide remains scripted and local. No model/API, remote telemetry, customer messaging or cross-device tracking is configured.
+- These changes still require browser, keyboard, screen-reader, reduced-motion and physical mobile QA before the pattern is promoted as a proven reusable component.

@@ -5268,3 +5268,89 @@ h1 em,
     font-size:.64rem;
   }
 }
+
+
+/* Iteration 13 visual pass 2–7: editorial Store cards, compact setup and useful state feedback. */
+.serviceDemo .sd-store-grid{align-items:stretch;gap:clamp(12px,1.8vw,20px)}
+.serviceDemo .sd-store-card{display:flex;flex-direction:column;background:#fff;border-radius:18px;box-shadow:0 8px 26px rgba(20,32,51,.07);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.serviceDemo .sd-store-card .sd-service-media{height:clamp(168px,22vw,250px);min-height:168px;overflow:hidden}
+.serviceDemo .sd-store-card .sd-service-media>img,.serviceDemo .sd-store-card .sd-service-media>video{transition:transform .45s cubic-bezier(.2,.75,.25,1)}
+.serviceDemo .sd-store-card:hover .sd-service-media>img,.serviceDemo .sd-store-card:hover .sd-service-media>video{transform:scale(1.025)}
+.serviceDemo .sd-store-card .sd-service-info{display:flex;flex:1;flex-direction:column;align-items:stretch;padding:clamp(15px,2vw,22px)}
+.serviceDemo .sd-store-card .sd-service-title{align-items:flex-start;gap:12px}
+.serviceDemo .sd-store-card .sd-service-title h3{font-size:clamp(1.08rem,1.6vw,1.35rem);line-height:1.18}
+.serviceDemo .sd-store-card .sd-service-title>strong{flex:0 0 auto;font-size:clamp(1rem,1.4vw,1.18rem);font-weight:900;white-space:nowrap}
+.serviceDemo .sd-store-card .sd-service-info>p{flex:1;margin:10px 0 17px;font-size:.9rem;line-height:1.58;color:#344256;overflow:visible}
+.serviceDemo .sd-store-card .sd-order-button{margin-top:auto;min-height:48px;border-radius:11px;font-size:.82rem}
+.serviceDemo .sd-store-grid.has-featured-item{grid-template-columns:minmax(0,1fr)}
+.serviceDemo .sd-store-grid.has-featured-item .sd-store-card{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(280px,.88fr);align-items:stretch}
+.serviceDemo .sd-store-grid.has-featured-item .sd-store-card .sd-service-media{height:100%;min-height:340px}
+.serviceDemo .sd-store-grid.has-featured-item .sd-store-card .sd-service-info{justify-content:center;padding:clamp(22px,4vw,48px)}
+.serviceDemo .sd-store-grid.has-featured-item .sd-store-card .sd-service-title h3{font-size:clamp(1.5rem,3vw,2.5rem);letter-spacing:-.045em}
+.serviceDemo .sd-store-grid.has-featured-item .sd-store-card .sd-service-info>p{font-size:1rem;line-height:1.65}
+.serviceDemo .sd-store-grid.has-catalogue{grid-template-columns:repeat(3,minmax(0,1fr))}
+.serviceDemo .sd-store-grid.has-catalogue .sd-store-card .sd-service-media{height:clamp(145px,17vw,205px)}
+.serviceDemo .sd-product-announcement{max-width:min(94%,560px);border-radius:12px;box-shadow:0 10px 28px rgba(12,22,36,.2)}
+.serviceDemo .sd-product-announcement strong{line-height:1.35}
+.serviceDemo .sd-store-card:focus-within{border-color:var(--studio-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--studio-accent) 18%,transparent),0 12px 28px rgba(20,32,51,.1)}
+.serviceDemo .sd-store-card .sd-order-button:focus-visible{outline:3px solid #142033;outline-offset:3px}
+.serviceDemo .sd-identity-onboarding{padding:clamp(16px,3vw,32px);background:linear-gradient(145deg,#f7f8fb 0%,#eef2f8 100%)}
+.serviceDemo .sd-identity-onboarding-top{padding-bottom:14px;font-size:.7rem;letter-spacing:.1em}
+.serviceDemo .sd-identity-onboarding-layout{grid-template-columns:minmax(0,1.05fr) minmax(300px,.8fr);gap:clamp(22px,4vw,48px);align-items:start;margin:clamp(18px,3vh,34px) auto}
+.serviceDemo .sd-identity-onboarding-copy{max-width:680px}
+.serviceDemo .sd-identity-onboarding-copy>.sd-kicker{font-size:.68rem;letter-spacing:.11em}
+.serviceDemo .sd-identity-onboarding-copy h1{margin:8px 0 10px;font-size:clamp(2.25rem,4.8vw,4.2rem);line-height:1;letter-spacing:-.06em}
+.serviceDemo .sd-identity-onboarding-copy>p{margin:0;max-width:590px;font-size:.94rem;line-height:1.55}
+.serviceDemo .sd-identity-name-label{margin-top:18px;gap:7px;font-size:.86rem}
+.serviceDemo .sd-identity-name-label input{min-height:49px;border-radius:10px}
+.serviceDemo .sd-identity-helper{font-size:.8rem;line-height:1.45}
+.serviceDemo .sd-identity-currency,.serviceDemo .sd-identity-palette,.serviceDemo .sd-identity-first-service{margin-top:15px;padding:15px;border-radius:14px;box-shadow:0 4px 14px rgba(20,32,51,.035)}
+.serviceDemo .sd-identity-currency-options>button{min-height:58px}
+.serviceDemo .sd-identity-palette>div:first-child strong{font-size:.9rem}
+.serviceDemo .sd-identity-swatches{gap:7px;margin-top:11px}
+.serviceDemo .sd-identity-swatches button{min-height:42px}
+.serviceDemo .sd-identity-step-heading{gap:5px;margin-bottom:12px}
+.serviceDemo .sd-identity-step-heading>span{font-size:.72rem}
+.serviceDemo .sd-identity-step-heading>strong{font-size:1.18rem}
+.serviceDemo .sd-identity-step-heading>p{font-size:.86rem;line-height:1.48}
+.serviceDemo .sd-identity-service-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.serviceDemo .sd-identity-service-fields>label:nth-of-type(1),.serviceDemo .sd-identity-service-fields>label:nth-of-type(2){grid-column:span 1}
+.serviceDemo .sd-identity-service-fields>label:has(textarea),.serviceDemo .sd-identity-service-fields>.sd-media-picker,.serviceDemo .sd-identity-placeholder-note{grid-column:1/-1}
+.serviceDemo .sd-identity-service-fields input:not([type="file"]):not([type="color"]),.serviceDemo .sd-identity-service-fields textarea{min-height:43px;font-size:.94rem}
+.serviceDemo .sd-identity-service-fields textarea{min-height:84px}
+.serviceDemo .sd-identity-announcement-setup{background:#f9fafc}
+.serviceDemo .sd-identity-continue{min-height:52px;margin-top:14px;border-radius:12px;font-size:.94rem;box-shadow:0 8px 18px color-mix(in srgb,var(--studio-accent) 18%,transparent);transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
+.serviceDemo .sd-identity-continue:hover{filter:brightness(.96);transform:translateY(-1px);box-shadow:0 11px 22px color-mix(in srgb,var(--studio-accent) 22%,transparent)}
+.serviceDemo .sd-identity-local-note{font-size:.78rem!important;line-height:1.5}
+.serviceDemo .sd-identity-live-preview{position:sticky;top:18px;border-radius:18px;box-shadow:0 14px 40px rgba(20,32,51,.1)}
+.serviceDemo .sd-identity-preview-brand{padding:18px}
+.serviceDemo .sd-identity-preview-grid article{padding:13px 17px}
+.serviceDemo .sd-identity-preview-grid article>p{font-size:.8rem}
+.serviceDemo .sd-identity-service-preview{padding:13px 16px}
+.serviceDemo .sd-identity-preview-footer{padding:13px 16px}
+.serviceDemo .sd-identity-resume-row{max-width:1180px;margin:12px auto 0;padding:10px 13px;border:1px solid #d9e1ec;border-radius:11px;background:#fff}
+.serviceDemo .sd-identity-resume-row button{font-weight:850;color:#1749a4;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:850px){
+ .serviceDemo .sd-store-grid.has-catalogue{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .serviceDemo .sd-store-grid.has-featured-item .sd-store-card{grid-template-columns:minmax(0,1fr)}
+ .serviceDemo .sd-store-grid.has-featured-item .sd-store-card .sd-service-media{height:clamp(190px,48vw,330px);min-height:190px}
+ .serviceDemo .sd-identity-onboarding-layout{grid-template-columns:minmax(0,1fr);max-width:720px;margin:22px auto}
+ .serviceDemo .sd-identity-live-preview{position:relative;top:auto}
+}
+@media(max-width:560px){
+ .serviceDemo .sd-store-grid.has-catalogue,.serviceDemo .sd-store-grid.has-small-catalogue{grid-template-columns:minmax(0,1fr)}
+ .serviceDemo .sd-store-card .sd-service-media{height:clamp(180px,58vw,250px)}
+ .serviceDemo .sd-store-grid.has-featured-item .sd-store-card .sd-service-info{padding:19px}
+ .serviceDemo .sd-identity-onboarding{padding:14px}
+ .serviceDemo .sd-identity-onboarding-top{align-items:flex-start;flex-direction:column;gap:5px;font-size:.64rem}
+ .serviceDemo .sd-identity-onboarding-layout{gap:16px;margin:16px auto}
+ .serviceDemo .sd-identity-onboarding-copy h1{font-size:clamp(2.15rem,10vw,3.1rem)}
+ .serviceDemo .sd-identity-onboarding-copy>p{font-size:.88rem}
+ .serviceDemo .sd-identity-currency-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .serviceDemo .sd-identity-service-fields{grid-template-columns:minmax(0,1fr)}
+ .serviceDemo .sd-identity-service-fields>*{grid-column:1/-1!important}
+ .serviceDemo .sd-identity-preview-grid article{grid-template-columns:92px minmax(0,1fr);padding:12px 14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .serviceDemo .sd-store-card,.serviceDemo .sd-store-card *,.serviceDemo .sd-identity-continue{transition:none!important;animation:none!important}
+}

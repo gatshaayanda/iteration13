@@ -79,7 +79,7 @@ The repo contains inherited Firebase/PWA integration code beyond the local-only 
 
 ## Chat widget direction
 
-The current Iteration 13 service demo does not include a chat widget. The Sparkle Legacy reference and UX findings are documented in [CHAT-WIDGET-RESEARCH.md](./CHAT-WIDGET-RESEARCH.md). Treat that file as a design brief, not a mandate to copy the insurance widget unchanged.
+The service demo mounts a deterministic, screen-aware Service Guide on the shared Store / Account / Briefcase page. The Sparkle Legacy reference and UX findings are documented in [CHAT-WIDGET-RESEARCH.md](./CHAT-WIDGET-RESEARCH.md). Treat that file as a design brief, not a mandate to copy the insurance widget unchanged.
 
 
 ## Deterministic Service Guide — current reusable pattern
@@ -87,7 +87,7 @@ The current Iteration 13 service demo does not include a chat widget. The Sparkl
 - Implementation: \`src/app/ServiceGuide.tsx\`; styles are appended to \`src/app/globals.css\`; mounted by \`src/app/page.tsx\`.
 - The guide is a local scripted router, **not an AI model, human operator, support inbox, or backend integration**. It never sends a message to a server.
 - It is intentionally connected through typed props/callbacks to the current page state. Customer actions select an existing service and then call the existing order form; account actions use the existing local account view. Admin actions open the real service CRUD, announcement or request-status area and scroll to the selected section.
-- The teaser is delayed, compact, dismissible and session-scoped. The mobile guide is a contextual bottom sheet—not a full-screen takeover—and keeps part of the storefront visible. Service shortcuts show the catalogue's media, price and concise description. Preserve dynamic viewport/safe-area handling, the pinned composer, keyboard dismissal/focus handling and reduced-motion styling.
+- The optional teaser and screen-aware contextual hints are delayed, compact, dismissible and session-scoped; hints never open the panel and are rate-limited. The mobile guide is a contextual bottom sheet capped at 72dvh—not a full-screen takeover—and keeps the current screen visible. Service shortcuts show the catalogue's media, price and concise description. Preserve dynamic viewport/safe-area handling, the pinned composer, keyboard dismissal/focus handling and reduced-motion styling.
 - Conversation history is limited to the current tab session and the last 20 messages. If session storage is unavailable, the guide still functions; history is optional.
 - When adapting to a new project, replace service labels and deterministic matching with that app's real categories and supported actions. Connect to existing handlers rather than duplicating forms or inventing a second data model. Admin routes must respect the target app's actual authorization boundary; this prototype's admin is intentionally not secure.
 - Keep the guide optional. The primary CTA and customer journey must remain understandable with the widget closed, disabled or unavailable.
