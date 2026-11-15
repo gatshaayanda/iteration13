@@ -325,3 +325,10 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 - Keep internal/demo counters out of the customer storefront. Preserve selected-item persistence and the customer Account workflow; do not discard or reset a customer's selection merely to simplify the presentation.
 - Keep the announcement and catalogue compact on mobile while giving the actual offer/product enough visual weight to feel intentionally art-directed. Respect reduced-motion and accessible contrast/focus states.
 - Any storefront shell change must bump and synchronize the shell version in `src/app/page.tsx`, `public/sw.js`, and `scripts/verify-offline.mjs`; preserve the approved update/refresh lifecycle.
+
+
+## Product-owner clarification — announcement control and Store banner placement (2026-11-15)
+- The owner must have a clearly labelled, persistent **Show announcement in Store** toggle in Briefcase → Store controls. Turning it off hides the announcement without deleting its saved text or image; turning it on restores it. Saving edited announcement content and enabling/disabling publication are distinct operations. Existing saved announcements without the new flag remain visible on migration.
+- In the customer Store, place an active announcement inside the existing **Available offerings** storefront banner, using that under-used banner space as a concise business notice. Do not overlay or obscure the first product/service image. Keep the offering image, full name, price and selection action visually dominant. When no announcement is active, render no announcement row or reserved blank space.
+- Mirror the same active announcement placement in the Briefcase live Store preview. The announcement remains optional, local-demo persisted and excluded when inactive from customer-facing Store and shared example presentation.
+- This clarification supersedes the earlier instruction to place the announcement as a ribbon over the first product image. Keep announcement content and image intact when toggled off.
