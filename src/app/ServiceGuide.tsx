@@ -80,24 +80,31 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
 
   useEffect(() => {
     if (!screen || previousScreen.current === screen) return;
+    const fromScreen = previousScreen.current;
     previousScreen.current = screen;
     try {
       const key = "iteration13:guide-events:v1";
-      const previous = JSON.parse(window.sessionStorage.getItem(key) || "[]") as { event: string; screen: string; at: string }[];
+      const previous = JSON.parse(window.sessionStorage.getItem(key) || "[]") as { event: string; screen: string; at: string; serviceId?: string; serviceName?: string }[];
       window.sessionStorage.setItem(key, JSON.stringify([...previous, { event: "screen-change", screen, at: new Date().toISOString() }].slice(-60)));
     } catch { /* local funnel measurement must never block navigation */ }
     onTrackRef.current("screen-change", { screen });
     let timer: number | undefined;
     try {
       const seen = JSON.parse(window.sessionStorage.getItem("iteration13:guide-seen-screens:v1") || "[]") as string[];
+      const events = JSON.parse(window.sessionStorage.getItem("iteration13:guide-events:v1") || "[]") as { event: string; screen: string; at: string }[];
+      const lastStart = events.map(item => item.event).lastIndexOf("request-started");
+      const submittedAfterStart = lastStart >= 0 && events.slice(lastStart + 1).some(item => item.event === "request_submitted");
+      const returnedFromRequest = fromScreen === "request-form" && screen === "store" && !submittedAfterStart;
+      const justSubmitted = screen === "customer-account" && submittedAfterStart;
+      const contextualTip = returnedFromRequest ? "Need to adjust your request? Your selected offer is still available—open the form whenever you’re ready." : screenTips[screen];
       const shown = Number(window.sessionStorage.getItem("iteration13:guide-hint-count:v1") || "0");
       const last = Number(window.sessionStorage.getItem("iteration13:guide-hint-at:v1") || "0");
       const now = Date.now();
-      if (!open && !seen.includes(screen) && shown < 3 && now - last > 35000 && screenTips[screen]) {
+      if (!open && !justSubmitted && !seen.includes(screen) && shown < 3 && now - last > 35000 && contextualTip) {
         timer = window.setTimeout(() => {
           if (document.visibilityState === "visible" && !open) {
             window.sessionStorage.setItem("iteration13:guide-seen-screens:v1", JSON.stringify([...seen, screen].slice(-12)));
-            setHint(screenTips[screen]);
+            setHint(contextualTip);
             window.sessionStorage.setItem("iteration13:guide-hint-count:v1", String(shown + 1));
             window.sessionStorage.setItem("iteration13:guide-hint-at:v1", String(Date.now()));
             window.setTimeout(() => setHint(""), 6500);
@@ -135,8 +142,8 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
     onTrackRef.current(event, { screen, ...details });
     try {
       const key = "iteration13:guide-events:v1";
-      const previous = JSON.parse(window.sessionStorage.getItem(key) || "[]") as { event: string; screen: string; at: string }[];
-      window.sessionStorage.setItem(key, JSON.stringify([...previous, { event, screen, at: new Date().toISOString() }].slice(-60)));
+      const previous = JSON.parse(window.sessionStorage.getItem(key) || "[]") as { event: string; screen: string; at: string; serviceId?: string; serviceName?: string }[];
+      window.sessionStorage.setItem(key, JSON.stringify([...previous, { event, screen, at: new Date().toISOString(), ...details }].slice(-60)));
     } catch { /* local funnel measurement must never block navigation */ }
   }
   function say(text: string) {
@@ -145,8 +152,14 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
   }
   function chooseService(service: GuideService) {
     setLastChoice(service.id);
+    let previousSelections = 0;
+    try {
+      const events = JSON.parse(window.sessionStorage.getItem("iteration13:guide-events:v1") || "[]") as { event: string; serviceId?: string }[];
+      previousSelections = events.filter(item => item.event === "offer-selected" && item.serviceId === service.id).length;
+    } catch { /* repeat detection is optional */ }
     track("offer-selected", { serviceId: service.id, serviceName: service.name });
     say(`${service.name} starts at P${service.price.toLocaleString("en-BW")}. ${service.description} Choose “Request this service” to continue in the existing form; your requested date is a preference, not a confirmed delivery promise.`);
+    if (previousSelections > 0) say(`You’ve revisited ${service.name}. Want to compare it with another offer before requesting?`);
   }
   function runAction(action: string) {
     setTeaser(false); setHint(""); track(`action:${action}`);

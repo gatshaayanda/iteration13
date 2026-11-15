@@ -145,6 +145,13 @@ export default function Home() {
       window.sessionStorage.setItem("iteration13:journey-session:v1", sessionId);
     } catch { /* session identity is optional */ }
     const entry: JourneyEvent = { id: "J-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7), event, screen: details.screen || (view === "admin" ? "briefcase-" + adminTab : view === "account" ? "customer-account" : "store"), at: new Date().toISOString(), sessionId, ...(details.serviceId ? { serviceId: details.serviceId } : {}), ...(details.serviceName ? { serviceName: details.serviceName } : {}), ...(details.orderId ? { orderId: details.orderId } : {}), source: details.source || "page" };
+    if (event === "request_submitted") {
+      try {
+        const key = "iteration13:guide-events:v1";
+        const events = JSON.parse(window.sessionStorage.getItem(key) || "[]") as { event: string; screen: string; at: string }[];
+        window.sessionStorage.setItem(key, JSON.stringify([...events, { event: "request_submitted", screen: entry.screen, at: entry.at }].slice(-60)));
+      } catch { /* guide nudge suppression is optional */ }
+    }
     try {
       const saved = window.localStorage.getItem(getStorageKey(STORAGE_KEY));
       const parsed = saved ? JSON.parse(saved) as DemoData : data;
