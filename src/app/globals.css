@@ -5934,3 +5934,97 @@ h1 em,
 
 /* Owner Briefcase improvements */
 .sd-today-notifications{margin:0 0 18px}.sd-notification-list{display:grid;gap:8px}.sd-notification-list article{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--sd-line,#e5e7eb);border-radius:14px;background:var(--sd-surface,#fff)}.sd-notification-dot{width:9px;height:9px;flex:0 0 9px;border-radius:50%;background:#d97706}.sd-notification-list article div{display:grid;gap:3px;min-width:0;flex:1}.sd-notification-list article strong{font-size:14px}.sd-notification-list article small{color:var(--sd-muted,#667085);font-size:12px}.sd-notification-list article button{border:0;background:transparent;color:var(--sd-accent,#2458e8);font-weight:700;cursor:pointer}.sd-owner-enhancement{margin:18px 0;padding:18px;border:1px solid var(--sd-line,#e5e7eb);border-radius:18px;background:var(--sd-card,#fff);color:var(--sd-ink,#172033)}.sd-owner-enhancement h3{margin:0 0 8px;font-size:19px}.sd-owner-enhancement p{color:var(--sd-muted,#667085);line-height:1.55}.sd-owner-enhancement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.sd-owner-enhancement label{display:grid;gap:6px;font-size:13px;font-weight:650}.sd-owner-enhancement input,.sd-owner-enhancement textarea,.sd-owner-enhancement select{width:100%;min-width:0;border:1px solid var(--sd-line,#d0d5dd);border-radius:10px;padding:10px;background:#fff;color:#172033}.sd-owner-enhancement .sd-small-button{margin-top:10px}.sd-expense-list{display:grid;gap:8px;margin-top:14px}.sd-expense-item{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px;border:1px solid var(--sd-line,#e5e7eb);border-radius:12px}.sd-expense-item img{width:64px;height:64px;object-fit:cover;border-radius:8px}.sd-expense-item div{display:grid;gap:3px;min-width:0}.sd-expense-item small{color:var(--sd-muted,#667085)}.sd-infra-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:14px 0}.sd-infra-steps article{padding:12px;border-radius:12px;background:var(--sd-soft,#f5f7fa)}.sd-infra-steps strong{display:block;font-size:14px}.sd-infra-steps small{display:block;margin-top:5px;color:var(--sd-muted,#667085);line-height:1.4}.sd-infra-notice{padding:12px 14px;border-left:3px solid var(--sd-accent,#2458e8);background:var(--sd-soft,#f5f7fa);border-radius:8px}@media(max-width:640px){.sd-owner-enhancement-grid,.sd-infra-steps{grid-template-columns:1fr 1fr}.sd-notification-list article{align-items:flex-start;flex-wrap:wrap}.sd-notification-list article button{margin-left:20px}.sd-expense-item{grid-template-columns:52px minmax(0,1fr)}.sd-expense-item img{width:52px;height:52px}.sd-expense-item>b{grid-column:2}}
+
+
+/* Storefront mobile correction — one readable announcement, one full-width featured offer. */
+.serviceDemo .sd-store-collection .sd-storefront-bar{
+  min-width:0;
+}
+.serviceDemo .sd-store-collection .sd-storefront-title,
+.serviceDemo .sd-store-collection .sd-storefront-title>div{
+  min-width:0;width:100%;
+}
+.serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement{
+  grid-template-columns:36px minmax(0,1fr) 64px;
+  align-items:center;gap:12px;
+}
+.serviceDemo .sd-store-collection .sd-storefront-title .sd-announcement-thumb{
+  display:block;width:64px;height:64px;max-width:none;object-fit:cover;
+  border-radius:8px;
+}
+.serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement p{
+  max-width:62ch;overflow-wrap:break-word;word-break:normal;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-title{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-title h3{
+  min-width:0;max-width:34ch;overflow-wrap:break-word;word-break:normal;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-title>strong{
+  flex:none;white-space:nowrap;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-info>p{
+  max-width:68ch;overflow-wrap:break-word;word-break:normal;
+}
+.serviceDemo .sd-copy-limit{
+  display:block;margin-top:5px;color:#667085;font-size:.72rem;line-height:1.4;
+}
+.serviceDemo .sd-footer-inner>.sd-owner-briefcase{margin-left:auto}
+@media(max-width:850px){
+  .serviceDemo .sd-store-collection .sd-store-grid.has-featured-item .sd-store-card{
+    display:grid;grid-template-columns:minmax(0,1fr)!important;
+    width:100%;max-width:none;min-width:0;min-height:0;
+  }
+  .serviceDemo .sd-store-collection .sd-store-grid.has-featured-item .sd-store-card .sd-service-media{
+    width:100%;height:auto;min-height:0;max-height:none;aspect-ratio:16/10;
+  }
+  .serviceDemo .sd-store-collection .sd-store-grid.has-featured-item .sd-store-card .sd-service-info{
+    width:100%;min-width:0;padding:17px;
+  }
+}
+@media(max-width:560px){
+  .serviceDemo .sd-store-collection .sd-storefront-bar{
+    display:grid;grid-template-columns:minmax(0,1fr);gap:11px;
+    align-items:start;padding:13px 14px;margin-bottom:14px;
+  }
+  .serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement{
+    grid-template-columns:30px minmax(0,1fr) 60px;gap:9px;
+    padding:10px 0;border-top:1px solid #dedbd2;border-bottom:1px solid #dedbd2;
+  }
+  .serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement-mark{
+    width:30px;height:30px;
+  }
+  .serviceDemo .sd-store-collection .sd-storefront-title .sd-announcement-thumb{
+    width:60px;height:60px;
+  }
+  .serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement p{
+    font-size:.9rem;line-height:1.42;
+  }
+  .serviceDemo .sd-store-collection .sd-storefront-signals{
+    justify-self:start;justify-content:flex-start;align-self:start;
+  }
+  .serviceDemo .sd-store-collection .sd-store-grid.has-featured-item .sd-store-card .sd-service-media{
+    aspect-ratio:4/3;
+  }
+  .serviceDemo .sd-store-collection .sd-store-grid.has-featured-item .sd-store-card .sd-service-info{
+    padding:16px;
+  }
+  .serviceDemo .sd-store-collection .sd-store-card .sd-service-title h3{
+    font-size:1.12rem;line-height:1.25;
+  }
+  .serviceDemo .sd-store-collection .sd-store-card .sd-service-title>strong{
+    font-size:1.02rem;
+  }
+  .serviceDemo .sd-store-collection .sd-store-card .sd-service-info>p{
+    margin:9px 0 15px;font-size:.9rem;line-height:1.5;
+  }
+}
+@media(max-width:380px){
+  .serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement{
+    grid-template-columns:28px minmax(0,1fr) 52px;gap:7px;
+  }
+  .serviceDemo .sd-store-collection .sd-storefront-title .sd-announcement-thumb{
+    width:52px;height:52px;
+  }
+}
