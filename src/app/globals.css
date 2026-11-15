@@ -5919,3 +5919,5 @@ h1 em,
 .sd-care-empty-action:hover{filter:brightness(.96)}
 .sd-care-empty-action:focus-visible{outline:3px solid color-mix(in srgb,var(--account-brand) 35%,#fff);outline-offset:3px}
 @media(max-width:640px){.sd-care-empty-action{width:100%;justify-content:center}}
+
+.sd-account-quick-stats.has-no-action{grid-template-columns:repeat(2,minmax(0,1fr))}
