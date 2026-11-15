@@ -49,6 +49,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
   const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
+  const previousScreen = useRef(screen);
   const activeServices = useMemo(() => services.filter(service => service.active), [services]);
   const screenTips: Record<string, string> = {
     store: "Browsing the Store? I can compare the available offers or take you to a request.",
@@ -85,7 +86,9 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
   }, []);
 
   useEffect(() => {
-    if (!screen) return;
+    if (!screen || previousScreen.current === screen) return;
+    previousScreen.current = screen;
+    track("screen-change");
     let timer: number | undefined;
     try {
       const seen = JSON.parse(window.sessionStorage.getItem("iteration13:guide-seen-screens:v1") || "[]") as string[];
