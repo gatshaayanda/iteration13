@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownLeft, ArrowRight, Check, ChevronDown, MessageCircle, Send, Sparkles, X } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, MessageCircle, Send, Sparkles, X } from "lucide-react";
 
 type GuideService = { id: string; name: string; price: number; description: string; media: string; mediaType: "image" | "video"; active: boolean };
 type View = "shop" | "account" | "admin";
@@ -50,6 +50,8 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
   const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
+  const onTrackRef = useRef(onTrack);
+  onTrackRef.current = onTrack;
   const previousScreen = useRef(screen);
   const activeServices = useMemo(() => services.filter(service => service.active), [services]);
 
@@ -84,7 +86,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
       const previous = JSON.parse(window.sessionStorage.getItem(key) || "[]") as { event: string; screen: string; at: string }[];
       window.sessionStorage.setItem(key, JSON.stringify([...previous, { event: "screen-change", screen, at: new Date().toISOString() }].slice(-60)));
     } catch { /* local funnel measurement must never block navigation */ }
-    onTrack("screen-change", { screen });
+    onTrackRef.current("screen-change", { screen });
     let timer: number | undefined;
     try {
       const seen = JSON.parse(window.sessionStorage.getItem("iteration13:guide-seen-screens:v1") || "[]") as string[];
@@ -130,7 +132,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
   }, [open]);
 
   function track(event: string, details: { serviceId?: string; serviceName?: string } = {}) {
-    onTrack(event, { screen, ...details });
+    onTrackRef.current(event, { screen, ...details });
     try {
       const key = "iteration13:guide-events:v1";
       const previous = JSON.parse(window.sessionStorage.getItem(key) || "[]") as { event: string; screen: string; at: string }[];
