@@ -1142,6 +1142,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
           </div>
         </details>
         {!identityEditing && hasPreviousSetup && <button type="button" className="sd-identity-continue" onClick={loadPreviousBusinessSetup}>Use previous business · {businessName.trim() || "your business"} ↗</button>}
+        {showPreviousBusinessPicker && <div className="sd-identity-entry-card sd-identity-saved-business-list"><h2>Choose a saved business</h2><p>These business records were found in this browser. Choose the one you want to reopen.</p>{savedBusinessOptions.map(option => <button type="button" className="sd-identity-entry-continue" key={option.suffix || "default"} onClick={() => openSavedBusinessWorkspace(option.suffix)}>{option.name} · {option.serviceCount} services · {option.customerCount} customer records ↗</button>)}</div>}
       </div>
       <div className="sd-identity-onboarding-layout">
         <div className="sd-identity-onboarding-copy">
