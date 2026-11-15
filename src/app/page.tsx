@@ -77,7 +77,7 @@ function getSharedWorkspaceMode(): "example" | "own" {
 function getStorageKey(key: string): string {
   const shared = readSharedExampleFromUrl();
   if (shared) return `${key}:visitor:${shared.id}:${getSharedWorkspaceMode()}`;
-  if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("explore") === "1") return key + ":explore";
+  
   return key;
 }
 function encodeSharedExample(value: SharedExample): string {
@@ -368,7 +368,6 @@ export default function Home() {
   const sampleLaunchHandled = useRef(false);
   const [hasPreviousSetup, setHasPreviousSetup] = useState(false);
   const [setupPathChosen, setSetupPathChosen] = useState(false);
-  const [explorationMode, setExplorationMode] = useState(false);
   const [identityEditing, setIdentityEditing] = useState(false);
   const [identityServiceId, setIdentityServiceId] = useState<string | null>(null);
   const [customBrandColor, setCustomBrandColor] = useState("#2458e8");
@@ -377,25 +376,10 @@ export default function Home() {
   const [businessNameReady, setBusinessNameReady] = useState(false);
 
   useEffect(() => {
-    const exploring = new URLSearchParams(window.location.search).get("explore") === "1";
-    if (exploring) {
-      setExplorationMode(true);
-      const sampleData: DemoData = { ...emptyData, services: [{ id: "trailwise-guided-walk", name: "Guided nature walk", industry: "Outdoor experiences", price: 350, description: "A relaxed guided walk with local route knowledge and time to enjoy the landscape.", media: "", mediaType: "image", active: true }], announcement: "Welcome to TrailWise. Browse the Store, send a request and follow it through Account and the owner Briefcase.", announcementActive: true };
-      try {
-        if (!window.localStorage.getItem(getStorageKey(STORAGE_KEY))) {
-          window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(sampleData));
-          window.localStorage.setItem(getStorageKey("iteration13:business-name:v1"), "TrailWise");
-          window.localStorage.setItem(getStorageKey("iteration13:business-palette:v1"), JSON.stringify(["#245b45", "#d49b52"]));
-          window.localStorage.setItem(getStorageKey("iteration13:store-theme:v1"), "#245b45");
-          window.localStorage.setItem(getStorageKey(CURRENCY_KEY), "BWP");
-          window.localStorage.setItem(getStorageKey("iteration13:identity-complete:v1"), "true");
-        }
-      } catch { setNotice("The TrailWise workspace could not be saved. You can still continue during this visit."); }
-      setBusinessName(window.localStorage.getItem(getStorageKey("iteration13:business-name:v1")) || "TrailWise");
-    } else {
-      try { const savedName = window.localStorage.getItem(getStorageKey("iteration13:business-name:v1")); if (savedName) setBusinessName(savedName.slice(0, 48)); }
-      catch { /* use the demo business name */ }
-    }
+    try {
+      const savedName = window.localStorage.getItem(getStorageKey("iteration13:business-name:v1"));
+      if (savedName) setBusinessName(savedName.slice(0, 48));
+    } catch { /* use the demo business name */ }
     setBusinessNameReady(true);
   }, []);
 
@@ -418,12 +402,10 @@ export default function Home() {
         }
       } else if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setBrandColors([savedTheme]);
       const params = new URLSearchParams(window.location.search);
-      const exploring = params.get("explore") === "1";
       const resuming = params.get("resume") === "1";
       const hasSavedIdentity = window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true";
-      setHasPreviousSetup(hasSavedIdentity && !exploring);
-      // Continue resumes the owner's existing browser-local workspace; it never enters the isolated TrailWise example namespace.
-      setIdentityComplete(exploring || (resuming && hasSavedIdentity));
+      setHasPreviousSetup(hasSavedIdentity);
+      setIdentityComplete(resuming && hasSavedIdentity);
     } catch { /* identity remains at the accessible default */ }
     setThemeReady(true);
     setIdentityReady(true);
@@ -728,57 +710,9 @@ export default function Home() {
     else setSetupPathChosen(true);
   }
   function continueYourBusiness() {
-    // Recover the owner's original browser-local workspace before leaving an
-    // exploration URL. Earlier versions could leave the owner's data in either
-    // namespace. Never promote the TrailWise seed/example over a real business.
-    const keys = [
-      STORAGE_KEY,
-      "iteration13:business-name:v1",
-      "iteration13:business-palette:v1",
-      "iteration13:store-theme:v1",
-      CURRENCY_KEY,
-      "iteration13:identity-complete:v1",
-      "iteration13:owner-notes:v1",
-      "iteration13:customer-profile:v1",
-      "iteration13:account-extras:v1",
-    ];
-    const readWorkspace = (suffix: string) => {
-      try {
-        const name = window.localStorage.getItem("iteration13:business-name:v1" + suffix) || "";
-        const identity = window.localStorage.getItem("iteration13:identity-complete:v1" + suffix) === "true";
-        const raw = window.localStorage.getItem(STORAGE_KEY + suffix);
-        const parsed = raw ? JSON.parse(raw) as Partial<DemoData> : null;
-        const hasRealContent = Boolean(name.trim() && !/^trailwise$/i.test(name.trim()) && identity);
-        return { suffix, name, identity, raw, parsed, hasRealContent };
-      } catch {
-        return { suffix, name: "", identity: false, raw: null, parsed: null, hasRealContent: false };
-      }
-    };
-    const owner = readWorkspace("");
-    const alternate = readWorkspace(":explore");
-    const ownerIsExample = /^trailwise$/i.test(owner.name.trim());
-    const chosen = owner.hasRealContent ? owner : alternate.hasRealContent ? alternate : null;
-    if (chosen?.suffix === ":explore" && !owner.hasRealContent) {
-      try {
-        // Copy only into an empty/example canonical slot. Keep the source intact.
-        for (const key of keys) {
-          const source = window.localStorage.getItem(key + ":explore");
-          const current = window.localStorage.getItem(key);
-          const canonicalIsExample = ownerIsExample;
-          if (source !== null && (current === null || canonicalIsExample)) {
-            window.localStorage.setItem(key, source);
-          }
-        }
-      } catch {
-        setNotice("Your saved business is still preserved in this browser, but could not be restored automatically. No saved data was deleted.");
-        return;
-      }
-    }
+    // Resume the original owner workspace in its existing browser-local storage.
     const url = new URL(window.location.href);
-    url.searchParams.delete("explore");
-    url.searchParams.delete("example");
-    url.searchParams.delete("sample");
-    url.searchParams.delete("view");
+    ["explore", "example", "sample", "view"].forEach(key => url.searchParams.delete(key));
     url.searchParams.set("resume", "1");
     url.hash = "";
     window.location.assign(url.toString());
@@ -1216,7 +1150,6 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
       </div>
       </>}
     {pendingConfirm?.kind === "overwrite-business" && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-onboarding-overwrite-title" aria-describedby="sd-onboarding-overwrite-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-onboarding-overwrite-title">Replace the saved business?</h2><p id="sd-onboarding-overwrite-description">This replaces the current business name, colours, currency and products / services. Its saved customer requests, messages and owner notes on this device will also be cleared. This cannot be undone.</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep existing setup</button><button type="button" className="sd-button sd-primary" onClick={() => { setPendingConfirm(null); completeBusinessIdentity(true); }}>Replace and create</button></div></section></div>}</section> : <>
-    {explorationMode && <div className="sd-explore-banner"><div><strong>TrailWise · Your Business OS</strong><span>Browse the Store, send a request, then follow it through Account and the owner Briefcase. Your own setup stays separate.</span></div><button type="button" onClick={returnToBusinessSetup}>Build my own business ↗</button></div>}
     <div className="sd-topline"><div className="sd-wrap"><details className="sd-connect-details"><summary className={(online ? "sd-connect" : "sd-connect is-offline") + (offlineShellReady ? " is-offline-ready" : "")} aria-label={offlineShellReady ? "App shell saved on this device; open details" : online ? "Browser-local demo; open details" : "Offline mode; open details"}><i />{offlineShellReady ? "App shell saved" : online ? "Demo mode" : "Offline mode"}<span className="sd-connect-chevron" aria-hidden="true">⌄</span></summary><div className="sd-connect-popover"><strong>{offlineShellReady ? "The Store can reopen offline on this device." : "This is a browser-local demo."}</strong><span>{offlineShellReady ? "The app interface is saved on this device. When an update is ready, use Refresh to switch to the new version." : "Your demo workspace is stored in this browser."}</span><span>Business edits stay on this device. Uploads and cloud-connected actions still need internet.</span></div></details></div></div>
     <header className="sd-header"><div className="sd-wrap sd-nav"><button className="sd-brand" onClick={() => { setView("shop"); setNotice(""); window.scrollTo({top:0,behavior:"smooth"}); }} aria-label="Back to Store"><span className="sd-logo">{(businessName.trim() || "YB").slice(0,2).toUpperCase()}</span><span><strong>{businessName || "Your Business"}</strong><small>STORE</small></span></button><nav aria-label="Main navigation"><button onClick={() => { setView("shop"); setNotice(""); }}>Store</button><button onClick={() => { recordDemoJourney("Customer account opened"); recordActivity("account", "Customer account opened"); setView("account"); setNotice(""); }}>Account <span className="sd-count">{data.orders.length}</span></button></nav>
 </div></header>
