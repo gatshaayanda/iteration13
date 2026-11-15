@@ -379,7 +379,7 @@ export default function Home() {
     const exploring = new URLSearchParams(window.location.search).get("explore") === "1";
     if (exploring) {
       setExplorationMode(true);
-      const sampleData: DemoData = { ...emptyData, services: [{ id: "trailwise-guided-walk", name: "Guided nature walk", industry: "Outdoor experiences", price: 350, description: "A relaxed guided walk with local route knowledge and time to enjoy the landscape. This is sample content you can replace with your own offer.", media: "", mediaType: "image", active: true }], announcement: "Welcome to TrailWise. Explore the Store, send a sample request and see how it appears in Account and the owner Briefcase.", announcementActive: true };
+      const sampleData: DemoData = { ...emptyData, services: [{ id: "trailwise-guided-walk", name: "Guided nature walk", industry: "Outdoor experiences", price: 350, description: "A relaxed guided walk with local route knowledge and time to enjoy the landscape.", media: "", mediaType: "image", active: true }], announcement: "Welcome to TrailWise. Browse the Store, send a request and follow it through Account and the owner Briefcase.", announcementActive: true };
       try {
         if (!window.localStorage.getItem(getStorageKey(STORAGE_KEY))) {
           window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(sampleData));
@@ -389,7 +389,7 @@ export default function Home() {
           window.localStorage.setItem(getStorageKey(CURRENCY_KEY), "BWP");
           window.localStorage.setItem(getStorageKey("iteration13:identity-complete:v1"), "true");
         }
-      } catch { setNotice("The sample workspace could not be saved. You can still explore during this visit."); }
+      } catch { setNotice("The TrailWise workspace could not be saved. You can still continue during this visit."); }
       setBusinessName(window.localStorage.getItem(getStorageKey("iteration13:business-name:v1")) || "TrailWise");
     } else {
       try { const savedName = window.localStorage.getItem(getStorageKey("iteration13:business-name:v1")); if (savedName) setBusinessName(savedName.slice(0, 48)); }
@@ -723,8 +723,11 @@ export default function Home() {
     if (hasPreviousSetup) startNewBusinessSetup();
     else setSetupPathChosen(true);
   }
-  function exploreBusinessOS() {
-    const url = new URL(window.location.href); url.searchParams.set("explore", "1"); window.location.assign(url.toString());
+  function continueYourBusiness() {
+    if (hasPreviousSetup) { loadPreviousBusinessSetup(); return; }
+    const url = new URL(window.location.href);
+    url.searchParams.set("explore", "1");
+    window.location.assign(url.toString());
   }
   function returnToBusinessSetup() {
     const url = new URL(window.location.href); url.searchParams.delete("explore"); url.searchParams.delete("view"); url.hash = ""; window.location.assign(url.toString());
@@ -1072,11 +1075,11 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "BUSINESS IDENTITY" : "SETUP · STORE · ACCOUNT · BRIEFCASE"}</span></div>
       {!setupPathChosen && !identityEditing ? <section className="sd-identity-entry" aria-labelledby="sd-identity-entry-title">
         <span className="sd-kicker">YOUR BUSINESS · ONE CONNECTED SYSTEM</span>
-        <h1 id="sd-identity-entry-title">Make it yours. <em>Or explore first.</em></h1>
-        <p>You do not need to fill anything in to see how the Business OS works. Start with your own business, or explore a working sample first.</p>
+        <h1 id="sd-identity-entry-title">Make it yours. <em>Or continue.</em></h1>
+        <p>Build your own Business OS, or pick up where you left off in the last saved business.</p>
         <div className="sd-identity-entry-actions">
-          <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Build my Business OS</h2><p>Set up your business name, first offer and brand. Add the details as you go.</p></div><button type="button" onClick={beginBusinessSetup}>Set up my business <span aria-hidden="true">↗</span></button>{hasPreviousSetup && <button type="button" className="sd-identity-entry-secondary" onClick={loadPreviousBusinessSetup}>Continue {businessName.trim() || "my saved business"} instead</button>}</article>
-          <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Explore Business OS first</h2><p>Open a working sample Store. Try a customer request, view the Account, then see the owner Briefcase.</p></div><button type="button" className="sd-identity-entry-explore" onClick={exploreBusinessOS}>Explore the sample <span aria-hidden="true">↗</span></button><small>No setup required · Your own business data stays separate</small></article>
+          <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Build my Business OS</h2><p>Set up your business name, first offer and brand. Add the details as you go.</p></div><button type="button" onClick={beginBusinessSetup}>Set up my business <span aria-hidden="true">↗</span></button></article>
+          <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Continue Your Business instead</h2><p>Pick up where you left off. Your last saved Store, customer Account and owner Briefcase are ready to use.</p></div><button type="button" className="sd-identity-entry-continue" onClick={continueYourBusiness}>Continue your business <span aria-hidden="true">↗</span></button><small>No setup required · Your saved work stays separate</small></article>
         </div>
       </section> : <>
       <section className="sd-identity-progress" aria-label={`Setup progress: ${setupCompletedCount} of 4 complete`}>
@@ -1159,7 +1162,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
       </div>
       </>}
     {pendingConfirm?.kind === "overwrite-business" && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-onboarding-overwrite-title" aria-describedby="sd-onboarding-overwrite-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-onboarding-overwrite-title">Replace the saved business?</h2><p id="sd-onboarding-overwrite-description">This replaces the current business name, colours, currency and products / services. Its saved customer requests, messages and owner notes on this device will also be cleared. This cannot be undone.</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep existing setup</button><button type="button" className="sd-button sd-primary" onClick={() => { setPendingConfirm(null); completeBusinessIdentity(true); }}>Replace and create</button></div></section></div>}</section> : <>
-    {explorationMode && <div className="sd-explore-banner"><div><strong>Exploring TrailWise · sample business</strong><span>Try a request in the Store, then find it in Account and the owner Briefcase. Your own setup stays separate.</span></div><button type="button" onClick={returnToBusinessSetup}>Create my own business ↗</button></div>}
+    {explorationMode && <div className="sd-explore-banner"><div><strong>TrailWise · Your Business OS</strong><span>Browse the Store, send a request, then follow it through Account and the owner Briefcase. Your own setup stays separate.</span></div><button type="button" onClick={returnToBusinessSetup}>Build my own business ↗</button></div>}
     <div className="sd-topline"><div className="sd-wrap"><details className="sd-connect-details"><summary className={(online ? "sd-connect" : "sd-connect is-offline") + (offlineShellReady ? " is-offline-ready" : "")} aria-label={offlineShellReady ? "App shell saved on this device; open details" : online ? "Browser-local demo; open details" : "Offline mode; open details"}><i />{offlineShellReady ? "App shell saved" : online ? "Demo mode" : "Offline mode"}<span className="sd-connect-chevron" aria-hidden="true">⌄</span></summary><div className="sd-connect-popover"><strong>{offlineShellReady ? "The Store can reopen offline on this device." : "This is a browser-local demo."}</strong><span>{offlineShellReady ? "The app interface is saved on this device. When an update is ready, use Refresh to switch to the new version." : "Your demo workspace is stored in this browser."}</span><span>Business edits stay on this device. Uploads and cloud-connected actions still need internet.</span></div></details></div></div>
     <header className="sd-header"><div className="sd-wrap sd-nav"><button className="sd-brand" onClick={() => { setView("shop"); setNotice(""); window.scrollTo({top:0,behavior:"smooth"}); }} aria-label="Back to Store"><span className="sd-logo">{(businessName.trim() || "YB").slice(0,2).toUpperCase()}</span><span><strong>{businessName || "Your Business"}</strong><small>STORE</small></span></button><nav aria-label="Main navigation"><button onClick={() => { setView("shop"); setNotice(""); }}>Store</button><button onClick={() => { recordDemoJourney("Customer account opened"); recordActivity("account", "Customer account opened"); setView("account"); setNotice(""); }}>Account <span className="sd-count">{data.orders.length}</span></button></nav>
 </div></header>
