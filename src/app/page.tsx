@@ -1185,26 +1185,6 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
         <div className="sd-identity-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={4} aria-valuenow={setupCompletedCount} aria-label="Setup essentials completed">{setupChecklist.map(item => <span key={item.label} className={item.complete ? "is-complete" : ""} />)}</div>
         <div className="sd-identity-progress-items">{setupChecklist.map((item,index) => <span key={item.label} className={item.complete ? "is-complete" : ""}><i aria-hidden="true">{item.complete ? "✓" : index+1}</i>{item.label}</span>)}</div>
       </section>
-      <div className="sd-identity-resume-row">
-        <span className="sd-identity-save-label"><i aria-hidden="true" />{hasPreviousSetup ? "Saved on this device" : "Live preview updates as you build"}</span>
-        <details className="sd-identity-preview-disclosure">
-          <summary><span>Preview</span><small>Store · Account · Briefcase</small></summary>
-          <div className="sd-identity-live-preview" aria-label="Live preview of your Store, Account and Briefcase">
-            <div className="sd-identity-preview-brand" style={{ background: themeColor }}><span>{(businessName.trim() || "Your Business").slice(0,2).toUpperCase()}</span><div><strong>{businessName.trim() || "Your Business"}</strong><small>Your business in your pocket.</small></div></div>
-            <div className="sd-identity-preview-areas" aria-label="Connected business areas"><span>Store</span><span>Account</span><span>Briefcase</span></div>
-            <div className="sd-identity-service-preview" aria-live="polite">
-              <span>FIRST STORE LISTING</span>
-              <div className="sd-identity-service-preview-card">
-                {serviceMedia ? <img src={serviceMedia} alt="First product / service image preview" /> : <div className="sd-identity-service-placeholder" style={{background:themeColor,color:accentInk(themeColor)}}><strong>{serviceName.trim() ? serviceName.trim().slice(0,1).toUpperCase() : "＋"}</strong><small>BRANDED PLACEHOLDER</small></div>}
-                <div><strong>{serviceName.trim() || "Your first product / service"}</strong><b>{money(Number(servicePrice)||0)}</b>{serviceDescription.trim() && <p>{serviceDescription.trim()}</p>}</div>
-              </div>
-            </div>
-            <div className="sd-identity-preview-footer"><span>YOUR BRAND PALETTE</span><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div><small>One identity · three connected areas</small></div>
-          </div>
-        </details>
-        {!identityEditing && hasPreviousSetup && <button type="button" className="sd-identity-continue" onClick={loadPreviousBusinessSetup}>Use previous business · {businessName.trim() || "your business"} ↗</button>}
-        {showPreviousBusinessPicker && <div className="sd-identity-entry-card sd-identity-saved-business-list"><h2>Choose a saved business</h2><p>These business records were found in this browser. Choose the one you want to reopen.</p>{savedBusinessOptions.map(option => <button type="button" className="sd-identity-entry-continue" key={option.suffix || "default"} onClick={() => openSavedBusinessWorkspace(option.suffix)}>{option.name} · {option.serviceCount} services · {option.customerCount} customer records ↗</button>)}</div>}
-      </div>
       <div className="sd-identity-onboarding-layout">
         <div className="sd-identity-onboarding-copy">
           <h1><span>{businessName.trim() || "Your Business"}</span> <em>at work.</em></h1>
