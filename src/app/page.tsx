@@ -109,7 +109,7 @@ function findSavedBusinessWorkspaces(): SavedBusinessWorkspace[] {
       const services = Array.isArray(parsed?.services) ? parsed.services : [];
       const orders = Array.isArray(parsed?.orders) ? parsed.orders : [];
       const isInjectedTrailWiseSeed = services.length === 1 && services[0]?.id === "trailwise-guided-walk" && orders.length === 0;
-      if ((!identityComplete && (!name || services.length === 0)) || isInjectedTrailWiseSeed || (!raw && !identityComplete)) continue;
+      if (!raw || (!identityComplete && (!name || services.length === 0)) || isInjectedTrailWiseSeed) continue;
       found.push({ suffix, name: name || "Saved business", serviceCount: services.length, customerCount: orders.length });
     }
     return found;
@@ -437,7 +437,7 @@ export default function Home() {
       setSavedBusinessOptions(discovered);
       const currentSuffix = params.get("restore") || "";
       const currentWorkspaceExists = discovered.some(option => option.suffix === currentSuffix);
-      const hasSavedIdentity = currentWorkspaceExists || window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true";
+      const hasSavedIdentity = currentWorkspaceExists;
       setHasPreviousSetup(discovered.length > 0);
       setIdentityComplete(resuming && hasSavedIdentity);
     } catch { /* identity remains at the accessible default */ }
