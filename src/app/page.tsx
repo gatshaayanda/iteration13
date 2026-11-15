@@ -173,15 +173,7 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
-  const previousJourneyScreen = useRef("");
-  useEffect(() => {
-    if (!ready || view === "login") return;
-    const screen = view === "admin" ? "briefcase-" + adminTab : view === "account" ? (orderFormOpen ? "request-form" : "customer-account") : "store";
-    if (previousJourneyScreen.current === screen) return;
-    previousJourneyScreen.current = screen;
-    recordJourneyEvent("screen_viewed", { screen });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, view, adminTab, orderFormOpen]);
+
   const [adminTab, setAdminTab] = useState<"today" | "work" | "money" | "store" | "notes" | "insights">("today");
   const [estimatedRecordKb, setEstimatedRecordKb] = useState(16);
   const [functionCallsPerCustomer, setFunctionCallsPerCustomer] = useState(4);
@@ -251,6 +243,15 @@ export default function Home() {
 
   const [selected, setSelected] = useState<string | null>(null);
   const [orderFormOpen, setOrderFormOpen] = useState(false);
+  const previousJourneyScreen = useRef("");
+  useEffect(() => {
+    if (!ready || view === "login") return;
+    const screen = view === "admin" ? "briefcase-" + adminTab : view === "account" ? (orderFormOpen ? "request-form" : "customer-account") : "store";
+    if (previousJourneyScreen.current === screen) return;
+    previousJourneyScreen.current = screen;
+    recordJourneyEvent("screen_viewed", { screen });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, view, adminTab, orderFormOpen]);
   const [customerName, setCustomerName] = useState("");
   const [email, setEmail] = useState("");
   const [customerProfileReady, setCustomerProfileReady] = useState(false);
