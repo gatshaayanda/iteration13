@@ -5912,3 +5912,10 @@ h1 em,
 .serviceDemo .sd-explore-banner button{flex:none;min-height:42px;padding:9px 13px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#172033;font-size:13px;font-weight:800;cursor:pointer}
 .serviceDemo .sd-explore-banner button:focus-visible{outline:3px solid #2458e8;outline-offset:3px}
 @media(max-width:680px){.serviceDemo .sd-identity-entry{margin:20px auto 16px}.serviceDemo .sd-identity-entry>p{margin:10px 0 16px;font-size:15px}.serviceDemo .sd-identity-entry-actions{grid-template-columns:minmax(0,1fr);gap:10px}.serviceDemo .sd-identity-entry-card{gap:9px;padding:15px}.serviceDemo .sd-identity-entry-card h2{font-size:18px}.serviceDemo .sd-explore-banner{align-items:stretch;flex-direction:column;gap:9px;padding:10px 14px}.serviceDemo .sd-explore-banner button{width:100%;justify-content:center}}
+
+
+/* Customer Account: make the first useful action visible before the customer has a request. */
+.sd-care-empty-action{justify-self:start;display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin-top:9px;padding:10px 15px;border:1px solid var(--account-brand);border-radius:10px;background:var(--account-brand);color:#fff;font-size:.84rem;font-weight:800;text-decoration:none;cursor:pointer}
+.sd-care-empty-action:hover{filter:brightness(.96)}
+.sd-care-empty-action:focus-visible{outline:3px solid color-mix(in srgb,var(--account-brand) 35%,#fff);outline-offset:3px}
+@media(max-width:640px){.sd-care-empty-action{width:100%;justify-content:center}}
