@@ -61,6 +61,17 @@ Read [docs/BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md](./docs/BUSINESS-IDENTITY-AN
 - For substantial products/redesigns, maintain linked Business Understanding, Experience & Functional, and Technical & Verification maps in project documentation. For small changes, use a compact traceability checklist. Keep the objective visible as complexity increases.
 - Adopt the agent-native inspection lessons documented from Expo Exact: inspect rendered screens, accessibility/layout/state/logs where tooling supports it, drive real interactions, make critical journeys repeatable, control time in tests where practical and tie evidence to the tested build. Do not replace the existing PWA stack with Exact; it is pre-1.0 and an isolated experiment only unless separately evaluated and approved.
 
+## Design intelligence and experience quality (mandatory)
+
+- Read [docs/DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md](./docs/DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md) alongside the Visual Direction and Objective-to-System standards before substantial visual planning, screen redesign, design-system work or visual QA. It is mandatory for Iteration 13 and portfolio projects; do not treat it as optional inspiration.
+- Select a dominant visual genre (Quiet, Character, Atmosphere, Data or Loud) with a reason tied to the product, audience and task. Use secondary expressions deliberately; never impose one visual style on every screen or copy a reference product.
+- Research relevant real products and complete task flows when the decision warrants it. Translate findings into the target business context and distinguish evidence from assumptions.
+- Inspect the existing theme/component system before changing it. Maintain one source of truth for tokens and shared components; do not add competing libraries or duplicate design systems.
+- For substantial products, provide a rendered development-only design-system showcase where practical, covering foundations, contrast pairs, component variants/states, realistic content and representative compositions. Keep it out of customer navigation and do not expose private data.
+- Review real screenshots and interactions at narrow mobile and desktop widths; check hierarchy, surfaces, text, overflow, accessibility, state feedback, motion and cross-screen consistency. Screenshot-only acceptance is insufficient.
+- Expo design-system and shadcn DESIGN.md/showcase workflows are transferable references, not instructions to migrate stacks or install dependencies. Rive and motion galleries are optional; use them only when they improve the product.
+- Apply this standard immediately during Iteration 13's active Store/Briefcase redesign and screen-by-screen QA. The detailed contract is the linked standard; future chats must read it rather than relying on chat summaries.
+
 ## Interaction clarity and feedback (mandatory)
 
 - Read [docs/INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md](./docs/INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md) before implementing or reviewing customer-facing interactions, forms, navigation, account workspaces, status feedback, notifications or error/success states.
