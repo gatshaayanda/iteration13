@@ -728,6 +728,52 @@ export default function Home() {
     else setSetupPathChosen(true);
   }
   function continueYourBusiness() {
+    // Recover the owner's original browser-local workspace before leaving an
+    // exploration URL. Earlier versions could leave the owner's data in either
+    // namespace. Never promote the TrailWise seed/example over a real business.
+    const keys = [
+      STORAGE_KEY,
+      "iteration13:business-name:v1",
+      "iteration13:business-palette:v1",
+      "iteration13:store-theme:v1",
+      CURRENCY_KEY,
+      "iteration13:identity-complete:v1",
+      "iteration13:owner-notes:v1",
+      "iteration13:customer-profile:v1",
+      "iteration13:account-extras:v1",
+    ];
+    const readWorkspace = (suffix: string) => {
+      try {
+        const name = window.localStorage.getItem("iteration13:business-name:v1" + suffix) || "";
+        const identity = window.localStorage.getItem("iteration13:identity-complete:v1" + suffix) === "true";
+        const raw = window.localStorage.getItem(STORAGE_KEY + suffix);
+        const parsed = raw ? JSON.parse(raw) as Partial<DemoData> : null;
+        const hasRealContent = Boolean(name.trim() && !/^trailwise$/i.test(name.trim()) && identity);
+        return { suffix, name, identity, raw, parsed, hasRealContent };
+      } catch {
+        return { suffix, name: "", identity: false, raw: null, parsed: null, hasRealContent: false };
+      }
+    };
+    const owner = readWorkspace("");
+    const alternate = readWorkspace(":explore");
+    const chosen = owner.hasRealContent ? owner : alternate.hasRealContent ? alternate : null;
+    if (chosen?.suffix === ":explore" && !owner.hasRealContent) {
+      try {
+        // Copy only into an empty/example canonical slot. Keep the source intact.
+        for (const key of keys) {
+          const source = window.localStorage.getItem(key + ":explore");
+          const current = window.localStorage.getItem(key);
+          const canonicalIsExample = key === "iteration13:business-name:v1" && /^trailwise$/i.test(current || "");
+          if (source !== null && (current === null || canonicalIsExample)) {
+            if (key === STORAGE_KEY && current && !canonicalIsExample) continue;
+            window.localStorage.setItem(key, source);
+          }
+        }
+      } catch {
+        setNotice("Your saved business is still preserved in this browser, but could not be restored automatically. No saved data was deleted.");
+        return;
+      }
+    }
     const url = new URL(window.location.href);
     url.searchParams.delete("explore");
     url.searchParams.delete("example");
