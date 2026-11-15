@@ -149,7 +149,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
     if (previousSelections > 0) say(`You’ve revisited ${service.name}. Want to compare it with another offer before requesting?`);
   }
   function runAction(action: string) {
-    setTeaser(false); setHint(""); track(`action:${action}`);
+    setHint(""); track(`action:${action}`);
     switch (action) {
       case "help": say("I can guide you to a service or a real page in this demo. Choose a service below, view your requests, or browse without chat. I’m a scripted guide, not a live person or AI assistant."); break;
       case "browse": say("No problem. You can keep browsing; the service menu and order form remain available without chat."); setOpen(false); break;
