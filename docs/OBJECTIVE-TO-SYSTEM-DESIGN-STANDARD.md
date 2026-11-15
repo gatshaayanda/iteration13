@@ -1,0 +1,142 @@
+# Objective-to-System Design Standard
+
+**Status: mandatory for Iteration 13 product work and all new or materially redesigned Admin Hub portfolio projects.** This standard connects business intent to human experience, interface design, implementation and verification. It complements the Visual Direction, Interaction Clarity, Operational Transparency, Accessibility and Change Safety standards; it does not replace them.
+
+## 1. Why this exists
+
+A product can be visually polished and technically functional yet still be confusing or irrelevant if its screens, labels and workflows do not communicate the business purpose. Conversely, a sophisticated system can feel simple when its complexity is organised around the user's actual task.
+
+The governing principle is:
+
+**Reduce the complexity the user must understand without reducing the sophistication of the system doing the work.**
+
+Do not begin with a list of screens, features, components or technologies. Begin with the business outcome and the human problem. Keep that objective traceable all the way to the interface, data operation and acceptance test.
+
+## 2. Mandatory understanding ladder
+
+Move from plain language to technical detail without losing the original purpose. Use the number of layers appropriate to the project; these seven levels are the default.
+
+1. **Business objective — why:** state each objective in approximately three or four plain-language words (for example, "Get customers booked"). Define what success means and what is outside scope.
+2. **Human problem — who and what hurts:** identify the people affected, their current task, friction, cost, risk, workarounds and context. Separate observed facts from assumptions that need validation.
+3. **Desired experience — what people should accomplish:** describe the customer, staff and owner journeys in user language. State the next action, expected outcome and responsibilities at each handoff.
+4. **Functional system — what must exist:** derive capabilities, records, workflows, decisions, states, permissions and exception paths from those journeys. Distinguish essential requirements from optional enhancements.
+5. **Interaction and visual design — how it is understood:** define information hierarchy, navigation, action affordances, content, feedback, responsive composition, progressive disclosure, accessibility and meaningful empty/loading/error/pending/success/offline states. The visual treatment must clarify the task, not merely decorate it.
+6. **Technical architecture — how it works:** map routes, components, state, data entities/relationships, persistence, APIs, integrations, authentication, authorization, validation, background work, offline boundaries, observability and failure recovery. Explain why each significant technical choice is needed.
+7. **Verification — how we know:** derive acceptance criteria and tests from the original objective. Verify the customer/staff/owner journey end to end, including permissions, state consistency, errors, retries and relevant device conditions.
+
+A small change may use a short objective-to-screen-to-test trace rather than a full architecture pack. Do not create paperwork for its own sake. A substantial product or redesign must have a complete enough map for another developer or reviewer to understand the intent and its consequences.
+
+## 3. Traceability is the control
+
+Every significant requirement must be traceable in both directions:
+
+- Forward: **objective → human need → journey → capability → screen/action → implementation → acceptance test**.
+- Backward: **component/data operation → capability → human need → objective**.
+
+Give objectives and important requirements stable, simple identifiers where useful (for example, OBJ-01, NEED-01, FLOW-01, REQ-01, UI-01, DATA-01, TEST-01). Keep links or a small traceability table; do not create identifiers for every trivial styling detail.
+
+For each important capability, be able to answer:
+- Which objective does it serve?
+- Which person needs it, and in what situation?
+- What happens before and after it?
+- What does the person see and understand?
+- What authoritative state or data changes?
+- Who is allowed to perform or see it?
+- What happens when it fails, is delayed, repeated or used offline?
+- Which test proves the intended outcome?
+
+If a feature has no defensible objective or user need, challenge its inclusion. If an objective has no supporting journey, capability or test, the design is incomplete.
+
+## 4. Screen-by-screen design and QA contract
+
+Apply this during the current Iteration 13 Store/Briefcase redesign and every later screen review. Do not wait until all screens are designed.
+
+For each screen or meaningful screen state, record or explicitly check:
+
+1. **Purpose:** the objective and user task this screen serves.
+2. **Audience and context:** customer, staff or owner; first visit or returning use; mobile/desktop; online/offline where relevant.
+3. **Orientation:** can a first-time user tell where they are, what this area is for and what changed?
+4. **Hierarchy:** is the most important information visible before secondary detail? Is there one clear primary action for the current decision?
+5. **Affordance:** can the user recognise every action before hover and predict its outcome? Are labels and icons unambiguous?
+6. **Content:** is the necessary information complete, accurate and understandable at the point of decision? Do not hide essential price, status, date, consent or next-step information.
+7. **State and feedback:** what do initial, loading, empty, selected, validation, pending, success, failure, retry and offline states look like? Is feedback truthful and persistent enough for its importance?
+8. **Flow and recovery:** where does each action lead? Can the user go back, correct an error, retry safely or understand that another person must act?
+9. **Accessibility and responsive behavior:** readable type/contrast, semantic controls, keyboard/focus, screen-reader names/status, touch targets, reduced motion and narrow-screen behavior.
+10. **System truth:** does the displayed state reflect real data and authorization, or is it only a prototype/local preview? Is the persistence and sync boundary clear?
+11. **Objective check:** if this screen disappeared or changed, would the original objective become harder to achieve? Is every prominent element earning its space?
+12. **Evidence:** what was actually inspected or tested, on which route/state/device/browser, and what remains unverified?
+
+Use the existing [Visual Direction Standard](./VISUAL-DIRECTION-STANDARD.md) for craft and composition and the [Interaction Clarity & Feedback Standard](./INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md) for interaction acceptance. Do not confuse visual novelty with usability. A screen is not accepted because it looks attractive in one screenshot; its purpose, behavior, responsive states and relationship to the rest of the journey must also be clear.
+
+For Iteration 13 specifically, keep the Store as the customer entry and the Briefcase as the owner operating workspace. Review each screen against the real customer-to-owner journey and the product's current implemented capabilities. Do not let a generic design pattern, promotion, decorative card or experimental control displace the next useful customer or owner action.
+
+## 5. Progressive complexity, not feature dumping
+
+Use progressive disclosure to manage complexity, not to conceal essential information.
+
+- Present the minimum information and choices needed for the current decision.
+- Reveal advanced configuration, history, technical detail and infrequent actions when the user needs them.
+- Keep essential price, availability, eligibility, consent, status, consequences and confirmation visible before commitment.
+- Use familiar business language in customer and staff surfaces. Reserve technical vocabulary for technical documentation and diagnostics.
+- Keep advanced capability available to authorised operators without making every customer learn the underlying system.
+- Prefer recognition, clear signifiers and predictable outcomes over instructions users must remember.
+- Do not split a simple task into unnecessary steps or add an onboarding interstitial that blocks the customer's real destination.
+- Reduce decorative competition and redundant explanation before shrinking text, clipping content or hiding useful actions.
+
+A simple surface must not mean a simplistic system: validation, permissions, audit history, idempotency, retries and data integrity can remain sophisticated behind a calm interface.
+
+## 6. Complexity and decision discipline
+
+For every significant feature or architecture choice, distinguish:
+- **Necessary now:** required to achieve the agreed objective safely.
+- **Useful later:** valuable, but not needed to validate or deliver the current outcome.
+- **Unverified:** based on an assumption, analogy or technology claim that has not been tested.
+- **Out of scope:** explicitly not part of this release.
+
+Record important trade-offs in plain language. Avoid premature abstraction, speculative integrations and technology adoption merely because a tool is interesting. Preserve proven foundations unless a verified requirement justifies change.
+
+## 7. Agent-native inspection and verification: lessons from Expo Exact
+
+Reference reviewed: [expo/exact](https://github.com/expo/exact), its [README](https://github.com/expo/exact/blob/main/README.md), [website start guide](https://github.com/expo/exact/blob/main/docs/start-here-site.md), [agent/app start guide](https://github.com/expo/exact/blob/main/docs/start-here.md) and [testing guide](https://github.com/expo/exact/blob/main/docs/testing.md). Exact describes an agent-native workflow in which an agent can build, run, inspect, operate and test an application. Its documented driver exposes a small, consistent set of operations: tree, screenshot, tap, type, state, layout, logs, clock, prefer and perf. It also describes scripted interaction tests, controllable time and accessibility/layout verification.
+
+**Adopt these engineering principles in our existing PWA workflow:**
+
+- **Inspect the rendered product, not just source code.** For important screens, use actual browser screenshots and responsive viewports; inspect the accessibility/DOM tree, visible controls, layout geometry, runtime console/logs and relevant application state when the available browser tools support them.
+- **Drive real user actions.** Test with taps/clicks, typing, navigation, selection and submission. Assert the visible outcome and the underlying persisted state where accessible. Do not treat a source-code review or a screenshot alone as an end-to-end test.
+- **Make journeys repeatable.** Convert important acceptance journeys into automated browser tests where the existing stack supports them. Use stable selectors/accessible names and assert meaningful outcomes, not brittle implementation details.
+- **Control time and asynchronous state where practical.** Prefer deterministic clocks, mocked timers and controlled fixtures for expiry, schedules, retries, delayed operations and time-sensitive states. Avoid arbitrary sleeps; wait for observable conditions.
+- **Inspect state and logs to diagnose.** Use runtime state and logs to locate the first failure, while keeping private data, secrets and internal implementation details out of customer-facing UI.
+- **Verify accessibility and layout at meaningful states.** Inspect names/roles, focus, keyboard operation, text scaling, responsive widths, overlays, empty/error states and content that may overflow.
+- **Tie evidence to the build.** Record which commit/build, browser/device, route, viewport and test produced the evidence. A stale screenshot or a test run against a different build is not proof for the current change.
+- **Keep tests proportional and trustworthy.** Test behavior at the lowest level that proves it; use end-to-end tests for critical cross-component journeys. Avoid duplicate, vacuous or timing-flaky tests.
+
+**Do not transplant Exact into the current foundation by default.** Exact is a separate cross-platform runtime and declarative application toolchain, not a drop-in QA library for our existing Next.js/React PWA. Its own README states that it is pre-1.0, changes daily and offers no API stability or backwards compatibility; its README describes Android and Windows as early/in progress. It should therefore be treated as a monitored technology experiment, not a replacement for our established web/PWA, Firebase, UploadThing, service-worker or installation architecture.
+
+Use the transferable agent-inspection principles with the browser/testing tools already available in the target project. Reconsider an isolated Exact proof of concept only when there is a concrete product requirement for its cross-platform runtime and its platform maturity, maintenance model, accessibility, PWA needs, integrations, security and migration costs have been freshly evaluated. Never introduce it into a production foundation solely because it offers an attractive agent workflow.
+
+## 8. Required project artefacts
+
+For a substantial new product or redesign, maintain a concise set of linked maps. These may be Markdown, Mermaid, diagrams or a combination; choose a format that remains editable and easy to update.
+
+1. **Business Understanding Map:** objectives (three/four words each), people, problems, desired outcomes, success measures, assumptions and non-goals.
+2. **Experience & Functional Map:** customer/staff/owner journeys, capabilities, screens, decisions, states, handoffs and exception paths.
+3. **Technical & Verification Map:** architecture, data/persistence, permissions, integrations, offline/failure boundaries, acceptance criteria and test coverage.
+
+The three maps must share objective/requirement identifiers or clear links. Keep them in the target project's documentation, not only in chat or an image export. For a small change, a compact traceability checklist is sufficient.
+
+## 9. Definition of done
+
+Before calling a substantial design or implementation complete, confirm:
+
+- The original business objective is still stated plainly.
+- Every important screen and capability supports a real user need.
+- The primary customer, staff and owner journeys are coherent end to end.
+- Essential information and actions are discoverable without guessing.
+- Advanced complexity is progressively disclosed rather than dumped on users.
+- Loading, empty, error, pending, success, retry and offline behavior is honest where applicable.
+- Technical choices have a clear purpose and preserve security/data boundaries.
+- Important objectives and requirements map to observable acceptance tests.
+- Actual visual/browser/test evidence is tied to the current build; untested devices or environments are clearly identified.
+- Deferred ideas and unverified technology experiments are not presented as delivered functionality.
+
+**The final test:** explain the product in one plain sentence, then explain how each major part delivers that sentence. If those explanations do not connect, return to the map before adding more features.

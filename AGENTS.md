@@ -53,6 +53,14 @@ For any requested one-word staff/owner login, follow the mandatory **One-word st
 
 Read [docs/BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md](./docs/BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md) for the complete implementation and QA contract.
 
+## Objective-to-system design (mandatory)
+
+- Read [docs/OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md](./docs/OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md) before substantial product design, screen redesign, feature planning, architecture decisions or project adaptation. It is mandatory for Iteration 13 and portfolio work; do not treat it as an optional workshop.
+- Start with the business objective in approximately three or four plain-language words, then trace the human problem, desired journey, required capability, interface, technical implementation and acceptance test. Keep objective-to-screen-to-test traceability throughout development.
+- During screen-by-screen QA, evaluate purpose, audience, orientation, hierarchy, affordances, complete content, states/feedback, recovery, accessibility/responsiveness, system truth and evidence. Apply this now to the active Iteration 13 Store/Briefcase redesign; do not wait for a future project or require the product owner to repeat the instruction.
+- For substantial products/redesigns, maintain linked Business Understanding, Experience & Functional, and Technical & Verification maps in project documentation. For small changes, use a compact traceability checklist. Keep the objective visible as complexity increases.
+- Adopt the agent-native inspection lessons documented from Expo Exact: inspect rendered screens, accessibility/layout/state/logs where tooling supports it, drive real interactions, make critical journeys repeatable, control time in tests where practical and tie evidence to the tested build. Do not replace the existing PWA stack with Exact; it is pre-1.0 and an isolated experiment only unless separately evaluated and approved.
+
 ## Interaction clarity and feedback (mandatory)
 
 - Read [docs/INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md](./docs/INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md) before implementing or reviewing customer-facing interactions, forms, navigation, account workspaces, status feedback, notifications or error/success states.

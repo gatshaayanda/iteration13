@@ -15,7 +15,8 @@
 7. `CLONING.md` — required when selecting a source, cloning/adapting any portfolio project, resetting identity/PWA assets, or reusing patterns in another project. Iteration 13 is the standards/reference repository, not the default clone source; Africhiko is the default when the product owner has not selected another source.
 8. `docs/VISUAL-DIRECTION-STANDARD.md` — required when planning or reviewing visual changes; use it as a craftsmanship and mobile-composition reference, not a universal theme. Open and inspect `docs/assets/washride-home-reference.jpeg` itself.
 9. `docs/OPERATIONAL-TRANSPARENCY-STANDARD.md` — required when implementing or reviewing meaningful user-facing or staff-facing operations, loading/progress, search, status, uploads, payments, messaging, integrations or delivery handoff.
-10. Read the relevant route/component docs and code referenced by those files, then inspect the actual latest commit, package scripts and CI/deployment state.
+10. `docs/OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md` — mandatory for substantial product work, screen redesigns, feature planning and architecture; apply its objective-to-human-need-to-journey-to-interface-to-implementation-to-test traceability. It also records the transferable agent-native inspection lessons from Expo Exact.
+11. Read the relevant route/component docs and code referenced by those files, then inspect the actual latest commit, package scripts and CI/deployment state.
 
 Do not stop after reading only one file. These documents have different purposes and are designed to be used together.
 
@@ -24,11 +25,12 @@ Do not stop after reading only one file. These documents have different purposes
 When asked to adopt/use Iteration 13 as a reference, do not restart a full foundation audit or reread every portfolio document. Use this focused path:
 
 1. Inspect the target repository's current branch/commit, its AGENTS.md, relevant route/components, data/auth boundaries and protected features. Existing projects stay in place.
-2. Open docs/assets/washride-home-reference.jpeg and read docs/VISUAL-DIRECTION-STANDARD.md plus docs/INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md. Add docs/OPERATIONAL-TRANSPARENCY-STANDARD.md for meaningful workflows. Read the Portfolio Handoff's Business OS adaptation contract.
-3. Keep the customer Store compact and fully readable: complete descriptions, visible prices and clear actions. Do not line-clamp, fade or hide essential text.
-4. Preserve the customer account's receipts and order history, and the matching owner/admin record and receipt. Verify customer → owner → customer state consistency using the target's actual secure data path.
-5. Adapt only brand, copy, assets, verified catalogue/prices, account extras and layout details to the target context. Do not copy demo data, fake auth, local-only persistence or 13Studio identity.
-6. Preserve the target's working PWA installation, offline behavior, authentication, chatbot, uploads and integrations. Run focused checks and report the actual build/deployment/device status.
+2. Open docs/assets/washride-home-reference.jpeg and read docs/VISUAL-DIRECTION-STANDARD.md plus docs/INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md. Read docs/OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md to map each important screen to its business objective, user need, next action and acceptance evidence. Add docs/OPERATIONAL-TRANSPARENCY-STANDARD.md for meaningful workflows. Read the Portfolio Handoff's Business OS adaptation contract.
+3. Apply objective-to-system traceability immediately during the active Iteration 13 redesign: every screen under review must have a clear purpose, audience, primary action, essential content, state/feedback, recovery path and link to a Store/Briefcase business objective. Do not wait until the redesign is complete.
+4. Keep the customer Store compact and fully readable: complete descriptions, visible prices and clear actions. Do not line-clamp, fade or hide essential text.
+5. Preserve the customer account's receipts and order history, and the matching owner/admin record and receipt. Verify customer → owner → customer state consistency using the target's actual secure data path.
+6. Adapt only brand, copy, assets, verified catalogue/prices, account extras and layout details to the target context. Do not copy demo data, fake auth, local-only persistence or 13Studio identity.
+7. Preserve the target's working PWA installation, offline behavior, authentication, chatbot, uploads and integrations. Run focused checks and report the actual build/deployment/device status.
 
 This path is the default for both new and existing project adaptations. Follow the longer foundation/cloning SOP only when the task actually creates a new repository or changes its foundation.
 

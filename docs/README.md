@@ -23,6 +23,7 @@ Then open only the relevant task-specific documents below. Read the actual code 
 
 | If the task involves… | Read this authoritative document |
 | --- | --- |
+| Business objectives, product comprehension, screen redesign, feature planning or architecture traceability | [Objective-to-System Design Standard](./OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md) |
 | Visual design, responsive layout or visual QA | [Visual Direction Standard](./VISUAL-DIRECTION-STANDARD.md), then open the canonical [WashRide reference image](./assets/washride-home-reference.jpeg) |
 | Business naming, first-run identity, one-to-three-colour palettes or Store · Account · Briefcase coupling | [Business Identity & Restrained Colour Standard](./BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md) |
 | Meaningful loading, search, booking, status, upload, payment, messaging, admin operations or handoff | [Operational Transparency Standard](./OPERATIONAL-TRANSPARENCY-STANDARD.md) |
@@ -46,6 +47,7 @@ Then open only the relevant task-specific documents below. Read the actual code 
 ## 5. Standards and execution references in this folder
 
 - **CHANGE-SAFETY-STANDARD.md** — cross-project regression-prevention method. Mandatory for every task.
+- **OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md** — mandatory trace from business objective through human need, journey, function, interface and technical architecture to verification; includes current screen-by-screen QA and lessons adopted from Expo Exact.
 - **VISUAL-DIRECTION-STANDARD.md** — visual craft, composition and responsive compactness; the JPEG asset is the visual source, not the prose alone.
 - **BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md** — first-run business identity, coupled Store · Account · Briefcase preview, maximum three brand colours, contrast and evidence-led colour psychology.
 - **OPERATIONAL-TRANSPARENCY-STANDARD.md** — truthful activity, status and outcomes across real workflows.
@@ -70,7 +72,7 @@ The standards complement one another. For example, a visual redesign must preser
 ## 7. Documentation maintenance rules
 
 - Keep one canonical document per policy. Other files should link to it rather than maintain competing copies.
-- Keep task-specific detail in the relevant guide; keep `START-HERE.md` as the shortest useful handoff.
+- Keep task-specific detail in the relevant guide; keep `START-HERE.md` as the shortest useful handoff. Objective-to-system traceability is a mandatory design/build concern, not an optional project workshop.
 - Update `FOUNDATION-BLUEPRINT.md` when architecture, routes, data flows or known limitations change.
 - Update `AGENTS.md` when a rule, protected feature or recurring failure mode becomes binding.
 - Update `GOLDEN-BASELINE.md` only when the product owner approves a baseline/recovery change.

@@ -2,6 +2,12 @@
 
 **Purpose:** give future implementation chats a concrete visual target for craftsmanship. This is a quality and composition reference, not a universal theme, template, or instruction to copy another business's identity.
 
+## Objective before visual treatment — mandatory
+
+Before changing a screen, consult [OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md](./OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md). Identify the business objective, the person using the screen, the task they need to complete, the essential information and the next action. Then choose the visual hierarchy, composition, cards, imagery, navigation and disclosure that make that purpose immediately understandable. A visual treatment is not successful merely because it is attractive: it must make the underlying objective and interaction clearer.
+
+During screen-by-screen design QA, check purpose, orientation, primary action, content completeness, state/feedback, recovery, responsive behavior and accessibility. Ask whether each prominent visual element helps the user understand or complete the task. Remove decorative competition and redundant surfaces before reducing readability or hiding information. Keep the objective-to-screen relationship intact across Store, Account and Briefcase.
+
 ## Reference interpretation
 
 The WashRide mobile-home screenshot supplied by the product owner is a useful example of a finished, app-like customer experience. Its transferable qualities are:

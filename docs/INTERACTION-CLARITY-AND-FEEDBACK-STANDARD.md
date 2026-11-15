@@ -8,6 +8,12 @@ A control is not well designed merely because it works when clicked. A first-tim
 
 Design for recognition rather than recall. Make the next useful action visible at the point it is needed.
 
+## 1A. Connect every interaction to an objective
+
+Use [OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md](./OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md) when designing or reviewing a journey. Every meaningful control should serve a user task that advances a stated business objective. Its label must describe the real operation, its placement must make sense in the current journey, its state must be perceivable, and its outcome must be observable. Review the whole path—not just the control—including what happens before the action, after success, on validation failure, on retry and when connectivity or permissions prevent completion.
+
+A screen full of individually understandable buttons can still form a confusing product if users cannot understand how those actions fit together. Check the sequence, handoffs and destination of each action, and progressively disclose advanced options without hiding information required for the current decision.
+
 ## 2. Affordances and signifiers
 
 - Navigation uses links; in-place actions use buttons. Do not use clickable generic containers when semantic controls are available.

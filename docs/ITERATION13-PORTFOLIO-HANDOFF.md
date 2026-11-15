@@ -24,6 +24,7 @@ Always start with:
 6. `README.md`
 
 Then read only the relevant standards:
+- Any substantial product design, screen redesign, feature plan or architecture: `docs/OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md`.
 - Visual work: `docs/VISUAL-DIRECTION-STANDARD.md` **and open** `docs/assets/washride-home-reference.jpeg`.
 - Customer/staff workflows: `docs/OPERATIONAL-TRANSPARENCY-STANDARD.md`.
 - PWA/install: `docs/PWA-INSTALLATION-LOCK.md`.
@@ -31,6 +32,16 @@ Then read only the relevant standards:
 - Account changes: inspect the actual account component, data model, authentication, upload path and staff/admin workflow.
 
 Use `docs/README.md` as the document map. Do not read every file indiscriminately or ask the product owner to repeat documented rules.
+
+## 2A. Objective-to-system traceability is mandatory
+
+Before substantial design or feature work, translate the business brief into plain-language objectives (approximately three or four words each), the human problems behind them, desired customer/staff/owner experiences, functional capabilities, interaction/visual requirements, technical architecture and acceptance evidence. Keep the original objective traceable as detail increases. Use the linked three-map approach for substantial products: Business Understanding, Experience & Functional, and Technical & Verification. A small change can use a compact objective-to-screen-to-test checklist.
+
+For every screen in a redesign, record or check its purpose, audience, primary action, essential information, navigation context, state/feedback, recovery, accessibility/responsiveness and the objective it advances. This applies to Iteration 13's active Store/Briefcase redesign now, not only to future client work. Screen-by-screen QA should expose mismatches between what the business intends, what the interface communicates and what the system actually does.
+
+### Agent-native inspection lessons from Expo Exact
+
+Use the transferable ideas from [expo/exact](https://github.com/expo/exact): agents should inspect rendered UI and accessibility structure, capture screenshots, inspect layout and relevant state/logs, drive real taps/typing/navigation, use repeatable interaction scripts, control time for deterministic asynchronous tests where practical, and tie evidence to the exact build. Apply these ideas through the browser and test tools already supported by each target project. Exact itself is a separate, fast-moving pre-1.0 cross-platform runtime with no API stability; it is not a drop-in QA dependency or a reason to replace our established PWA foundation. Any adoption beyond the principles requires a separate, evidence-led technical evaluation.
 
 ## 3. Visual reference contract
 
