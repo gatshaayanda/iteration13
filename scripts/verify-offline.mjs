@@ -3,6 +3,7 @@ import fs from "node:fs";
 const read = path => fs.readFileSync(new URL(path, import.meta.url), "utf8");
 const sw = read("../public/sw.js");
 const page = read("../src/app/page.tsx");
+const moneyInsights = read("../src/app/AdminMoneyInsights.tsx");
 const account = read("../src/app/AccountWorkspace.tsx");
 const offline = read("../src/app/offline/page.tsx");
 const pwaRegister = read("../src/app/pwa-register.tsx");
@@ -21,6 +22,7 @@ check(/const CACHE_VERSION = "iteration13-shell-v24"/.test(sw), "current Iterati
 check(page.includes("sd-storefront-title") && page.includes("<StoreAnnouncementSlot active={announcementIsActive && Boolean(data.announcement.trim() || data.announcementImage)}") && page.includes("Available offerings") && !page.includes("sd-store-announcement-slot"), "a published announcement must replace Available offerings in the Store heading while availability stays in its header column");
 check(page.includes("Create a new business") && page.includes("Use a previous business") && page.includes("Use previous business") && page.includes("Existing business data stays untouched") && !page.includes("Explore Business OS first") && !page.includes("Explore the sample") && !page.includes("Or explore first."), "opening screen must clearly offer separate create-new and use-previous paths without a sample invitation");
 check(page.includes("function findSavedBusinessWorkspaces()") && page.includes("window.localStorage.length") && page.includes('key.startsWith(STORAGE_KEY + ":visitor:")') && page.includes("savedBusinessOptions") && page.includes('url.searchParams.set("restore", suffix)') && page.includes("setIdentityComplete(resuming && hasSavedIdentity)") && !page.includes('":explore"') && !page.includes("explorationMode"), "previous-business discovery must inspect existing base and visitor workspaces and reopen the selected storage namespace without copying or resetting it");
+check(page.includes('url.searchParams.set("restore", restore)') && moneyInsights.includes("const restoreSuffix=params?.get(\"restore\")||\"\"") && moneyInsights.includes("test(restoreSuffix)?restoreSuffix"), "the selected saved workspace must remain active across Store, Account, Briefcase and owner-expense records");
 check(page.includes("isInjectedTrailWiseSeed") && page.includes("sharedServices.length > 0") && page.includes("hasNoVisitorActivity"), "the original shared catalogue must replace the later one-service injected TrailWise seed on first visit");
 check(page.includes("function loadPreviousBusinessSetup()") && page.includes("function openSavedBusinessWorkspace(suffix: string)") && page.includes("Choose a saved business") && page.includes("customer records"), "the previous-business action must present discovered saved workspaces for explicit selection rather than reuse the cleared new-business form");
 check(globalCss.includes(".sd-identity-entry-actions"), "opening choices must have deliberate responsive styling");
