@@ -417,10 +417,13 @@ export default function Home() {
           if (valid.length) setBrandColors(valid);
         }
       } else if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setBrandColors([savedTheme]);
-      const exploring = new URLSearchParams(window.location.search).get("explore") === "1";
-      setHasPreviousSetup(window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true" && !exploring);
-      // Never auto-open an old business. The explicit Explore path is the only sample auto-launch.
-      setIdentityComplete(exploring);
+      const params = new URLSearchParams(window.location.search);
+      const exploring = params.get("explore") === "1";
+      const resuming = params.get("resume") === "1";
+      const hasSavedIdentity = window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true";
+      setHasPreviousSetup(hasSavedIdentity && !exploring);
+      // Continue resumes the owner's existing browser-local workspace; it never enters the isolated TrailWise example namespace.
+      setIdentityComplete(exploring || (resuming && hasSavedIdentity));
     } catch { /* identity remains at the accessible default */ }
     setThemeReady(true);
     setIdentityReady(true);
@@ -726,7 +729,12 @@ export default function Home() {
   }
   function continueYourBusiness() {
     const url = new URL(window.location.href);
-    url.searchParams.set("explore", "1");
+    url.searchParams.delete("explore");
+    url.searchParams.delete("example");
+    url.searchParams.delete("sample");
+    url.searchParams.delete("view");
+    url.searchParams.set("resume", "1");
+    url.hash = "";
     window.location.assign(url.toString());
   }
   function returnToBusinessSetup() {
