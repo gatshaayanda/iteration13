@@ -384,7 +384,7 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 ## Opening choice and continue-business flow — November 2026
 - Keep the existing opening-screen layout and **01 Build my Business OS** setup path.
 - Replace only the **02 Explore Business OS first** choice with **02 Continue Your Business instead**. Do not add a duplicate continue action under option 01.
-- Option 02 opens the existing persistent TrailWise workspace in the :explore browser-local storage namespace. Treat the saved TrailWise Store, customer Account, owner Briefcase and saved activity as the full working Business OS, not as a disposable sample or newly generated example.
-- Preserve all existing TrailWise data and requests. Only seed the initial TrailWise data when the :explore storage namespace is genuinely empty; never overwrite a saved workspace when the owner chooses Continue.
-- Keep the existing **Build my own business** action inside TrailWise and keep owner data isolated from the TrailWise workspace.
+- Option 02 resumes the owner's existing business in the default browser-local storage namespace. It must clear example/explore launch parameters and must not enter the isolated :explore TrailWise namespace.
+- Load the saved business identity, catalogue, uploaded media URLs, announcement, customer requests, Account records, owner Briefcase notes and activity from their existing keys without reseeding, replacing or resetting them.
+- Do not silently substitute TrailWise or another example when the owner's saved workspace is missing. Keep any example/discovery path separate and explicit.
 - Verify the existing workspace resumes unchanged, new requests still appear in Account and owner Briefcase, and the setup path remains independent. Keep Setup as the current QA checkpoint; do not redesign Account or Briefcase.
