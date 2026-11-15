@@ -1268,8 +1268,8 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
           {activeServices.length ? activeServices.map((service,index)=><article className="sd-service-card sd-store-card" key={service.id}>
             <div className={"sd-service-media sd-media-"+(index%4)+(service.mediaType==="video"?" is-video":"")}>
               
-              {!service.media && <div className="sd-media-placeholder" aria-hidden="true"><span>{businessName || "THE STORE"}</span><strong>{service.name}</strong><i/></div>}
-              {service.media&&service.mediaType==="video"?<StoreVideoPreview src={service.media} />:service.media?<img src={service.media} alt={service.name+" preview"} loading="lazy" onError={event => { event.currentTarget.hidden = true; }}/>:null}
+              <div className="sd-media-placeholder" hidden={Boolean(service.media)} aria-hidden="true"><span>{businessName || "THE STORE"}</span><strong>{service.name}</strong><i/></div>
+              {service.media&&service.mediaType==="video"?<StoreVideoPreview src={service.media} />:service.media?<img src={service.media} alt={service.name+" preview"} loading="lazy" onError={event => { event.currentTarget.hidden = true; event.currentTarget.parentElement?.querySelector(".sd-media-placeholder")?.removeAttribute("hidden"); }}/>:null}
               {service.media&&service.mediaType==="video"&&<span className="sd-service-media-badge">VIDEO PREVIEW</span>}
             </div>
             <div className="sd-service-info">{service.industry && <div className="sd-service-meta"><span>{service.industry}</span></div>}<div className="sd-service-title"><h3>{service.name}</h3><strong>{money(service.price)}</strong></div><p>{service.description}</p><button className="sd-order-button" onClick={()=>beginOrder(service)}>Select service <span aria-hidden="true">↗</span></button></div>
