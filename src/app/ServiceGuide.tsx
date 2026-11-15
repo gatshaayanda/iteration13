@@ -88,7 +88,11 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
   useEffect(() => {
     if (!screen || previousScreen.current === screen) return;
     previousScreen.current = screen;
-    track("screen-change");
+    try {
+      const key = "iteration13:guide-events:v1";
+      const previous = JSON.parse(window.sessionStorage.getItem(key) || "[]") as { event: string; screen: string; at: string }[];
+      window.sessionStorage.setItem(key, JSON.stringify([...previous, { event: "screen-change", screen, at: new Date().toISOString() }].slice(-60)));
+    } catch { /* local funnel measurement must never block navigation */ }
     let timer: number | undefined;
     try {
       const seen = JSON.parse(window.sessionStorage.getItem("iteration13:guide-seen-screens:v1") || "[]") as string[];
