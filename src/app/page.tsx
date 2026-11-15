@@ -474,7 +474,7 @@ export default function Home() {
       if (!("serviceWorker" in navigator) || !("caches" in window)) return;
       try {
         const registration = await navigator.serviceWorker.ready;
-        const shell = await caches.open("iteration13-shell-v19");
+        const shell = await caches.open("iteration13-shell-v20");
         const [home, offlinePage] = await Promise.all([shell.match("/"), shell.match("/offline")]);
         if (active) setOfflineShellReady(Boolean(registration.active && home && offlinePage));
       } catch {
@@ -1034,50 +1034,61 @@ export default function Home() {
         <div className="sd-identity-onboarding-copy">
           <span className="sd-kicker">YOUR BUSINESS · ONE CONNECTED SYSTEM</span>
           <h1>{businessName.trim() || "Your Business"} <em>at work.</em></h1>
-          <p>{identityEditing ? "Update your name, brand, pricing currency and first Store listing. Existing requests stay in place." : "Name your business, set its identity and add one offer. Your Store welcomes customers, their Account keeps each request together, and your Briefcase puts the operation in your hands."}</p>
-          <label className="sd-identity-name-label">01 / Business name
-            <input value={businessName} onChange={event => setBusinessName(event.target.value.slice(0, 48))} maxLength={48} autoComplete="organization" placeholder="Example: Metsi Wellness" />
-          </label>
-          <small className="sd-identity-helper">Use a real or fictional name. This identity updates your Store, customer Account and private Briefcase together.</small>
-          <section className="sd-identity-currency" aria-labelledby="sd-business-currency-title"><div className="sd-identity-currency-heading"><div><span>02 / PRICING SETUP</span><strong id="sd-business-currency-title">Which currency does your business use?</strong></div><small>Used for your prices, requests and records.</small></div><div className="sd-identity-currency-options" role="group" aria-labelledby="sd-business-currency-title">{[{code:"BWP",name:"Botswana pula",symbol:"P",flag:"🇧🇼"},{code:"ZAR",name:"South African rand",symbol:"R",flag:"🇿🇦"},{code:"USD",name:"US dollar",symbol:"$",flag:"🇺🇸"},{code:"GBP",name:"British pound",symbol:"£",flag:"🇬🇧"},{code:"EUR",name:"Euro",symbol:"€",flag:"🇪🇺"},{code:"INR",name:"Indian rupee",symbol:"₹",flag:"🇮🇳"}].map(currency => <button key={currency.code} type="button" className={businessCurrency === currency.code ? "is-selected" : ""} aria-pressed={businessCurrency === currency.code} onClick={() => setBusinessCurrency(currency.code)}><span className="sd-identity-currency-flag" aria-hidden="true">{currency.flag}</span><span className="sd-identity-currency-details"><strong>{currency.name}</strong><small>{currency.code}</small></span><b className="sd-identity-currency-symbol">{currency.symbol}</b><span className="sd-identity-currency-check" aria-hidden="true">{businessCurrency === currency.code ? "✓" : ""}</span></button>)}</div><p>Prices will be displayed in {businessCurrency}. No exchange-rate conversion is applied.</p></section>
-           <div className="sd-identity-palette">
-            <div><strong>03 / Brand colours</strong><span>{brandColors.length} selected · choose up to 3</span></div>
-            <div className="sd-identity-swatches">{brandColorOptions.map(option => <button key={option.color} type="button" className={brandColors.includes(option.color) ? "is-selected" : ""} style={{ "--swatch": option.color } as React.CSSProperties} aria-label={option.label} aria-pressed={brandColors.includes(option.color)} onClick={() => toggleBrandColor(option.color)}><span>{brandColors.includes(option.color) ? "✓" : "+"}</span><small>{option.label}</small></button>)}</div>
-            <label className="sd-custom-colour">Custom colour <input aria-label="Choose a custom brand colour" type="color" value={customBrandColor} onChange={event => setCustomBrandColor(event.target.value)} /><button type="button" onClick={addCustomBrandColor}>{brandColors.includes(customBrandColor) ? "Already selected" : brandColors.length === 3 ? "Replace highlight" : "Add colour"}</button></label>
-          </div>
-          <section className="sd-identity-first-service" aria-labelledby="sd-first-service-title">
-            <div className="sd-identity-step-heading"><span>04 / YOUR FIRST CUSTOMER OFFER</span><strong id="sd-first-service-title">Add your first product / service</strong><p>Add at least one product or service before opening your business space. You can add, edit, hide or remove more products and services later.</p></div>
-            <div className="sd-identity-service-fields">
-              <label>Product / service name<input value={serviceName} onChange={event => setServiceName(event.target.value)} maxLength={80} required placeholder="e.g. Website design, Consultation, Haircut" /></label>
-              <label>Industry / line of business<input value={serviceIndustry} onChange={event => setServiceIndustry(event.target.value)} maxLength={80} required placeholder="e.g. Beauty & wellness, automotive, retail" /></label>
-              <label>Price ({businessCurrency})<input type="number" min="0" step="0.01" value={servicePrice} onChange={event => setServicePrice(event.target.value)} required /></label>
-              <label>Description <span className="sd-identity-optional">Optional</span><textarea rows={3} value={serviceDescription} onChange={event => setServiceDescription(event.target.value)} placeholder="Explain what the customer receives." /></label>
-              <ServiceMediaPicker value={serviceMedia} type={serviceMediaType} allowVideo={true} online={online} onChange={(url, type) => { setServiceMedia(url); setServiceMediaType(type); }} onUploadingChange={setServiceMediaUploading} />
-              <p className="sd-identity-placeholder-note">An image or short video is optional. Upload one to make the listing stand out, or leave it empty for a branded placeholder.</p>
+          <p>{identityEditing ? "Update your name, brand, pricing currency and first Store listing. Existing requests stay in place." : "Set your business identity and one offer. Customers use your Store and Account; your Briefcase puts the operation in your hands."}</p>
+          <section className="sd-identity-setup-step sd-identity-identity-step" aria-labelledby="sd-identity-step-title">
+            <div className="sd-identity-step-heading"><span>01 / BUSINESS IDENTITY</span><strong id="sd-identity-step-title">Make it yours</strong></div>
+            <label className="sd-identity-name-label">Business name
+              <input value={businessName} onChange={event => setBusinessName(event.target.value.slice(0, 48))} maxLength={48} autoComplete="organization" placeholder="Example: Metsi Wellness" />
+            </label>
+            <small className="sd-identity-helper">This name appears across your Store, Account and Briefcase.</small>
+            <section className="sd-identity-currency" aria-labelledby="sd-business-currency-title">
+              <div className="sd-identity-currency-heading"><div><span>PRICING CURRENCY</span><strong id="sd-business-currency-title">Which currency do you use?</strong></div><small>For prices and records</small></div>
+              <div className="sd-identity-currency-options" role="group" aria-labelledby="sd-business-currency-title">{[{code:"BWP",name:"Botswana pula",symbol:"P",flag:"🇧🇼"},{code:"ZAR",name:"South African rand",symbol:"R",flag:"🇿🇦"},{code:"USD",name:"US dollar",symbol:"$",flag:"🇺🇸"},{code:"GBP",name:"British pound",symbol:"£",flag:"🇬🇧"},{code:"EUR",name:"Euro",symbol:"€",flag:"🇪🇺"},{code:"INR",name:"Indian rupee",symbol:"₹",flag:"🇮🇳"}].map(currency => <button key={currency.code} type="button" className={businessCurrency === currency.code ? "is-selected" : ""} aria-pressed={businessCurrency === currency.code} onClick={() => setBusinessCurrency(currency.code)}><span className="sd-identity-currency-flag" aria-hidden="true">{currency.flag}</span><span className="sd-identity-currency-details"><strong>{currency.name}</strong><small>{currency.code}</small></span><b className="sd-identity-currency-symbol">{currency.symbol}</b><span className="sd-identity-currency-check" aria-hidden="true">{businessCurrency === currency.code ? "✓" : ""}</span></button>)}</div>
+              <p>Prices display in {businessCurrency}; no exchange-rate conversion is applied.</p>
+            </section>
+            <div className="sd-identity-palette">
+              <div><strong>Brand colours</strong><span>{brandColors.length} selected · up to 3</span></div>
+              <div className="sd-identity-swatches">{brandColorOptions.map(option => <button key={option.color} type="button" className={brandColors.includes(option.color) ? "is-selected" : ""} style={{ "--swatch": option.color } as React.CSSProperties} aria-label={option.label} aria-pressed={brandColors.includes(option.color)} onClick={() => toggleBrandColor(option.color)}><span>{brandColors.includes(option.color) ? "✓" : "+"}</span><small>{option.label}</small></button>)}</div>
+              <label className="sd-custom-colour">Custom colour <input aria-label="Choose a custom brand colour" type="color" value={customBrandColor} onChange={event => setCustomBrandColor(event.target.value)} /><button type="button" onClick={addCustomBrandColor}>{brandColors.includes(customBrandColor) ? "Already selected" : brandColors.length === 3 ? "Replace highlight" : "Add colour"}</button></label>
             </div>
+          </section>
+          <section className="sd-identity-first-service sd-identity-offer-setup" aria-labelledby="sd-first-service-title">
+            <div className="sd-identity-step-heading"><span>02 / FIRST CUSTOMER OFFER</span><strong id="sd-first-service-title">Add one product or service</strong><p>Give customers one clear offer to start with.</p></div>
+            <div className="sd-identity-service-required-fields">
+              <label className="sd-identity-field-name">Product / service name<input value={serviceName} onChange={event => setServiceName(event.target.value)} maxLength={80} required placeholder="e.g. Website design, Consultation, Haircut" /></label>
+              <label className="sd-identity-field-industry">Industry / line of business<input value={serviceIndustry} onChange={event => setServiceIndustry(event.target.value)} maxLength={80} required placeholder="e.g. Beauty & wellness, automotive, retail" /></label>
+              <label className="sd-identity-field-price">Price ({businessCurrency})<input type="number" min="0" step="0.01" value={servicePrice} onChange={event => setServicePrice(event.target.value)} required /></label>
+            </div>
+            <details className="sd-identity-optional-details">
+              <summary><span>Add description or media</span><small>{serviceDescription.trim() || serviceMedia ? "Details added" : "Optional"}</small></summary>
+              <div className="sd-identity-service-fields">
+                <label>Description <span className="sd-identity-optional">Optional</span><textarea rows={3} value={serviceDescription} onChange={event => setServiceDescription(event.target.value)} placeholder="Explain what the customer receives." /></label>
+                <ServiceMediaPicker value={serviceMedia} type={serviceMediaType} allowVideo={true} online={online} onChange={(url, type) => { setServiceMedia(url); setServiceMediaType(type); }} onUploadingChange={setServiceMediaUploading} />
+                <p className="sd-identity-placeholder-note">Add a photo or short video if you have one. A branded placeholder is used otherwise.</p>
+              </div>
+            </details>
           </section>
           <section className="sd-identity-first-service sd-identity-announcement-setup" aria-labelledby="sd-first-announcement-title">
-            <div className="sd-identity-step-heading"><span>05 / CUSTOMER NOTICE · OPTIONAL</span><strong id="sd-first-announcement-title">Have something to announce?</strong><p>Prepare a launch special, seasonal promotion, limited-time discount, new product or service update, or an important business notice. You can leave this blank and publish announcements later from your Briefcase.</p></div>
-            <div className="sd-identity-service-fields">
-              <label>Announcement <span className="sd-identity-optional">Optional</span><textarea rows={4} maxLength={1200} value={announcementDraft} onChange={event => setAnnouncementDraft(event.target.value)} placeholder="Example: 15% off all bookings made before 30 November. Include the offer amount, dates and any important terms so customers know exactly what is being offered…" /></label>
-              <AnnouncementImagePicker value={announcementImageDraft} online={online} onChange={setAnnouncementImageDraft} onUploadingChange={setAnnouncementImageUploading} />
-            </div>
+            <details className="sd-identity-optional-details sd-identity-announcement-details">
+              <summary><span id="sd-first-announcement-title">03 / Add an announcement</span><small>{announcementDraft.trim() || announcementImageDraft ? "Announcement added" : "Optional · Store banner"}</small></summary>
+              <p className="sd-identity-announcement-hint">Share a launch offer, promotion or important business notice.</p>
+              <div className="sd-identity-service-fields">
+                <label>Announcement <span className="sd-identity-optional">Optional</span><textarea rows={3} maxLength={1200} value={announcementDraft} onChange={event => setAnnouncementDraft(event.target.value)} placeholder="What would you like customers to know?" /></label>
+                <AnnouncementImagePicker value={announcementImageDraft} online={online} onChange={setAnnouncementImageDraft} onUploadingChange={setAnnouncementImageUploading} />
+              </div>
+            </details>
           </section>
           <button type="button" className="sd-identity-continue" onClick={() => completeBusinessIdentity()} disabled={!ready || serviceMediaUploading || announcementImageUploading}>{serviceMediaUploading ? "Uploading product / service media…" : announcementImageUploading ? "Uploading announcement thumbnail…" : identityEditing ? "Save business setup" : "Create my Business OS"} <span>↗</span></button>
-          <p className="sd-identity-local-note">Save your setup on this device, then explore the working Store, customer Account and owner Briefcase. Nothing syncs across devices.</p>{identityEditing && <button type="button" className="sd-small-button" onClick={() => { setIdentityEditing(false); setIdentityServiceId(null); setIdentityComplete(true); }}>Cancel editing</button>}
+          <p className="sd-identity-local-note">Saved on this device. This demo does not sync across devices.</p>{identityEditing && <button type="button" className="sd-small-button" onClick={() => { setIdentityEditing(false); setIdentityServiceId(null); setIdentityComplete(true); }}>Cancel editing</button>}
         </div>
         <div className="sd-identity-live-preview" aria-label="Live preview of your Store, Account and Briefcase">
           <div className="sd-identity-preview-brand" style={{ background: themeColor }}><span>{(businessName.trim() || "Your Business").slice(0,2).toUpperCase()}</span><div><strong>{businessName.trim() || "Your Business"}</strong><small>Your business in your pocket.</small></div></div>
-          <div className="sd-identity-preview-grid">
-            <article><span>01 / CUSTOMER</span><strong>Store</strong><p>Explore your products and services and send a request.</p></article>
-            <article><span>02 / CUSTOMER</span><strong>Account</strong><p>Follow requests, messages and receipts.</p></article>
-            <article><span>03 / OWNER</span><strong>Briefcase</strong><p>Manage customers, jobs, money and insights.</p></article>
-          </div>
+          <div className="sd-identity-preview-areas" aria-label="Connected business areas"><span>Store</span><span>Account</span><span>Briefcase</span></div>
           <div className="sd-identity-service-preview" aria-live="polite">
             <span>FIRST STORE LISTING</span>
             <div className="sd-identity-service-preview-card">
               {serviceMedia ? <img src={serviceMedia} alt="First product / service image preview" /> : <div className="sd-identity-service-placeholder" style={{background:themeColor,color:accentInk(themeColor)}}><strong>{serviceName.trim() ? serviceName.trim().slice(0,1).toUpperCase() : "＋"}</strong><small>BRANDED PLACEHOLDER</small></div>}
-              <div><strong>{serviceName.trim() || "Your first product / service"}</strong><b>{money(Number(servicePrice)||0)}</b><p>{serviceDescription.trim() || "Your product / service description will appear here."}</p></div>
+              <div><strong>{serviceName.trim() || "Your first product / service"}</strong><b>{money(Number(servicePrice)||0)}</b>{serviceDescription.trim() && <p>{serviceDescription.trim()}</p>}</div>
             </div>
           </div>
           <div className="sd-identity-preview-footer"><span>YOUR BRAND PALETTE</span><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div><small>One identity · three connected areas</small></div>
@@ -1106,6 +1117,8 @@ export default function Home() {
         <div className="sd-storefront-bar">
           <div className="sd-storefront-title"><div><span className="sd-kicker">THE STORE</span><h2>Available offerings</h2></div></div>
           <div className="sd-storefront-signals"><span className={"sd-store-availability is-"+(data.availability || "available")}><i aria-hidden="true"/>{data.availability === "limited" ? "Limited availability" : data.availability === "unavailable" ? "Currently unavailable" : "Available now"}</span></div>
+        </div>
+        <div className="sd-store-announcement-slot">
           <StoreAnnouncementSlot active={announcementIsActive && Boolean(data.announcement.trim() || data.announcementImage)} message={data.announcement} image={data.announcementImage} />
         </div>
         <div className={"sd-service-grid sd-store-grid "+(activeServices.length === 1 ? "has-featured-item" : activeServices.length > 4 ? "has-catalogue" : "has-small-catalogue")}>

@@ -357,3 +357,15 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 - This is the active QA checkpoint: complete and verify Store banner replacement and video sound interaction first, then stop for product-owner QA. Do not start Setup (stage 3), Account or Briefcase until the owner approves this checkpoint. Setup is the next planned screen after approval.
 - This clarification supersedes earlier instructions in this file that said to remove the announcement row when inactive or to leave no reserved banner space. The placeholder and published announcement occupy one shared slot, never two.
 - Any Store shell change must synchronize the app-shell cache version across `src/app/page.tsx`, `public/sw.js`, and `scripts/verify-offline.mjs`; preserve the existing update/refresh lifecycle.
+
+
+## Product-owner scope update — compact Setup before Account and Briefcase (2026-11-15)
+- The owner has explicitly expanded the current implementation scope to include the previously planned Setup refinement. Complete the single Store announcement slot, full-frame video sound hit area, and compact owner Setup together, then push and stop for owner QA.
+- Setup is a three-step, mobile-first flow: **01 Business identity** (business name, currency and up to three brand colours); **02 First customer offer** (required name, industry and fixed price); **03 Announcement** (optional and collapsed until opened).
+- Description and product/service media are optional details inside a collapsed disclosure. Announcement copy and thumbnail controls are also collapsed until requested. Existing values remain in state and are indicated in the disclosure summary; collapsing never clears or omits saved values.
+- Keep required offer fields visible and compact. Keep the live preview to a concise identity strip, Store / Account / Briefcase labels, and one first-listing preview. Do not repeat explanatory paragraphs or render a second long demonstration of the app.
+- Preserve currency choices, one-to-three colour selection/custom colour, service creation, UploadThing media flow, announcement draft/image flow, local save, edit and overwrite confirmation behavior. Do not weaken required-field validation or change the local-only data contract.
+- Store heading and availability status share one header row at mobile widths. The single announcement/placeholder slot is a separate full-width row immediately below that header and immediately above the offerings; status remains visible independently. Do not place the announcement as a third header item or stack the status beneath the heading.
+- For video, the complete visible media frame is the interactive target. Overlay text, badges and placeholder layers pass pointer events through; keep muted autoplay, loop, inline playback and keyboard activation; do not add native controls.
+- This scope ends after Setup. Customer Account and owner Briefcase redesign remain deferred until the owner has QA'd and approved this checkpoint.
+- Synchronize app-shell cache version across `src/app/page.tsx`, `public/sw.js` and `scripts/verify-offline.mjs` whenever Store changes alter the shell.
