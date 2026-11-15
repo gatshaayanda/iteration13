@@ -577,10 +577,13 @@ export default function Home() {
 
   useEffect(() => {
     if (!ready) return;
-    if (view === "account") window.history.replaceState({}, "", "/?view=account");
-    else if (view === "shop") window.history.replaceState({}, "", "/");
-    else if (view === "login") window.history.replaceState({}, "", "/#login");
-    else window.history.replaceState({}, "", "/#admin");
+    const url = new URL("/", window.location.origin);
+    const restore = new URLSearchParams(window.location.search).get("restore") || "";
+    if (/^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(restore)) url.searchParams.set("restore", restore);
+    if (view === "account") url.searchParams.set("view", "account");
+    else if (view === "login") url.hash = "#login";
+    else if (view === "admin") url.hash = "#admin";
+    window.history.replaceState({}, "", url.toString());
   }, [view, ready]);
 
   function commitData(update: (current: DemoData) => DemoData, successMessage: string) {
