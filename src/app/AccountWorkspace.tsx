@@ -27,6 +27,7 @@ type Props = {
   setEmail: (email: string) => void;
   online: boolean;
   announcement: string;
+  announcementActive: boolean;
   onBrowse: () => void;
   onUpdateOrder: (orderId: string, update: (order: WorkspaceOrder) => WorkspaceOrder, notice: string) => void;
   children?: ReactNode;
@@ -39,7 +40,7 @@ type Props = {
 
 const prettyDate = (value: string) => { try { return new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }); } catch { return value; } };
 
-export default function AccountWorkspace({ businessName, currency, orders, discountClaims, receiptProfile, accentColor, secondaryColor, highlightColor, availability, customerName, email, setEmail, online, announcement, onBrowse, onUpdateOrder, children, requestForm, onNewRequest, selectedServices, onRemoveSelected, onContinueRequest }: Props) {
+export default function AccountWorkspace({ businessName, currency, orders, discountClaims, receiptProfile, accentColor, secondaryColor, highlightColor, availability, customerName, email, setEmail, online, announcement, announcementActive, onBrowse, onUpdateOrder, children, requestForm, onNewRequest, selectedServices, onRemoveSelected, onContinueRequest }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [uploadingOrder, setUploadingOrder] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -129,13 +130,13 @@ export default function AccountWorkspace({ businessName, currency, orders, disco
         <div className="sd-care-request"><div><span className="sd-care-label">REQUEST DETAILS</span><h3>{currentOrder.serviceItems?.length ? currentOrder.serviceItems.map(item => item.name).join(" + ") : currentOrder.serviceName}</h3><p>Received {timeAgo(currentOrder.createdAt)} · {formatShortDate(currentOrder.createdAt)} · {typeof currentOrder.quotedPrice === "number" ? "Proposed quote · " + money(currentOrder.quotedPrice) : currentOrder.serviceItems?.some(item => item.price === 0) ? "Quote to be confirmed" : "Catalogue estimate · " + money(currentOrder.price)}</p></div><span className="sd-care-status">{currentOrder.status}</span></div>
         <div className="sd-care-next"><span className="sd-care-label">WHAT HAPPENS NEXT</span><strong>{currentOrder.status === "New request" ? "Business review" : currentOrder.status === "Completed" ? "Request completed" : currentOrder.status === "Declined" ? "Request closed" : currentOrder.status === "Quote ready" ? "Your review" : currentOrder.status === "Reviewing" ? "Business reviewing" : currentOrder.status === "In progress" ? "Business working" : "Business handling"}</strong><p>{careMessage}</p>{lastBusinessUpdate && <small>Last business update · {formatShortDate(lastBusinessUpdate)}</small>}</div>
         <button type="button" className="sd-care-conversation" onClick={() => { setOpenThread(currentOrder.id); document.getElementById("care-request-" + currentOrder.id)?.scrollIntoView({behavior:"smooth",block:"start"}); }}>Open conversation <span>↗</span></button>
-      </> : <div className="sd-care-next"><strong>Your next step starts here.</strong><p>{careMessage}</p></div>}
+      </> : <div className="sd-care-next"><strong>Your next step starts here.</strong><p>{careMessage}</p><button type="button" className="sd-care-empty-action" onClick={selectedServices.length ? onContinueRequest : onBrowse}>{selectedServices.length ? `Continue with ${selectedServices.length} selected ${selectedServices.length === 1 ? "item" : "items"} →` : "Browse the Store →"}</button></div>}
     </section>
 
     <div className="sd-account-quick-stats" aria-label="Account summary">
       <div><strong>{openOrders}</strong><span>Active {openOrders === 1 ? "request" : "requests"}</span></div>
       <div><strong>{newUpdates}</strong><span>Business {newUpdates === 1 ? "message" : "messages"}</span></div>
-      <button type="button" onClick={onNewRequest}>＋ Start a new request</button>
+      <button type="button" onClick={selectedServices.length ? onContinueRequest : onNewRequest}>{selectedServices.length ? "Continue selected request →" : "＋ Start another request"}</button>
     </div>
 
     {selectedServices.length > 0 && <details className="sd-account-basket" open={basketOpen} onToggle={event => setBasketOpen(event.currentTarget.open)}>
@@ -187,7 +188,7 @@ export default function AccountWorkspace({ businessName, currency, orders, disco
 
     <details className="sd-account-collapsible" id="care-rewards" open={rewardsOpen} onToggle={event => setRewardsOpen(event.currentTarget.open)}><summary><span>Rewards</span><b>{matchingRewards.length ? `${matchingRewards.length} available` : "View details"}</b></summary><div><p>Rewards earned in the Store are linked to this email.</p>{matchingRewards.map(claim => <article key={claim.id}><strong>{claim.code}</strong><b>{money(claim.amount)} off</b><span>{claim.status}</span></article>)}{matchingRewards.length === 0 && <p className="sd-account-notification-empty">Rewards earned in the Store will appear here when linked to your email address.</p>}</div></details>
 
-    {announcement.trim() && <aside className="sd-account-announcement"><span className="sd-kicker">FROM {businessName.toUpperCase()}</span><h3>Business update</h3><p>{announcement}</p></aside>}
+    {announcementActive && announcement.trim() && <aside className="sd-account-announcement"><span className="sd-kicker">FROM {businessName.toUpperCase()}</span><h3>Business update</h3><p>{announcement}</p></aside>}
     {uploadNotice && <p className="sd-account-feedback" role="status">{uploadNotice}</p>}
 
     <details className="sd-account-lookup-compact" open={lookupOpen} onToggle={event => setLookupOpen(event.currentTarget.open)}><summary>{normalizedEmail ? "Using " + email : "Find your account"} <b>Change email</b></summary><div><label htmlFor="account-email">Email used on your request</label><input id="account-email" type="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="Enter your email address" autoComplete="email" /><p>Requests in this browser are matched to this email address.</p></div></details>
