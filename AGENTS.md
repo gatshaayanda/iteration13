@@ -72,6 +72,21 @@ Read [docs/BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md](./docs/BUSINESS-IDENTITY-AN
 - Expo design-system and shadcn DESIGN.md/showcase workflows are transferable references, not instructions to migrate stacks or install dependencies. Rive and motion galleries are optional; use them only when they improve the product.
 - Apply this standard immediately during Iteration 13's active Store/Briefcase redesign and screen-by-screen QA. The detailed contract is the linked standard; future chats must read it rather than relying on chat summaries.
 
+### Mandatory project genre decision and design-direction brief
+
+Every new app and every material visual/experience redesign must have an explicit, project-specific design-direction decision **before substantial screen implementation**. This is a workflow gate, not optional inspiration and not a request to apply a generic theme.
+
+- Understand the actual business, audience, positioning, customer/staff tasks and operating context first. Use the supplied brief and verified repository evidence; do not invent business details.
+- Select one dominant genre from **Quiet, Character, Atmosphere, Data or Loud**, with a concise reason tied to that project's audience, business objective and primary tasks. These are practical art-direction lenses, not an exhaustive taxonomy or rigid templates.
+- Record deliberate secondary genre influences and where they belong in the journey (for example, Quiet for customer account, Data for operations, Loud for a launch campaign). Do not force every route into one treatment or let adjacent screens feel like unrelated products.
+- Translate the decision into a compact project-specific direction brief: brand/positioning, visual principles, typography and hierarchy, colour/surface approach, imagery, density/composition, motion/interaction, accessibility/performance constraints, and references/research findings where useful.
+- For a new project, put the decision in its project `AGENTS.md` and `DESIGN.md` (or equivalent) before substantial UI work. For an existing project, inspect its current design system and proven journey first; preserve the established direction unless the brief or evidence warrants a change, then record any confirmed refinement in the project docs.
+- Apply the direction across the complete experience—Store/landing, customer request and Account, staff/admin/Briefcase, receipts and important states—not just the homepage. Genre can vary by task/screen while shared identity, tokens and components remain coherent.
+- For every visual update, check whether the change remains consistent with the project's recorded genre and task purpose. Do not restart genre selection for a small correction; revisit it only when product positioning, audience or primary use materially changes.
+- Use the canonical [Design Intelligence & Experience Quality Standard](./docs/DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md) for definitions, research, design-system practice and QA. A genre label alone is not a design brief and does not prove quality.
+
+**Stop/go rule:** do not begin substantial visual implementation until the project genre and its business rationale are recorded. If the brief is insufficient to choose safely, make the best evidence-based recommendation and ask only for the one decision that genuinely requires the product owner.
+
 ## Interaction clarity and feedback (mandatory)
 
 - Read [docs/INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md](./docs/INTERACTION-CLARITY-AND-FEEDBACK-STANDARD.md) before implementing or reviewing customer-facing interactions, forms, navigation, account workspaces, status feedback, notifications or error/success states.
