@@ -24,6 +24,7 @@ Then open only the relevant task-specific documents below. Read the actual code 
 | If the task involves… | Read this authoritative document |
 | --- | --- |
 | Business objectives, product comprehension, screen redesign, feature planning or architecture traceability | [Objective-to-System Design Standard](./OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md) |
+| Visual genre selection, design research, design-system tokens/showcase, visual anti-patterns or design regression | [Design Intelligence & Experience Quality Standard](./DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md) |
 | Visual design, responsive layout or visual QA | [Visual Direction Standard](./VISUAL-DIRECTION-STANDARD.md), then open the canonical [WashRide reference image](./assets/washride-home-reference.jpeg) |
 | Business naming, first-run identity, one-to-three-colour palettes or Store · Account · Briefcase coupling | [Business Identity & Restrained Colour Standard](./BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md) |
 | Meaningful loading, search, booking, status, upload, payment, messaging, admin operations or handoff | [Operational Transparency Standard](./OPERATIONAL-TRANSPARENCY-STANDARD.md) |
@@ -48,6 +49,7 @@ Then open only the relevant task-specific documents below. Read the actual code 
 
 - **CHANGE-SAFETY-STANDARD.md** — cross-project regression-prevention method. Mandatory for every task.
 - **OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md** — mandatory trace from business objective through human need, journey, function, interface and technical architecture to verification; includes current screen-by-screen QA and lessons adopted from Expo Exact.
+- **DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md** — mandatory art-direction lenses, research method, design-system discipline, rendered showcase, AI-design anti-pattern checks, motion guidance and visual regression/QA. Integrates transferable Expo Skills and shadcn design-system practices without requiring their runtimes or libraries.
 - **VISUAL-DIRECTION-STANDARD.md** — visual craft, composition and responsive compactness; the JPEG asset is the visual source, not the prose alone.
 - **BUSINESS-IDENTITY-AND-COLOUR-STANDARD.md** — first-run business identity, coupled Store · Account · Briefcase preview, maximum three brand colours, contrast and evidence-led colour psychology.
 - **OPERATIONAL-TRANSPARENCY-STANDARD.md** — truthful activity, status and outcomes across real workflows.
