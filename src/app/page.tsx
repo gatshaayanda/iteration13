@@ -1027,9 +1027,22 @@ export default function Home() {
     if (commitData(current => ({ ...current, orders: current.orders.map(order => order.id === id ? { ...order, messages: [...(order.messages || []), message] } : order) }), "Studio reply saved to this browser's demo thread.")) setAdminReplyDrafts(current => ({ ...current, [id]: "" }));
   }
 
-  return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--studio-accent-secondary": secondaryColor, "--studio-accent-highlight": highlightColor, "--studio-accent-ink": accentInk(themeColor), "--studio-accent-text": accentText(themeColor) } as React.CSSProperties}>
+    const setupChecklist = [
+    { label: "Business name", complete: Boolean(businessName.trim()) },
+    { label: "Pricing currency", complete: supportedCurrencies.includes(businessCurrency as typeof supportedCurrencies[number]) },
+    { label: "Brand colours", complete: brandColors.length >= 1 && brandColors.length <= 3 },
+    { label: "First customer offer", complete: Boolean(serviceName.trim() && serviceIndustry.trim() && servicePrice.trim() && Number.isFinite(Number(servicePrice)) && Number(servicePrice) >= 0) },
+  ];
+  const setupCompletedCount = setupChecklist.filter(item => item.complete).length;
+  const setupReady = setupCompletedCount === setupChecklist.length;
+return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--studio-accent-secondary": secondaryColor, "--studio-accent-highlight": highlightColor, "--studio-accent-ink": accentInk(themeColor), "--studio-accent-text": accentText(themeColor) } as React.CSSProperties}>
     {!identityReady || !ready || !businessNameReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete ? <section className="sd-identity-onboarding">
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "BUSINESS IDENTITY" : "SETUP · STORE · ACCOUNT · BRIEFCASE"}</span></div>
+      <section className="sd-identity-progress" aria-label={`Setup progress: ${setupCompletedCount} of 4 complete`}>
+        <div className="sd-identity-progress-heading"><div><span>YOUR SETUP</span><strong>{setupCompletedCount} <small>of 4 ready</small></strong></div><p>{setupReady ? "Your business is ready to be created." : "Complete the essentials to open your Business OS."}</p></div>
+        <div className="sd-identity-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={4} aria-valuenow={setupCompletedCount} aria-label="Setup essentials completed">{setupChecklist.map(item => <span key={item.label} className={item.complete ? "is-complete" : ""} />)}</div>
+        <div className="sd-identity-progress-items">{setupChecklist.map((item,index) => <span key={item.label} className={item.complete ? "is-complete" : ""}><i aria-hidden="true">{item.complete ? "✓" : index+1}</i>{item.label}</span>)}</div>
+      </section>
       <div className="sd-identity-resume-row">
         <span className="sd-identity-save-label"><i aria-hidden="true" />{hasPreviousSetup ? "Saved on this device" : "Live preview updates as you build"}</span>
         <details className="sd-identity-preview-disclosure">
@@ -1097,8 +1110,11 @@ export default function Home() {
               </div>
             </details>
           </section>
-          <button type="button" className="sd-identity-continue" onClick={() => completeBusinessIdentity()} disabled={!ready || serviceMediaUploading || announcementImageUploading}>{serviceMediaUploading ? "Uploading product / service media…" : announcementImageUploading ? "Uploading announcement thumbnail…" : identityEditing ? "Save business setup" : "Create my Business OS"} <span>↗</span></button>
-          <p className="sd-identity-local-note">Saved on this device. This demo does not sync across devices.</p>{identityEditing && <button type="button" className="sd-small-button" onClick={() => { setIdentityEditing(false); setIdentityServiceId(null); setIdentityComplete(true); }}>Cancel editing</button>}
+          <div className="sd-identity-submit-area">
+            <button type="button" className="sd-identity-continue" onClick={() => completeBusinessIdentity()} disabled={!ready || !setupReady || serviceMediaUploading || announcementImageUploading}>{serviceMediaUploading ? "Uploading product / service media…" : announcementImageUploading ? "Uploading announcement thumbnail…" : identityEditing ? "Save business setup" : "Create my Business OS"} <span>↗</span></button>
+            <p className="sd-identity-submit-guidance" aria-live="polite">{setupReady ? "All four essentials are ready. Your Store, Account and Briefcase will share this identity." : `Complete ${4-setupCompletedCount} more ${4-setupCompletedCount===1?"item":"items"} to continue.`}</p>
+            <p className="sd-identity-local-note">Saved on this device. This demo does not sync across devices.</p>
+          </div>{identityEditing && <button type="button" className="sd-small-button" onClick={() => { setIdentityEditing(false); setIdentityServiceId(null); setIdentityComplete(true); }}>Cancel editing</button>}
         </div>
 
       </div>

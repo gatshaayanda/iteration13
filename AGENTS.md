@@ -373,3 +373,9 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 - Setup visual direction: Quiet is dominant because owners are identifying their business and entering essential information; Data is the secondary influence for currency, pricing and the operationally connected Store / Account / Briefcase preview. Use a light neutral workspace, high-contrast ink typography, restrained borders, one brand-accent underline and clear selected states. Avoid oversized campaign styling, tiny uppercase labels and competing card stacks. The WashRide reference contributes immediate brand recognition, strong hierarchy and an obvious primary action, not its dark car-wash palette or literal hero composition.
 - This scope ends after Setup. Customer Account and owner Briefcase redesign remain deferred until the owner has QA'd and approved this checkpoint.
 - Synchronize app-shell cache version across `src/app/page.tsx`, `public/sw.js` and `scripts/verify-offline.mjs` whenever Store changes alter the shell.
+
+
+## Owner setup completion and action hierarchy (2026-11-15)
+- Keep the live Preview collapsed and attached to the saved-device / Continue row. Its Store, Account, Briefcase, first listing and palette remain inside the disclosure; do not turn it into a permanent tall panel.
+- Show truthful live **x/4 ready** progress for four essentials: business name, pricing currency, at least one brand colour, and a valid first offer (name, industry and price). Announcement is optional and never blocks setup.
+- Clearly mark each essential and explain what remains. The final Create my Business OS action is the single dominant, full-width primary action; disable it until all four essentials are ready. Keep browser-local persistence wording adjacent and honest.
