@@ -774,55 +774,6 @@ export default function Home() {
   function returnToBusinessSetup() {
     const url = new URL(window.location.href); url.searchParams.delete("explore"); url.searchParams.delete("view"); url.hash = ""; window.location.assign(url.toString());
   }
-  function loadPreviousBusinessSetup() {
-    // Restore the saved owner identity and first listing after the new-business
-    // form has temporarily cleared its inputs. Never write to storage here.
-    try {
-      const savedName = window.localStorage.getItem(getStorageKey("iteration13:business-name:v1"));
-      const savedCurrency = window.localStorage.getItem(getStorageKey(CURRENCY_KEY));
-      const savedPalette = window.localStorage.getItem(getStorageKey("iteration13:business-palette:v1"));
-      const savedTheme = window.localStorage.getItem(getStorageKey("iteration13:store-theme:v1"));
-      const savedData = window.localStorage.getItem(getStorageKey(STORAGE_KEY));
-      const parsed = savedData ? JSON.parse(savedData) as Partial<DemoData> : null;
-      const services = Array.isArray(parsed?.services) ? parsed.services : [];
-      const firstService = services[0];
-      if (savedName) setBusinessName(savedName.slice(0, 48));
-      if (savedCurrency && supportedCurrencies.includes(savedCurrency as typeof supportedCurrencies[number])) setBusinessCurrency(savedCurrency);
-      if (savedPalette) {
-        const parsedPalette: unknown = JSON.parse(savedPalette);
-        if (Array.isArray(parsedPalette)) {
-          const validPalette = [...new Set(parsedPalette.filter((value): value is string => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value)))].slice(0, 3);
-          if (validPalette.length) setBrandColors(validPalette);
-        }
-      } else if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setBrandColors([savedTheme]);
-      if (firstService) {
-        setServiceName(firstService.name || "");
-        setServiceIndustry(firstService.industry || "");
-        setServicePrice(String(firstService.price ?? 0));
-        setServiceDescription(firstService.description || "");
-        setServiceMedia(firstService.media || "");
-        setServiceMediaType(firstService.mediaType === "video" ? "video" : "image");
-        setServiceActive(firstService.active !== false);
-        setIdentityServiceId(firstService.id || null);
-      }
-      setAnnouncementDraft(parsed?.announcement || "");
-      setAnnouncementImageDraft(parsed?.announcementImage || "");
-      setAnnouncementEnabledDraft(typeof parsed?.announcementActive === "boolean" ? parsed.announcementActive : Boolean(parsed?.announcement?.trim() || parsed?.announcementImage));
-      setRewardTitleDraft(parsed?.rewardTitle || emptyData.rewardTitle || "Race for a discount.");
-      setRewardDescriptionDraft(parsed?.rewardDescription || emptyData.rewardDescription || "");
-      setRewardImageDraft(parsed?.rewardImage || "");
-      setRewardDiscountDraft(String(Number(parsed?.discountAmount) > 0 ? Number(parsed?.discountAmount) : 5));
-      setIdentityEditing(false);
-      setSetupPathChosen(false);
-      setHasPreviousSetup(true);
-      setIdentityComplete(true);
-      setView("shop");
-      setNotice(`Restored ${savedName?.trim() || "your previous business"} from this device. Your saved catalogue and customer records were left untouched.`);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch {
-      setNotice("The previous business could not be read. Nothing was changed; your saved data has not been cleared.");
-    }
-  }
 
   function completeBusinessIdentity(confirmedOverwrite = false) {
     if (hasPreviousSetup && !identityEditing && !confirmedOverwrite) {
