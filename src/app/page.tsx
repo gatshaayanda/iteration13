@@ -1105,6 +1105,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
       </div>
       <div className="sd-identity-onboarding-layout">
         <div className="sd-identity-onboarding-copy">
+          <h1><span>{businessName.trim() || "Your Business"}</span> <em>at work.</em></h1>
           <section className="sd-identity-setup-step sd-identity-identity-step" aria-labelledby="sd-identity-step-title">
             <div className="sd-identity-step-heading"><span>01 / BUSINESS IDENTITY</span><strong id="sd-identity-step-title">Make it yours</strong></div>
             <label className="sd-identity-name-label">Business name
