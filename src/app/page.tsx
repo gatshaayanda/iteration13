@@ -1029,11 +1029,29 @@ export default function Home() {
   return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--studio-accent-secondary": secondaryColor, "--studio-accent-highlight": highlightColor, "--studio-accent-ink": accentInk(themeColor), "--studio-accent-text": accentText(themeColor) } as React.CSSProperties}>
     {!identityReady || !ready || !businessNameReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete ? <section className="sd-identity-onboarding">
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "BUSINESS IDENTITY" : "SETUP · STORE · ACCOUNT · BRIEFCASE"}</span></div>
-      {!identityEditing && hasPreviousSetup && <div className="sd-identity-resume-row"><span>Saved on this device</span><button type="button" onClick={loadPreviousBusinessSetup}>Continue {businessName.trim() || "your business"} ↗</button></div>}
+      <div className="sd-identity-resume-row">
+        <span className="sd-identity-save-label"><i aria-hidden="true" />{hasPreviousSetup ? "Saved on this device" : "Live preview updates as you build"}</span>
+        <details className="sd-identity-preview-disclosure">
+          <summary><span>Preview</span><small>Store · Account · Briefcase</small></summary>
+          <div className="sd-identity-live-preview" aria-label="Live preview of your Store, Account and Briefcase">
+            <div className="sd-identity-preview-brand" style={{ background: themeColor }}><span>{(businessName.trim() || "Your Business").slice(0,2).toUpperCase()}</span><div><strong>{businessName.trim() || "Your Business"}</strong><small>Your business in your pocket.</small></div></div>
+            <div className="sd-identity-preview-areas" aria-label="Connected business areas"><span>Store</span><span>Account</span><span>Briefcase</span></div>
+            <div className="sd-identity-service-preview" aria-live="polite">
+              <span>FIRST STORE LISTING</span>
+              <div className="sd-identity-service-preview-card">
+                {serviceMedia ? <img src={serviceMedia} alt="First product / service image preview" /> : <div className="sd-identity-service-placeholder" style={{background:themeColor,color:accentInk(themeColor)}}><strong>{serviceName.trim() ? serviceName.trim().slice(0,1).toUpperCase() : "＋"}</strong><small>BRANDED PLACEHOLDER</small></div>}
+                <div><strong>{serviceName.trim() || "Your first product / service"}</strong><b>{money(Number(servicePrice)||0)}</b>{serviceDescription.trim() && <p>{serviceDescription.trim()}</p>}</div>
+              </div>
+            </div>
+            <div className="sd-identity-preview-footer"><span>YOUR BRAND PALETTE</span><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div><small>One identity · three connected areas</small></div>
+          </div>
+        </details>
+        {!identityEditing && hasPreviousSetup && <button type="button" onClick={loadPreviousBusinessSetup}>Continue {businessName.trim() || "your business"} ↗</button>}
+      </div>
       <div className="sd-identity-onboarding-layout">
         <div className="sd-identity-onboarding-copy">
           <span className="sd-kicker">YOUR BUSINESS · ONE CONNECTED SYSTEM</span>
-          <h1>{businessName.trim() || "Your Business"} <em>at work.</em></h1>
+          <h1><span>{businessName.trim() || "Your Business"}</span> <em>at work.</em></h1>
           <p>{identityEditing ? "Update your name, brand, pricing currency and first Store listing. Existing requests stay in place." : "Set your business identity and one offer. Customers use your Store and Account; your Briefcase puts the operation in your hands."}</p>
           <section className="sd-identity-setup-step sd-identity-identity-step" aria-labelledby="sd-identity-step-title">
             <div className="sd-identity-step-heading"><span>01 / BUSINESS IDENTITY</span><strong id="sd-identity-step-title">Make it yours</strong></div>
@@ -1081,18 +1099,7 @@ export default function Home() {
           <button type="button" className="sd-identity-continue" onClick={() => completeBusinessIdentity()} disabled={!ready || serviceMediaUploading || announcementImageUploading}>{serviceMediaUploading ? "Uploading product / service media…" : announcementImageUploading ? "Uploading announcement thumbnail…" : identityEditing ? "Save business setup" : "Create my Business OS"} <span>↗</span></button>
           <p className="sd-identity-local-note">Saved on this device. This demo does not sync across devices.</p>{identityEditing && <button type="button" className="sd-small-button" onClick={() => { setIdentityEditing(false); setIdentityServiceId(null); setIdentityComplete(true); }}>Cancel editing</button>}
         </div>
-        <div className="sd-identity-live-preview" aria-label="Live preview of your Store, Account and Briefcase">
-          <div className="sd-identity-preview-brand" style={{ background: themeColor }}><span>{(businessName.trim() || "Your Business").slice(0,2).toUpperCase()}</span><div><strong>{businessName.trim() || "Your Business"}</strong><small>Your business in your pocket.</small></div></div>
-          <div className="sd-identity-preview-areas" aria-label="Connected business areas"><span>Store</span><span>Account</span><span>Briefcase</span></div>
-          <div className="sd-identity-service-preview" aria-live="polite">
-            <span>FIRST STORE LISTING</span>
-            <div className="sd-identity-service-preview-card">
-              {serviceMedia ? <img src={serviceMedia} alt="First product / service image preview" /> : <div className="sd-identity-service-placeholder" style={{background:themeColor,color:accentInk(themeColor)}}><strong>{serviceName.trim() ? serviceName.trim().slice(0,1).toUpperCase() : "＋"}</strong><small>BRANDED PLACEHOLDER</small></div>}
-              <div><strong>{serviceName.trim() || "Your first product / service"}</strong><b>{money(Number(servicePrice)||0)}</b>{serviceDescription.trim() && <p>{serviceDescription.trim()}</p>}</div>
-            </div>
-          </div>
-          <div className="sd-identity-preview-footer"><span>YOUR BRAND PALETTE</span><div>{brandColors.map(color => <i key={color} style={{ background: color }} />)}</div><small>One identity · three connected areas</small></div>
-        </div>
+
       </div>
     {pendingConfirm?.kind === "overwrite-business" && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-onboarding-overwrite-title" aria-describedby="sd-onboarding-overwrite-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-onboarding-overwrite-title">Replace the saved business?</h2><p id="sd-onboarding-overwrite-description">This replaces the current business name, colours, currency and products / services. Its saved customer requests, messages and owner notes on this device will also be cleared. This cannot be undone.</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep existing setup</button><button type="button" className="sd-button sd-primary" onClick={() => { setPendingConfirm(null); completeBusinessIdentity(true); }}>Replace and create</button></div></section></div>}</section> : <>
     <div className="sd-topline"><div className="sd-wrap"><details className="sd-connect-details"><summary className={(online ? "sd-connect" : "sd-connect is-offline") + (offlineShellReady ? " is-offline-ready" : "")} aria-label={offlineShellReady ? "App shell saved on this device; open details" : online ? "Browser-local demo; open details" : "Offline mode; open details"}><i />{offlineShellReady ? "App shell saved" : online ? "Demo mode" : "Offline mode"}<span className="sd-connect-chevron" aria-hidden="true">⌄</span></summary><div className="sd-connect-popover"><strong>{offlineShellReady ? "The Store can reopen offline on this device." : "This is a browser-local demo."}</strong><span>{offlineShellReady ? "The app interface is saved on this device. When an update is ready, use Refresh to switch to the new version." : "Your demo workspace is stored in this browser."}</span><span>Business edits stay on this device. Uploads and cloud-connected actions still need internet.</span></div></details></div></div>
