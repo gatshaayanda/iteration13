@@ -5228,3 +5228,43 @@ h1 em,
   .serviceDemo .sd-store-collection .sd-store-card:hover,
   .serviceDemo .sd-store-collection .sd-order-button{transition:none;transform:none}
 }
+
+
+/* Store header identity legibility: keep the business name and STORE label readable at a glance. */
+.serviceDemo .sd-header .sd-brand{
+  gap:10px;
+}
+.serviceDemo .sd-header .sd-brand>span:last-child{
+  gap:4px;
+}
+.serviceDemo .sd-header .sd-brand strong{
+  color:#171a1d;
+  font-size:clamp(.94rem,1.2vw,1.04rem);
+  font-weight:850;
+  line-height:1.12;
+  letter-spacing:.025em;
+}
+.serviceDemo .sd-header .sd-brand small{
+  color:#555750;
+  font-size:.69rem;
+  font-weight:850;
+  line-height:1.15;
+  letter-spacing:.14em;
+}
+@media(max-width:720px){
+  .serviceDemo .sd-header .sd-brand strong{
+    font-size:.94rem;
+  }
+  .serviceDemo .sd-header .sd-brand small{
+    font-size:.66rem;
+    letter-spacing:.13em;
+  }
+}
+@media(max-width:360px){
+  .serviceDemo .sd-header .sd-brand strong{
+    font-size:.9rem;
+  }
+  .serviceDemo .sd-header .sd-brand small{
+    font-size:.64rem;
+  }
+}
