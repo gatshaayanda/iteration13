@@ -637,7 +637,13 @@ export default function Home() {
         const sharedServices = Array.isArray(sharedExample.data?.services) ? sharedExample.data.services : [];
         // The app's initial hydration can create an empty visitor-local record before the visitor opens the shared example.
         // Treat that untouched empty record as first visit so the catalogue embedded in the link is not shadowed.
-        const useSharedSnapshot = savedServices.length === 0 && sharedServices.length > 0 && (!Array.isArray(parsed.orders) || parsed.orders.length === 0);
+        // The original shared example is the source of truth on first launch. A later
+        // one-service TrailWise sample was accidentally saved into this visitor namespace;
+        // replace that exact injected seed with the complete shared catalogue and media.
+        const isInjectedTrailWiseSeed = savedServices.length === 1 && savedServices[0]?.id === "trailwise-guided-walk";
+        const hasNoVisitorActivity = !Array.isArray(parsed.orders) || parsed.orders.length === 0;
+        const useSharedSnapshot = sharedServices.length > 0 && hasNoVisitorActivity &&
+          (savedServices.length === 0 || isInjectedTrailWiseSeed);
         exampleData = useSharedSnapshot
           ? { ...emptyData, ...sharedExample.data, services: sharedServices, orders: [], events: [], views: 0, receiptProfile: { ...emptyData.receiptProfile! } }
           : { ...emptyData, ...parsed, services: savedServices, orders: Array.isArray(parsed.orders) ? parsed.orders : [], events: Array.isArray(parsed.events) ? parsed.events : [], receiptProfile: { ...emptyData.receiptProfile!, ...(parsed.receiptProfile || {}) } };
