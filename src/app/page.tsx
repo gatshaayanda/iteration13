@@ -1069,7 +1069,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "BUSINESS IDENTITY" : "SETUP · STORE · ACCOUNT · BRIEFCASE"}</span></div>
       {!setupPathChosen && !identityEditing ? <section className="sd-identity-entry" aria-labelledby="sd-identity-entry-title">
         <span className="sd-kicker">YOUR BUSINESS · ONE CONNECTED SYSTEM</span>
-        <h1 id="sd-identity-entry-title">Make it yours. <em>Or explore first.</em></h1>
+        <h1 id="sd-identity-entry-title">Make it yours. <em>Start here.</em></h1>
         <p>You do not need to fill anything in to see how the Business OS works. Start with your own business, or continue in the last saved business.</p>
         <div className="sd-identity-entry-actions">
           <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Build my Business OS</h2><p>Set up your business name, first offer and brand. Add the details as you go.</p></div><button type="button" onClick={beginBusinessSetup}>Set up my business <span aria-hidden="true">↗</span></button></article>
