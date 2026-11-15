@@ -92,13 +92,10 @@ type SavedBusinessWorkspace = { suffix: string; name: string; serviceCount: numb
 function findSavedBusinessWorkspaces(): SavedBusinessWorkspace[] {
   if (typeof window === "undefined") return [];
   try {
-    const suffixes = new Set<string>([""]);
-    for (let index = 0; index < window.localStorage.length; index++) {
-      const key = window.localStorage.key(index) || "";
-      if (!key.startsWith(STORAGE_KEY + ":")) continue;
-      const suffix = key.slice(STORAGE_KEY.length);
-      if (suffix === ":explore" || /^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(suffix)) suffixes.add(suffix);
-    }
+    // Only the owner's original and legacy exploration namespaces are resumable
+    // business workspaces. :visitor: namespaces are independent copies created
+    // from generated share links; they must never be presented as the owner's draft.
+    const suffixes = new Set<string>([":explore", ""]);
     const found: SavedBusinessWorkspace[] = [];
     for (const suffix of suffixes) {
       const raw = window.localStorage.getItem(STORAGE_KEY + suffix);
