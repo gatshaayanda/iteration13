@@ -20,7 +20,6 @@ type Props = {
 };
 
 const HISTORY_KEY = "iteration13:guide-history:v1";
-const TEASER_KEY = "iteration13:guide-teaser:v1";
 
 const screenTips: Record<string, string> = {
   store: "Browsing the Store? I can compare the available offers or take you to a request.",
@@ -41,7 +40,6 @@ function createMessage(from: Message["from"], text: string): Message {
 
 export default function ServiceGuide({ view, screen, services, requestCount, onChooseService, onOpenAccount, onOpenAdmin, onOpenStorefront, onTrack }: Props) {
   const [open, setOpen] = useState(false);
-  const [teaser, setTeaser] = useState(false);
   const [hint, setHint] = useState("");
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -65,17 +63,6 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
       }
     } catch { /* Chat history is optional; the guide still works without storage. */ }
     setHistoryReady(true);
-    try {
-      if (window.sessionStorage.getItem(TEASER_KEY) !== "dismissed" && window.sessionStorage.getItem(TEASER_KEY) !== "shown") {
-        const timer = window.setTimeout(() => {
-          if (document.visibilityState === "visible") {
-            setTeaser(true);
-            try { window.sessionStorage.setItem(TEASER_KEY, "shown"); } catch { /* optional */ }
-          }
-        }, 9000);
-        return () => window.clearTimeout(timer);
-      }
-    } catch { /* no teaser if session storage is unavailable */ }
   }, []);
 
   useEffect(() => {
@@ -223,11 +210,6 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
 
   return <div className="sd-guide-root">
     {!open && hint && <aside className="sd-guide-hint" role="status"><p>{hint}</p><button type="button" onClick={() => { setHint(""); track("contextual-hint-dismissed"); }} aria-label="Dismiss suggestion"><X size={14}/></button></aside>}
-    {!open && teaser && <aside className="sd-guide-teaser" aria-label="Optional service guide invitation">
-      <span className="sd-guide-teaser-spark"><Sparkles size={15}/></span>
-      <div><strong>{view === "admin" ? "Need a hand with the demo?" : "Not sure which service fits?"}</strong><p>{view === "admin" ? "Jump straight to requests, services or your storefront." : "I can help you choose, or take you to your requests."}</p><div className="sd-guide-teaser-actions"><button type="button" onClick={() => { setTeaser(false); setHint(""); track("guide-opened-from-teaser"); setOpen(true); if (!messages.length) say("Hi! I’m the Service Studio guide. I use clear options and real demo actions—no pretend human replies."); }}> {view === "admin" ? "Open admin guide" : "Help me choose"} <ArrowRight size={14}/></button><button type="button" className="sd-guide-dismiss" onClick={() => { setTeaser(false); try { window.sessionStorage.setItem(TEASER_KEY, "dismissed"); } catch { /* optional */ } }}>Not now</button></div></div>
-      <button type="button" className="sd-guide-teaser-close" aria-label="Dismiss guide invitation" onClick={() => { setTeaser(false); try { window.sessionStorage.setItem(TEASER_KEY, "dismissed"); } catch { /* optional */ } }}><X size={15}/></button>
-    </aside>}
     {open && <div className="sd-guide-backdrop" onClick={() => setOpen(false)} aria-hidden="true"/>}
     {open && <section ref={panelRef} className="sd-guide-panel" role="dialog" aria-modal="true" aria-labelledby="sd-guide-title">
       <header className="sd-guide-head"><div className="sd-guide-avatar"><Sparkles size={18}/></div><div><span className="sd-guide-eyebrow">ITERATION 13 · SERVICE GUIDE</span><h2 id="sd-guide-title">{view === "admin" ? "Studio sidekick" : "Find your next step"}</h2><p><span/> Guided demo · {view === "admin" ? "Admin tools" : "Customer journey"}</p></div><button type="button" aria-label="Close guide" onClick={() => { setOpen(false); launcherRef.current?.focus(); }}><ChevronDown size={19}/></button></header>
@@ -240,7 +222,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
       <p id="sd-guide-type-hint" className="sd-guide-type-hint">Tap the message box above to type. Your keyboard opens only when you choose to type.</p>
       <p className="sd-guide-footnote"><Check size={12}/> Scripted guide · Actions tracked in this tab only · No message content stored in analytics</p>
     </section>}
-    <button ref={launcherRef} type="button" className={`sd-guide-launcher${open ? " is-open" : ""}`} aria-expanded={open} aria-haspopup="dialog" aria-label={open ? "Close service guide" : "Open service guide"} onClick={() => { setTeaser(false); setHint(""); track(open ? "guide-minimized" : "guide-opened"); setOpen(value => !value); if (!messages.length) say("Hi! I’m the Service Studio guide. I can point you to the right action, but I’m not a live person or an AI assistant."); }}>
+    <button ref={launcherRef} type="button" className={`sd-guide-launcher${open ? " is-open" : ""}`} aria-expanded={open} aria-haspopup="dialog" aria-label={open ? "Close service guide" : "Need a hand? Open the guide"} onClick={() => { setHint(""); track(open ? "guide-minimized" : "guide-opened"); setOpen(value => !value); if (!messages.length) say("Hi! I’m the Service Studio guide. I can point you to the right action, but I’m not a live person or an AI assistant."); }}>
       {open ? <X size={21}/> : <MessageCircle size={22}/>}<span>{open ? "Close" : "Need a hand?"}</span>{!open && requestCount > 0 && view === "admin" && <b>{requestCount}</b>}
     </button>
   </div>;
