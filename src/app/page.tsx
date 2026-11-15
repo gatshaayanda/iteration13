@@ -859,9 +859,11 @@ export default function Home() {
     const nextServices = identityEditing && identityServiceId
       ? data.services.map(item => item.id === identityServiceId ? firstService : item)
       : [firstService];
+    // Setup announcements are published as part of business creation. The setup flow has no separate visibility switch, so entered content must not be silently saved as hidden.
+    const announcementActive = Boolean(announcement || announcementImage);
     const nextData = identityEditing
-      ? { ...data, services: nextServices, announcement, announcementActive: announcementEnabledDraft, announcementImage }
-      : { ...emptyData, services: nextServices, announcement, announcementActive: announcementEnabledDraft, announcementImage, views: data.views };
+      ? { ...data, services: nextServices, announcement, announcementActive, announcementImage }
+      : { ...emptyData, services: nextServices, announcement, announcementActive, announcementImage, views: data.views };
     try {
       window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(nextData));
       window.localStorage.setItem(getStorageKey("iteration13:business-name:v1"), name.slice(0, 48));
