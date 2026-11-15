@@ -1234,7 +1234,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
           <div className="sd-identity-submit-area">
             <button type="button" className="sd-identity-continue" onClick={() => completeBusinessIdentity()} disabled={!ready || !setupReady || serviceMediaUploading || announcementImageUploading}>{serviceMediaUploading ? "Uploading product / service media…" : announcementImageUploading ? "Uploading announcement thumbnail…" : identityEditing ? "Save business setup" : "Create my Business OS"} <span>↗</span></button>
             <p className="sd-identity-submit-guidance" aria-live="polite">{setupReady ? "All four essentials are ready. Your Store, Account and Briefcase will share this identity." : `Complete ${4-setupCompletedCount} more ${4-setupCompletedCount===1?"item":"items"} to continue.`}</p>
-            <p className="sd-identity-local-note">Saved on this device. This demo does not sync across devices.</p>
+            <p className="sd-identity-local-note">Your setup is saved automatically in this browser. It does not sync across devices.</p>
           </div>{identityEditing && <button type="button" className="sd-small-button" onClick={() => { setIdentityEditing(false); setIdentityServiceId(null); setIdentityComplete(true); }}>Cancel editing</button>}
         </div>
 
