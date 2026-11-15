@@ -6030,3 +6030,5 @@ h1 em,
 }
 
 .serviceDemo .sd-store-card .sd-media-placeholder[hidden]{display:none!important}
+
+.serviceDemo .sd-store-card .sd-service-media>img[hidden]{display:none!important}
