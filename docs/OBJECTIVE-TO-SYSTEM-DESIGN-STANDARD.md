@@ -2,6 +2,12 @@
 
 **Status: mandatory for Iteration 13 product work and all new or materially redesigned Admin Hub portfolio projects.** This standard connects business intent to human experience, interface design, implementation and verification. It complements the Visual Direction, Interaction Clarity, Operational Transparency, Accessibility and Change Safety standards; it does not replace them.
 
+## Design intelligence is part of the objective-to-interface chain
+
+The [Design Intelligence & Experience Quality Standard](./DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md) is mandatory whenever the objective map leads to substantial visual design or redesign. It governs visual-genre selection, task-based product research, psychology checks, design-system consistency, rendered showcases and visual regression. A visual choice must be traceable to the audience, business positioning, user task or information hierarchy; do not introduce a style merely because it is fashionable.
+
+The screen-by-screen QA already required by this document must therefore ask not only whether a screen works, but whether its chosen visual language makes the task understandable, whether its surfaces/components belong to one coherent system, and whether the rendered experience has been inspected across relevant viewports and states. The design standard supplements this traceability; it does not replace business understanding or functional verification.
+
 ## 1. Why this exists
 
 A product can be visually polished and technically functional yet still be confusing or irrelevant if its screens, labels and workflows do not communicate the business purpose. Conversely, a sophisticated system can feel simple when its complexity is organised around the user's actual task.
