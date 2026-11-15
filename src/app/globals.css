@@ -5100,3 +5100,131 @@ h1 em,
   .serviceDemo .sd-product-announcement{top:9px;left:9px;right:9px;min-height:44px;padding:7px 9px}
   .serviceDemo .sd-product-announcement strong{font-size:.7rem}
 }
+
+
+/* Store editorial product-stage v14: one composition, no pasted white card surfaces. */
+.serviceDemo .sd-store-collection .sd-store-grid.has-featured-item .sd-store-card{
+  display:grid;grid-template-columns:minmax(0,1.24fr) minmax(290px,.76fr);
+  gap:0;width:100%;max-width:1120px;min-height:clamp(360px,38vw,500px);
+  overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none;
+  transition:none;
+}
+.serviceDemo .sd-store-collection .sd-store-grid.has-featured-item .sd-store-card:hover{
+  transform:none;border:0;box-shadow:none;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-media{
+  position:relative;display:grid;min-width:0;min-height:clamp(360px,38vw,500px);
+  height:100%;overflow:hidden;border-radius:0;background:#101923;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-media>img,
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-media>video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-media-placeholder{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
+  align-items:flex-start;gap:12px;overflow:hidden;padding:clamp(26px,4vw,48px);
+  background:radial-gradient(ellipse at 76% 20%,color-mix(in srgb,var(--studio-accent-highlight) 38%,transparent),transparent 34%),linear-gradient(145deg,color-mix(in srgb,var(--studio-accent) 66%,#17243a),#0b1424 78%);
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-info{
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  min-width:0;padding:clamp(24px,4vw,54px);background:transparent!important;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-meta{margin-bottom:16px;color:#687486}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-title{
+  width:100%;align-items:flex-start;gap:14px;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-title h3{
+  color:var(--sd-ink);font-size:clamp(1.65rem,3vw,2.5rem);line-height:1.05;letter-spacing:-.055em;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-title>strong{
+  flex:none;color:var(--sd-ink);font-size:clamp(1.15rem,2vw,1.55rem);white-space:nowrap;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-service-info>p{
+  width:100%;margin:18px 0 26px;color:#424b57;font-size:.96rem;line-height:1.65;
+  overflow-wrap:anywhere;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-order-button{
+  width:min(100%,340px);min-height:52px;padding:0 17px;border:1px solid #11151b;
+  border-radius:0;background:#11151b;color:#fff;font-size:.82rem;font-weight:850;
+  letter-spacing:.015em;transition:background .16s ease,border-color .16s ease,transform .16s ease;
+}
+.serviceDemo .sd-store-collection .sd-store-card .sd-order-button:hover{
+  background:var(--studio-accent);border-color:var(--studio-accent);filter:none;
+}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue,
+.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue{
+  align-items:start;column-gap:clamp(20px,3vw,38px);row-gap:30px;
+}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-store-card,
+.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-store-card{
+  overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none;transition:none;
+}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-store-card:hover,
+.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-store-card:hover{
+  transform:none;border:0;box-shadow:none;
+}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-service-media,
+.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-service-media{
+  position:relative;height:clamp(190px,24vw,290px);min-height:0;overflow:hidden;
+  border-radius:0;background:#101923;
+}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-service-info,
+.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-service-info{
+  display:flex;flex-direction:column;align-items:flex-start;padding:18px 0 24px;
+  background:transparent!important;border-bottom:1px solid var(--sd-line);
+}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-service-title h3,
+.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-service-title h3{
+  color:var(--sd-ink);font-size:clamp(1.15rem,2vw,1.55rem);
+}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-service-title>strong,
+.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-service-title>strong{
+  color:var(--sd-ink);font-size:1.08rem;
+}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-service-info>p,
+.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-service-info>p{
+  margin:10px 0 18px;color:#424b57;font-size:.9rem;line-height:1.6;
+}
+.serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-order-button,
+.serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-order-button{
+  width:min(100%,320px);min-height:48px;border-radius:0;background:#11151b;
+  border:1px solid #11151b;color:#fff;
+}
+.serviceDemo .sd-store-collection .sd-product-announcement{
+  top:14px;left:14px;right:14px;min-height:44px;max-height:72px;
+  padding:7px 11px;border-left:3px solid var(--studio-accent-highlight);
+  background:rgba(17,21,27,.88);color:#fff;box-shadow:0 4px 16px #0003;
+  backdrop-filter:blur(10px);
+}
+.serviceDemo .sd-store-collection .sd-product-announcement small{color:#d4d9e0}
+.serviceDemo .sd-store-collection .sd-product-announcement strong{color:#fff;font-size:.78rem}
+@media(max-width:720px){
+  .serviceDemo .sd-store-collection .sd-store-grid.has-featured-item .sd-store-card{
+    grid-template-columns:minmax(0,1fr);min-height:0;
+  }
+  .serviceDemo .sd-store-collection .sd-store-card .sd-service-media{
+    height:clamp(230px,66vw,360px);min-height:0;
+  }
+  .serviceDemo .sd-store-collection .sd-store-card .sd-service-info{
+    padding:22px 0 30px;
+  }
+  .serviceDemo .sd-store-collection .sd-store-card .sd-service-info>p{
+    margin:13px 0 20px;font-size:.92rem;
+  }
+  .serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue,
+  .serviceDemo .sd-store-collection .sd-store-grid.has-catalogue{
+    grid-template-columns:minmax(0,1fr);row-gap:22px;
+  }
+  .serviceDemo .sd-store-collection .sd-store-grid.has-small-catalogue .sd-service-media,
+  .serviceDemo .sd-store-collection .sd-store-grid.has-catalogue .sd-service-media{
+    height:clamp(210px,60vw,330px);
+  }
+  .serviceDemo .sd-store-collection .sd-product-announcement{
+    top:10px;left:10px;right:10px;padding:7px 9px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .serviceDemo .sd-store-collection .sd-store-card,
+  .serviceDemo .sd-store-collection .sd-store-card:hover,
+  .serviceDemo .sd-store-collection .sd-order-button{transition:none;transform:none}
+}
