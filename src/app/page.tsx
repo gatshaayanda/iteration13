@@ -113,6 +113,44 @@ const accentText = (hex: string) => {
   while (luminance(rgb) > 0.179) rgb = rgb.map(value => Math.max(0, Math.round(value * 0.88)));
   return "#" + rgb.map(value => value.toString(16).padStart(2, "0")).join("");
 };
+function StoreAnnouncementSlot({ active, message, image, preview = false }: { active: boolean; message: string; image?: string; preview?: boolean }) {
+  return <aside className={"sd-store-announcement" + (active ? "" : " is-placeholder") + (preview ? " is-preview" : "")} aria-label={active ? "Business announcement" : "Business updates"}>
+    <span className="sd-store-announcement-mark" aria-hidden="true">{active ? "📣" : "✳"}</span>
+    <div className="sd-store-announcement-copy">
+      <span className="sd-store-announcement-label">{active ? "BUSINESS UPDATE" : "FROM THE BUSINESS"}</span>
+      <p>{active ? (message.trim() || "A note from the business") : "Check back here for business updates and special notices."}</p>
+    </div>
+    {active && image && <img className="sd-announcement-thumb" src={image} alt="" loading="lazy" onError={event => { event.currentTarget.hidden = true; }} />}
+  </aside>;
+}
+
+function StoreVideoPreview({ src }: { src: string }) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [muted, setMuted] = useState(true);
+  const toggleAudio = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const nextMuted = !video.muted;
+    video.muted = nextMuted;
+    if (!nextMuted) {
+      const playback = video.play();
+      if (playback && typeof playback.catch === "function") {
+        void playback.catch(() => {
+          video.muted = true;
+          setMuted(true);
+        });
+      }
+    }
+    setMuted(nextMuted);
+  };
+  return <div className="sd-video-preview" role="button" tabIndex={0} aria-label={muted ? "Play video with sound" : "Mute video"} aria-pressed={!muted}
+    onClick={toggleAudio}
+    onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); toggleAudio(); } }}>
+    <video ref={videoRef} src={src} autoPlay loop muted={muted} playsInline preload="auto" onVolumeChange={event => setMuted(event.currentTarget.muted)} />
+    <span className="sd-video-sound-indicator" aria-hidden="true">{muted ? "◖ Tap for sound" : "◖ Sound on · tap to mute"}</span>
+  </div>;
+}
+
 const localDate = () => { const now = new Date(); return [now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-"); };
 const brandColorOptions = [
   { color: "#2458e8", label: "Cobalt" }, { color: "#16866a", label: "Emerald" },
@@ -436,7 +474,7 @@ export default function Home() {
       if (!("serviceWorker" in navigator) || !("caches" in window)) return;
       try {
         const registration = await navigator.serviceWorker.ready;
-        const shell = await caches.open("iteration13-shell-v17");
+        const shell = await caches.open("iteration13-shell-v18");
         const [home, offlinePage] = await Promise.all([shell.match("/"), shell.match("/offline")]);
         if (active) setOfflineShellReady(Boolean(registration.active && home && offlinePage));
       } catch {
@@ -1068,14 +1106,14 @@ export default function Home() {
         <div className="sd-storefront-bar">
           <div className="sd-storefront-title"><div><span className="sd-kicker">THE STORE</span><h2>Available offerings</h2></div></div>
           <div className="sd-storefront-signals"><span className={"sd-store-availability is-"+(data.availability || "available")}><i aria-hidden="true"/>{data.availability === "limited" ? "Limited availability" : data.availability === "unavailable" ? "Currently unavailable" : "Available now"}</span></div>
-          {announcementIsActive && (data.announcement.trim() || data.announcementImage) && <aside className="sd-store-announcement" aria-label="Business announcement"><span className="sd-store-announcement-mark" aria-hidden="true">📣</span><div className="sd-store-announcement-copy"><span className="sd-store-announcement-label">BUSINESS UPDATE</span><p>{data.announcement.trim() || "A note from the business"}</p></div>{data.announcementImage && <img className="sd-announcement-thumb" src={data.announcementImage} alt="" loading="lazy" onError={event => { event.currentTarget.hidden = true; }} />}</aside>}
+          <StoreAnnouncementSlot active={announcementIsActive && Boolean(data.announcement.trim() || data.announcementImage)} message={data.announcement} image={data.announcementImage} />
         </div>
         <div className={"sd-service-grid sd-store-grid "+(activeServices.length === 1 ? "has-featured-item" : activeServices.length > 4 ? "has-catalogue" : "has-small-catalogue")}>
           {activeServices.length ? activeServices.map((service,index)=><article className="sd-service-card sd-store-card" key={service.id}>
             <div className={"sd-service-media sd-media-"+(index%4)+(service.mediaType==="video"?" is-video":"")}>
               
               <div className="sd-media-placeholder" aria-hidden="true"><span>{businessName || "THE STORE"}</span><strong>{service.name}</strong><i/></div>
-              {service.media&&service.mediaType==="video"?<video src={service.media} autoPlay loop muted playsInline controls preload="auto"/>:service.media?<img src={service.media} alt={service.name+" preview"} loading="lazy" onError={event => { event.currentTarget.hidden = true; }}/>:null}
+              {service.media&&service.mediaType==="video"?<StoreVideoPreview src={service.media} />:service.media?<img src={service.media} alt={service.name+" preview"} loading="lazy" onError={event => { event.currentTarget.hidden = true; }}/>:null}
               {service.media&&service.mediaType==="video"&&<span className="sd-service-media-badge">VIDEO PREVIEW</span>}
             </div>
             <div className="sd-service-info">{service.industry && <div className="sd-service-meta"><span>{service.industry}</span></div>}<div className="sd-service-title"><h3>{service.name}</h3><strong>{money(service.price)}</strong></div><p>{service.description}</p><button className="sd-order-button" onClick={()=>beginOrder(service)}>Select service <span aria-hidden="true">↗</span></button></div>
@@ -1144,8 +1182,8 @@ export default function Home() {
       <section className="sd-admin-panel sd-showcase-preview" data-admin-tab="store" aria-live="polite">
   <div className="sd-panel-head"><div><span className="sd-kicker"><span aria-hidden="true">🏪</span> LIVE STOREFRONT / SHOWCASE</span><h2>{businessName.trim() || "Your Business"}</h2></div><span className="sd-local-pill">DISPLAYING IN DEMO STORE</span></div>
   <div className="sd-showcase-preview-head"><div><span>YOUR BUSINESS / CUSTOMER VIEW</span><strong>What customers see</strong><p>Your selected colour, business name and currently visible products / services.</p></div><button className="sd-small-button" type="button" onClick={() => { setView("shop"); window.scrollTo({top:0,behavior:"smooth"}); }}>Open full Store ↗</button></div>
-  {announcementIsActive && (data.announcement.trim() || data.announcementImage) && <aside className="sd-store-announcement sd-showcase-announcement" aria-label="Business announcement preview"><span className="sd-store-announcement-mark" aria-hidden="true">📣</span><div className="sd-store-announcement-copy"><span className="sd-store-announcement-label">BUSINESS UPDATE</span><p>{data.announcement.trim() || "A note from the business"}</p></div>{data.announcementImage && <img className="sd-announcement-thumb" src={data.announcementImage} alt="" onError={event => { event.currentTarget.hidden = true; }} />}</aside>}
-  <div className="sd-showcase-preview-grid">{activeServices.length ? activeServices.map((service,index)=><article key={service.id}><div className="sd-showcase-preview-media sd-service-media">{service.media&&service.mediaType==="video"?<video src={service.media} autoPlay loop muted playsInline controls preload="auto"/>:service.media?<img src={service.media} alt={service.name+" preview"} loading="lazy"/>:<div className="sd-showcase-media-fallback"><span>{serviceEmoji(service.name)}</span></div>}<span className="sd-service-emoji" aria-hidden="true">{serviceEmoji(service.name)}</span></div><div className="sd-showcase-preview-copy"><span className="sd-showcase-preview-index">0{index+1}</span><strong>{service.name}</strong><b>{money(service.price)}</b><p>{service.description || "An item from this business."}</p></div></article>) : <p className="sd-admin-empty">No visible products or services yet. Add one below to populate the Store preview.</p>}</div>
+  <StoreAnnouncementSlot active={announcementIsActive && Boolean(data.announcement.trim() || data.announcementImage)} message={data.announcement} image={data.announcementImage} preview />
+  <div className="sd-showcase-preview-grid">{activeServices.length ? activeServices.map((service,index)=><article key={service.id}><div className="sd-showcase-preview-media sd-service-media">{service.media&&service.mediaType==="video"?<StoreVideoPreview src={service.media} />:service.media?<img src={service.media} alt={service.name+" preview"} loading="lazy"/>:<div className="sd-showcase-media-fallback"><span>{serviceEmoji(service.name)}</span></div>}<span className="sd-service-emoji" aria-hidden="true">{serviceEmoji(service.name)}</span></div><div className="sd-showcase-preview-copy"><span className="sd-showcase-preview-index">0{index+1}</span><strong>{service.name}</strong><b>{money(service.price)}</b><p>{service.description || "An item from this business."}</p></div></article>) : <p className="sd-admin-empty">No visible products or services yet. Add one below to populate the Store preview.</p>}</div>
   <div className="sd-showcase-footer"><button className="sd-owner-briefcase" type="button" disabled aria-label="Preview of the owner Briefcase icon" title="Owner Briefcase"><span aria-hidden="true">💼</span></button><p>Built to be explored online and offline.</p></div><p className="sd-admin-help">Preview updates from the same local demo data as your Store. The footer Briefcase card matches the customer-facing Store. Saving, hiding or deleting a product / service changes this showcase; it does not publish a live customer website.</p>
 </section>
 <div className="sd-admin-grid"><section className="sd-admin-panel" id="admin-service-tools"><div className="sd-panel-head"><div><span className="sd-kicker">01 / PRODUCT & SERVICE CATALOGUE</span><h2>Product / service catalogue</h2></div><button className="sd-small-button" onClick={() => { resetServiceForm(); setNotice("New product / service form ready."); }}>+ New product / service</button></div><div className="sd-admin-services">{data.services.map(service => <article key={service.id}><div><strong>{service.name}</strong><span>{money(service.price)} · {service.active ? "Visible" : "Hidden"}</span></div><div className="sd-row-actions"><button onClick={() => { startEdit(service); setNotice(`Editing ${service.name}. Save your changes when ready.`); }}>Edit</button><button onClick={() => toggleService(service)}>{service.active ? "Hide" : "Show"}</button><button className="sd-danger" onClick={() => setPendingConfirm({ kind: "delete-service", serviceId: service.id, serviceName: service.name })}>Delete</button></div></article>)}</div>
