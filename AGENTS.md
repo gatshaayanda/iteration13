@@ -382,9 +382,9 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 
 
 ## Opening choice and continue-business flow — November 2026
-- Present two clear paths before showing the setup form: **01 Build my Business OS** and **02 Continue Your Business instead**. Remove the separate “Explore Business OS first” invitation and do not duplicate the continue action under option 01.
-- Option 01 opens the existing progressive business identity setup. Keep the four-essential progress, collapsed live preview and optional announcement rules.
-- Option 02 resumes the last saved business in this browser, including its existing Store, customer Account, owner Briefcase and saved activity. If no owner business has been saved yet, open the existing persistent TrailWise workspace as the ready-to-use Business OS; do not create a second sample or label the workspace as an example.
-- Keep TrailWise data in its dedicated :explore browser-local namespace so it never overwrites or merges with the owner's separately saved business. Preserve the existing TrailWise data and requests when continuing; do not reseed an already saved workspace.
-- Keep an obvious **Build my own business** action inside TrailWise. Returning removes the exploration query and returns to the independent setup state.
-- Verify both entry paths, continuation of saved data, TrailWise fallback, request-to-Account/Briefcase flow, return path and data isolation. Keep Setup as the current QA checkpoint; do not begin Account or Briefcase redesign before owner approval.
+- Keep the existing opening-screen layout and **01 Build my Business OS** setup path.
+- Replace only the **02 Explore Business OS first** choice with **02 Continue Your Business instead**. Do not add a duplicate continue action under option 01.
+- Option 02 opens the existing persistent TrailWise workspace in the :explore browser-local storage namespace. Treat the saved TrailWise Store, customer Account, owner Briefcase and saved activity as the full working Business OS, not as a disposable sample or newly generated example.
+- Preserve all existing TrailWise data and requests. Only seed the initial TrailWise data when the :explore storage namespace is genuinely empty; never overwrite a saved workspace when the owner chooses Continue.
+- Keep the existing **Build my own business** action inside TrailWise and keep owner data isolated from the TrailWise workspace.
+- Verify the existing workspace resumes unchanged, new requests still appear in Account and owner Briefcase, and the setup path remains independent. Keep Setup as the current QA checkpoint; do not redesign Account or Briefcase.
