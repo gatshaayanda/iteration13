@@ -21,6 +21,19 @@ type Props = {
 const HISTORY_KEY = "iteration13:guide-history:v1";
 const TEASER_KEY = "iteration13:guide-teaser:v1";
 
+const screenTips: Record<string, string> = {
+  store: "Browsing the Store? I can compare the available offers or take you to a request.",
+  "customer-account": "Your Account keeps this browser’s requests, updates and receipts together.",
+  "request-form": "Need help with the request? Your selected offer carries through to this form.",
+  "briefcase-today": "Your Briefcase brings today's priorities and customer activity together.",
+  "briefcase-work": "Here you can review incoming work and move each request to its next status.",
+  "briefcase-money": "The Money area separates recorded payments from projected work.",
+  "briefcase-store": "Manage the offers and customer notice shown in the Store.",
+  "briefcase-notes": "Keep private working notes here; this demo saves them on this device.",
+  "briefcase-insights": "These demo insights describe activity in this browser only."
+};
+
+
 function createMessage(from: Message["from"], text: string): Message {
   return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, from, text };
 }
@@ -79,10 +92,10 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
       const shown = Number(window.sessionStorage.getItem("iteration13:guide-hint-count:v1") || "0");
       const last = Number(window.sessionStorage.getItem("iteration13:guide-hint-at:v1") || "0");
       const now = Date.now();
-      if (!seen.includes(screen) && shown < 3 && now - last > 35000 && screenTips[screen]) {
-        window.sessionStorage.setItem("iteration13:guide-seen-screens:v1", JSON.stringify([...seen, screen].slice(-12)));
+      if (!open && !seen.includes(screen) && shown < 3 && now - last > 35000 && screenTips[screen]) {
         timer = window.setTimeout(() => {
           if (document.visibilityState === "visible" && !open) {
+            window.sessionStorage.setItem("iteration13:guide-seen-screens:v1", JSON.stringify([...seen, screen].slice(-12)));
             setHint(screenTips[screen]);
             window.sessionStorage.setItem("iteration13:guide-hint-count:v1", String(shown + 1));
             window.sessionStorage.setItem("iteration13:guide-hint-at:v1", String(Date.now()));

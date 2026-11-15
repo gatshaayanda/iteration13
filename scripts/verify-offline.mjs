@@ -17,7 +17,7 @@ check(sw.includes("navigationPreload.enable()") && sw.includes("event.preloadRes
 check(sw.includes("function isSafePublicHtml") && sw.includes('value === "cookie"') && sw.includes('value === "authorization"'), "public HTML caching must reject cookie- or authorization-varying responses");
 check(sw.includes("sensitiveQuery.test(key)") && sw.includes("responseOrigin === self.location.origin"), "public HTML caching must reject sensitive query strings and cross-origin redirects");
 check(sw.includes("response.status >= 500") && sw.includes("networkFirstNavigation(request, event)"), "cached public pages must recover from transient server errors");
-check(/const CACHE_VERSION = "iteration13-shell-v15"/.test(sw), "current Iteration 13 app-shell cache version must be v13");
+check(/const CACHE_VERSION = "iteration13-shell-v15"/.test(sw), "current Iteration 13 app-shell cache version must be v15");
 check(/const MEDIA_CACHE = "iteration13-media-v5"/.test(sw), "image-only media cache version must be v5");
 check(/const MEDIA_CACHE = "iteration13-media-v\d+"/.test(sw), "versioned media cache is missing");
 check(sw.includes('"/", "/offline"') && sw.includes('"/patterns", "/iphone-install"'), "home, offline and public utility routes must be precached");
