@@ -43,6 +43,12 @@ For every screen in a redesign, record or check its purpose, audience, primary a
 
 Use the transferable ideas from [expo/exact](https://github.com/expo/exact): agents should inspect rendered UI and accessibility structure, capture screenshots, inspect layout and relevant state/logs, drive real taps/typing/navigation, use repeatable interaction scripts, control time for deterministic asynchronous tests where practical, and tie evidence to the exact build. Apply these ideas through the browser and test tools already supported by each target project. Exact itself is a separate, fast-moving pre-1.0 cross-platform runtime with no API stability; it is not a drop-in QA dependency or a reason to replace our established PWA foundation. Any adoption beyond the principles requires a separate, evidence-led technical evaluation.
 
+## 2B. Design intelligence and experience quality are mandatory
+
+For substantial visual work or screen-by-screen design QA, also read `docs/DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md`. It adds a deliberate visual-genre choice, task-based product research, psychology-informed checks, one coherent token/component system, a rendered design-system showcase where practical, AI-design anti-pattern diagnosis and responsive visual regression. These requirements apply immediately to Iteration 13's active Store/Briefcase redesign and travel into future portfolio projects. Do not turn the five visual genres into fixed templates or impose one aesthetic across unrelated products.
+
+Use the [Expo Skills design-system guide](https://github.com/expo/skills/blob/main/plugins/expo/skills/expo-design-system/SKILL.md) and [shadcn DESIGN.md/showcase workflow](https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/design-system.md) as transferable process references: inspect before introducing a system, centralise repeated tokens, define component variants/states, render a showcase and audit drift. Do not migrate a project's stack or add dependencies just to follow these examples. Exact remains a separate runtime experiment; its agent-inspection lessons are already captured above.
+
 ## 3. Visual reference contract
 
 The WashRide reference image is a **craftsmanship and composition reference**, not a business template. Transfer its:
