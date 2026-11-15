@@ -78,7 +78,7 @@ function getStorageKey(key: string): string {
   const shared = readSharedExampleFromUrl();
   if (shared) return `${key}:visitor:${shared.id}:${getSharedWorkspaceMode()}`;
   const restore = new URLSearchParams(window.location.search).get("restore") || "";
-  if (/^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(restore)) return `${key}${restore}`;
+  if (restore === ":explore" || /^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(restore)) return `${key}${restore}`;
   return key;
 }
 function encodeSharedExample(value: SharedExample): string {
@@ -95,9 +95,9 @@ function findSavedBusinessWorkspaces(): SavedBusinessWorkspace[] {
     const suffixes = new Set<string>([""]);
     for (let index = 0; index < window.localStorage.length; index++) {
       const key = window.localStorage.key(index) || "";
-      if (!key.startsWith(STORAGE_KEY + ":visitor:")) continue;
+      if (!key.startsWith(STORAGE_KEY + ":")) continue;
       const suffix = key.slice(STORAGE_KEY.length);
-      if (/^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(suffix)) suffixes.add(suffix);
+      if (suffix === ":explore" || /^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(suffix)) suffixes.add(suffix);
     }
     const found: SavedBusinessWorkspace[] = [];
     for (const suffix of suffixes) {
@@ -108,8 +108,12 @@ function findSavedBusinessWorkspaces(): SavedBusinessWorkspace[] {
       try { parsed = raw ? JSON.parse(raw) as Partial<DemoData> : null; } catch { continue; }
       const services = Array.isArray(parsed?.services) ? parsed.services : [];
       const orders = Array.isArray(parsed?.orders) ? parsed.orders : [];
-      const isInjectedTrailWiseSeed = services.length === 1 && services[0]?.id === "trailwise-guided-walk" && orders.length === 0;
-      if (!raw || (!identityComplete && (!name || services.length === 0)) || isInjectedTrailWiseSeed) continue;
+      const isUntouchedInjectedTrailWiseSeed = services.length === 1 &&
+        services[0]?.id === "trailwise-guided-walk" &&
+        services[0]?.name === "Guided nature walk" &&
+        services[0]?.price === 350 &&
+        orders.length === 0;
+      if (!raw || (!identityComplete && (!name || services.length === 0)) || isUntouchedInjectedTrailWiseSeed) continue;
       found.push({ suffix, name: name || "Saved business", serviceCount: services.length, customerCount: orders.length });
     }
     return found;
@@ -755,7 +759,7 @@ export default function Home() {
   function openSavedBusinessWorkspace(suffix: string) {
     const url = new URL(window.location.href);
     ["explore", "example", "sample", "view", "resume"].forEach(key => url.searchParams.delete(key));
-    if (/^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(suffix)) url.searchParams.set("restore", suffix);
+    if (suffix === ":explore" || /^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(suffix)) url.searchParams.set("restore", suffix);
     else url.searchParams.delete("restore");
     url.searchParams.set("resume", "1");
     url.hash = "";
