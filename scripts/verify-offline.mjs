@@ -17,7 +17,7 @@ check(sw.includes("navigationPreload.enable()") && sw.includes("event.preloadRes
 check(sw.includes("function isSafePublicHtml") && sw.includes('value === "cookie"') && sw.includes('value === "authorization"'), "public HTML caching must reject cookie- or authorization-varying responses");
 check(sw.includes("sensitiveQuery.test(key)") && sw.includes("responseOrigin === self.location.origin"), "public HTML caching must reject sensitive query strings and cross-origin redirects");
 check(sw.includes("response.status >= 500") && sw.includes("networkFirstNavigation(request, event)"), "cached public pages must recover from transient server errors");
-check(/const CACHE_VERSION = "iteration13-shell-v17"/.test(sw), "current Iteration 13 app-shell cache version must be v16");
+check(/const CACHE_VERSION = "iteration13-shell-v17"/.test(sw), "current Iteration 13 app-shell cache version must be v17");
 check(page.includes("announcementActive") && page.includes("checked={announcementEnabledDraft}") && page.includes("Show announcement in Store"), "owner must be able to persistently toggle the storefront announcement on and off");
 check(page.includes("sd-store-announcement") && !page.includes("sd-product-announcement"), "announcement must occupy the storefront banner, not cover product media");
 check((page.match(/<video src=\{service\.media\} autoPlay loop muted playsInline controls preload="auto"\/>/g) || []).length >= 2, "Store and live preview videos must attempt muted inline autoplay with a user-controlled fallback");
