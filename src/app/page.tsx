@@ -1208,14 +1208,14 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
           <section className="sd-identity-first-service sd-identity-offer-setup" aria-labelledby="sd-first-service-title">
             <div className="sd-identity-step-heading"><span>02 / FIRST CUSTOMER OFFER</span><strong id="sd-first-service-title">Add one product or service</strong><p>Give customers one clear offer to start with.</p></div>
             <div className="sd-identity-service-required-fields">
-              <label className="sd-identity-field-name">Product / service name<input value={serviceName} onChange={event => setServiceName(event.target.value)} maxLength={80} required placeholder="e.g. Website design, Consultation, Haircut" /></label>
-              <label className="sd-identity-field-industry">Industry / line of business<input value={serviceIndustry} onChange={event => setServiceIndustry(event.target.value)} maxLength={80} required placeholder="e.g. Beauty & wellness, automotive, retail" /></label>
+              <label className="sd-identity-field-name">Product / service name<input value={serviceName} onChange={event => setServiceName(event.target.value)} maxLength={64} required placeholder="e.g. Website design, Consultation, Haircut" /></label>
+              <label className="sd-identity-field-industry">Industry / line of business<input value={serviceIndustry} onChange={event => setServiceIndustry(event.target.value)} maxLength={48} required placeholder="e.g. Beauty & wellness, automotive, retail" /></label>
               <label className="sd-identity-field-price">Price ({businessCurrency})<input type="number" min="0" step="0.01" value={servicePrice} onChange={event => setServicePrice(event.target.value)} required /></label>
             </div>
             <details className="sd-identity-optional-details">
               <summary><span>Add description or media</span><small>{serviceDescription.trim() || serviceMedia ? "Details added" : "Optional"}</small></summary>
               <div className="sd-identity-service-fields">
-                <label>Description <span className="sd-identity-optional">Optional</span><textarea rows={3} value={serviceDescription} onChange={event => setServiceDescription(event.target.value)} placeholder="Explain what the customer receives." /></label>
+                <label>Description <span className="sd-identity-optional">Optional</span><textarea rows={3} maxLength={220} value={serviceDescription} onChange={event => setServiceDescription(event.target.value)} placeholder="Explain what the customer receives." /></label>
                 <ServiceMediaPicker value={serviceMedia} type={serviceMediaType} allowVideo={true} online={online} onChange={(url, type) => { setServiceMedia(url); setServiceMediaType(type); }} onUploadingChange={setServiceMediaUploading} />
                 <p className="sd-identity-placeholder-note">Add a photo or short video if you have one. A branded placeholder is used otherwise.</p>
               </div>
@@ -1226,7 +1226,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
               <summary><span id="sd-first-announcement-title">03 / Add an announcement</span><small>{announcementDraft.trim() || announcementImageDraft ? "Announcement added" : "Optional · Store banner"}</small></summary>
               <p className="sd-identity-announcement-hint">Share a launch offer, promotion or important business notice.</p>
               <div className="sd-identity-service-fields">
-                <label>Announcement <span className="sd-identity-optional">Optional</span><textarea rows={3} maxLength={1200} value={announcementDraft} onChange={event => setAnnouncementDraft(event.target.value)} placeholder="What would you like customers to know?" /></label>
+                <label>Announcement <span className="sd-identity-optional">Optional</span><textarea rows={3} maxLength={180} value={announcementDraft} onChange={event => setAnnouncementDraft(event.target.value)} placeholder="What would you like customers to know?" /></label>
                 <AnnouncementImagePicker value={announcementImageDraft} online={online} onChange={setAnnouncementImageDraft} onUploadingChange={setAnnouncementImageUploading} />
               </div>
             </details>
