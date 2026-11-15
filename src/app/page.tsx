@@ -756,6 +756,7 @@ export default function Home() {
     };
     const owner = readWorkspace("");
     const alternate = readWorkspace(":explore");
+    const ownerIsExample = /^trailwise$/i.test(owner.name.trim());
     const chosen = owner.hasRealContent ? owner : alternate.hasRealContent ? alternate : null;
     if (chosen?.suffix === ":explore" && !owner.hasRealContent) {
       try {
@@ -763,9 +764,8 @@ export default function Home() {
         for (const key of keys) {
           const source = window.localStorage.getItem(key + ":explore");
           const current = window.localStorage.getItem(key);
-          const canonicalIsExample = key === "iteration13:business-name:v1" && /^trailwise$/i.test(current || "");
+          const canonicalIsExample = ownerIsExample;
           if (source !== null && (current === null || canonicalIsExample)) {
-            if (key === STORAGE_KEY && current && !canonicalIsExample) continue;
             window.localStorage.setItem(key, source);
           }
         }
