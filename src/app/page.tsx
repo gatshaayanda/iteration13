@@ -143,11 +143,11 @@ function StoreVideoPreview({ src }: { src: string }) {
     }
     setMuted(nextMuted);
   };
-  return <div className="sd-video-preview" role="button" tabIndex={0} aria-label={muted ? "Play video with sound" : "Mute video"} aria-pressed={!muted}
+  return <div className="sd-video-preview" role="button" tabIndex={0} aria-label={muted ? "Tap anywhere on video to play with sound" : "Tap anywhere on video to mute"} aria-pressed={!muted}
     onClick={toggleAudio}
     onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); toggleAudio(); } }}>
     <video ref={videoRef} src={src} autoPlay loop muted={muted} playsInline preload="auto" onVolumeChange={event => setMuted(event.currentTarget.muted)} />
-    <span className="sd-video-sound-indicator" aria-hidden="true">{muted ? "◖ Tap for sound" : "◖ Sound on · tap to mute"}</span>
+    <span className="sd-video-sound-indicator" aria-hidden="true">{muted ? "◖ Tap anywhere for sound" : "◖ Sound on · tap anywhere to mute"}</span>
   </div>;
 }
 
@@ -474,7 +474,7 @@ export default function Home() {
       if (!("serviceWorker" in navigator) || !("caches" in window)) return;
       try {
         const registration = await navigator.serviceWorker.ready;
-        const shell = await caches.open("iteration13-shell-v18");
+        const shell = await caches.open("iteration13-shell-v19");
         const [home, offlinePage] = await Promise.all([shell.match("/"), shell.match("/offline")]);
         if (active) setOfflineShellReady(Boolean(registration.active && home && offlinePage));
       } catch {

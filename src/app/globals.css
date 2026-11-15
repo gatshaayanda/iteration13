@@ -5475,12 +5475,12 @@ h1 em,
 .serviceDemo .sd-showcase-preview .sd-store-announcement-label{font-size:.59rem}
 .serviceDemo .sd-showcase-preview .sd-store-announcement p{font-size:.82rem;line-height:1.45}
 .serviceDemo .sd-store-collection .sd-storefront-bar{row-gap:12px}
-.sd-video-preview{position:absolute;inset:0;display:block;overflow:hidden;background:#17191b;cursor:pointer;outline-offset:-4px}
+.sd-video-preview{position:absolute;inset:0;z-index:5;display:block;overflow:hidden;background:#17191b;cursor:pointer;touch-action:manipulation;outline-offset:-4px}
 .sd-video-preview:focus-visible{outline:3px solid #fff;outline-offset:-5px}
-.sd-video-preview video{display:block;width:100%;height:100%;object-fit:cover}
+.sd-video-preview video{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .sd-video-sound-indicator{position:absolute;right:10px;bottom:10px;z-index:2;display:inline-flex;align-items:center;min-height:30px;padding:6px 9px;border:1px solid #ffffff70;border-radius:999px;background:#11151bd9;color:#fff;font-size:.68rem;font-weight:800;letter-spacing:.01em;line-height:1;pointer-events:none;backdrop-filter:blur(8px)}
-.sd-service-media-badge{pointer-events:none}
-.sd-showcase-preview-media .sd-service-emoji{pointer-events:none}
+.sd-service-media-badge{z-index:7;pointer-events:none}
+.sd-showcase-preview-media .sd-service-emoji{z-index:7;pointer-events:none}
 @media(max-width:640px){
   .serviceDemo .sd-store-collection .sd-store-announcement{grid-template-columns:34px minmax(0,1fr) auto;gap:10px;padding:11px 0}
   .serviceDemo .sd-store-collection .sd-store-announcement-mark{width:34px;height:34px;font-size:.95rem}
