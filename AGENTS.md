@@ -189,7 +189,7 @@ Run `npm run verify:identity`, `npm run lint`, and `npm run build` when the avai
 ## Service Guide integration contract
 - \`src/app/ServiceGuide.tsx\` is a scripted navigation assistant for this prototype, not AI or live support. Read \`CHAT-WIDGET-RESEARCH.md\` and the “Deterministic Service Guide” section in \`FOUNDATION-BLUEPRINT.md\` before adapting it.
 - Keep its customer/admin actions wired to the existing page state and real handlers. Do not duplicate forms/data, invent completed actions, or make the guide required for the primary journey.
-- Preserve conservative dismissible teaser behavior, mobile safe areas/dynamic viewport, keyboard/Escape support, reduced-motion styles, session-only history and truthful local/offline wording.
+- Mount the guide outside the shared Store / Account header as a compact right-edge floating control; never place it inside primary navigation. Keep it closed until explicitly opened—no unsolicited teaser or contextual hint bubbles. The closed overlay root must use pointer-events:none so it cannot intercept page taps; only the launcher, open panel and backdrop may receive pointer input. Preserve mobile safe areas/dynamic viewport, keyboard/Escape support, reduced-motion styles, session-only history and truthful local/offline wording.
 - In a new project, replace demo labels and actions with project-specific workflows, verify authorization for admin actions, and only add network/AI/human handoff integrations when explicitly designed and genuinely implemented.
 
 

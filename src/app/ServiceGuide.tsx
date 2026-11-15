@@ -40,7 +40,6 @@ function createMessage(from: Message["from"], text: string): Message {
 
 export default function ServiceGuide({ view, screen, services, requestCount, onChooseService, onOpenAccount, onOpenAdmin, onOpenStorefront, onTrack }: Props) {
   const [open, setOpen] = useState(false);
-  const [hint, setHint] = useState("");
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [historyReady, setHistoryReady] = useState(false);
@@ -67,7 +66,6 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
 
   useEffect(() => {
     if (!screen || previousScreen.current === screen) return;
-    const fromScreen = previousScreen.current;
     previousScreen.current = screen;
     try {
       const key = "iteration13:guide-events:v1";
@@ -75,32 +73,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
       window.sessionStorage.setItem(key, JSON.stringify([...previous, { event: "screen-change", screen, at: new Date().toISOString() }].slice(-60)));
     } catch { /* local funnel measurement must never block navigation */ }
     onTrackRef.current("screen-change", { screen });
-    let timer: number | undefined;
-    try {
-      const seen = JSON.parse(window.sessionStorage.getItem("iteration13:guide-seen-screens:v1") || "[]") as string[];
-      const events = JSON.parse(window.sessionStorage.getItem("iteration13:guide-events:v1") || "[]") as { event: string; screen: string; at: string }[];
-      const lastStart = events.map(item => item.event).lastIndexOf("request-started");
-      const submittedAfterStart = lastStart >= 0 && events.slice(lastStart + 1).some(item => item.event === "request_submitted");
-      const returnedFromRequest = fromScreen === "request-form" && screen === "store" && !submittedAfterStart;
-      const justSubmitted = screen === "customer-account" && submittedAfterStart;
-      const contextualTip = returnedFromRequest ? "Need to adjust your request? Your selected offer is still available—open the form whenever you’re ready." : screenTips[screen];
-      const shown = Number(window.sessionStorage.getItem("iteration13:guide-hint-count:v1") || "0");
-      const last = Number(window.sessionStorage.getItem("iteration13:guide-hint-at:v1") || "0");
-      const now = Date.now();
-      if (!open && !justSubmitted && !seen.includes(screen) && shown < 3 && now - last > 35000 && contextualTip) {
-        timer = window.setTimeout(() => {
-          if (document.visibilityState === "visible" && !open) {
-            window.sessionStorage.setItem("iteration13:guide-seen-screens:v1", JSON.stringify([...seen, screen].slice(-12)));
-            setHint(contextualTip);
-            window.sessionStorage.setItem("iteration13:guide-hint-count:v1", String(shown + 1));
-            window.sessionStorage.setItem("iteration13:guide-hint-at:v1", String(Date.now()));
-            window.setTimeout(() => setHint(""), 6500);
-          }
-        }, 1800);
-      }
-    } catch { /* contextual hints are optional when session storage is unavailable */ }
-    return () => { if (timer) window.clearTimeout(timer); };
-  }, [screen, open]);
+  }, [screen]);
   useEffect(() => {
     if (!historyReady) return;
     try { window.sessionStorage.setItem(HISTORY_KEY, JSON.stringify(messages.slice(-20))); } catch { /* history is optional */ }
@@ -149,7 +122,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
     if (previousSelections > 0) say(`You’ve revisited ${service.name}. Want to compare it with another offer before requesting?`);
   }
   function runAction(action: string) {
-    setHint(""); track(`action:${action}`);
+    track(`action:${action}`);
     switch (action) {
       case "help": say("I can guide you to a service or a real page in this demo. Choose a service below, view your requests, or browse without chat. I’m a scripted guide, not a live person or AI assistant."); break;
       case "browse": say("No problem. You can keep browsing; the service menu and order form remain available without chat."); setOpen(false); break;
@@ -209,7 +182,6 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
   ];
 
   return <div className="sd-guide-root">
-    {!open && hint && <aside className="sd-guide-hint" role="status"><p>{hint}</p><button type="button" onClick={() => { setHint(""); track("contextual-hint-dismissed"); }} aria-label="Dismiss suggestion"><X size={14}/></button></aside>}
     {open && <div className="sd-guide-backdrop" onClick={() => setOpen(false)} aria-hidden="true"/>}
     {open && <section ref={panelRef} className="sd-guide-panel" role="dialog" aria-modal="true" aria-labelledby="sd-guide-title">
       <header className="sd-guide-head"><div className="sd-guide-avatar"><Sparkles size={18}/></div><div><span className="sd-guide-eyebrow">ITERATION 13 · SERVICE GUIDE</span><h2 id="sd-guide-title">{view === "admin" ? "Studio sidekick" : "Find your next step"}</h2><p><span/> Guided demo · {view === "admin" ? "Admin tools" : "Customer journey"}</p></div><button type="button" aria-label="Close guide" onClick={() => { setOpen(false); launcherRef.current?.focus(); }}><ChevronDown size={19}/></button></header>
@@ -222,7 +194,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
       <p id="sd-guide-type-hint" className="sd-guide-type-hint">Tap the message box above to type. Your keyboard opens only when you choose to type.</p>
       <p className="sd-guide-footnote"><Check size={12}/> Scripted guide · Actions tracked in this tab only · No message content stored in analytics</p>
     </section>}
-    <button ref={launcherRef} type="button" className={`sd-guide-launcher${open ? " is-open" : ""}`} aria-expanded={open} aria-haspopup="dialog" aria-label={open ? "Close service guide" : "Need a hand? Open the guide"} onClick={() => { setHint(""); track(open ? "guide-minimized" : "guide-opened"); setOpen(value => !value); if (!messages.length) say("Hi! I’m the Service Studio guide. I can point you to the right action, but I’m not a live person or an AI assistant."); }}>
+    <button ref={launcherRef} type="button" className={`sd-guide-launcher${open ? " is-open" : ""}`} aria-expanded={open} aria-haspopup="dialog" aria-label={open ? "Close service guide" : "Need a hand? Open the guide"} title="Need a hand?" onClick={() => { track(open ? "guide-minimized" : "guide-opened"); setOpen(value => !value); if (!messages.length) say("Hi! I’m the Service Studio guide. I can point you to the right action, but I’m not a live person or an AI assistant."); }}>
       {open ? <X size={21}/> : <MessageCircle size={22}/>}<span>{open ? "Close" : "Need a hand?"}</span>{!open && requestCount > 0 && view === "admin" && <b>{requestCount}</b>}
     </button>
   </div>;

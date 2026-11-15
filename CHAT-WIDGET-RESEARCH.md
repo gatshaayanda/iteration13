@@ -88,7 +88,7 @@ The prototype now has \`src/app/ServiceGuide.tsx\`, a genericized and locally de
 
 - Customer guide: choose an available service and see its real demo price/description, then continue into the existing order form; open My account; or return to browsing.
 - Admin guide: jump to service CRUD, announcement editing, incoming requests, or customer storefront.
-- Optional teaser appears after a delay once per tab session unless dismissed. Opening the guide is always user-controlled; the teaser is not a modal and is never required.
+- The guide remains closed until explicitly opened. No teaser or contextual hint appears automatically.
 - The mobile panel is a compact, rounded contextual bottom sheet that leaves the homepage visible; desktop uses a floating panel. Service choices reuse catalogue media, prices and descriptions as visual cards. Typography is sized for comfortable reading; the guide supports Escape, focus handling, visible focus, reduced motion and session-scoped history.
 - The typed composer performs deterministic keyword matching and returns an honest fallback. It is not connected to an AI service or human support, and does not transmit the entered message.
 - Chat shortcuts call the existing customer/admin state handlers; they do not introduce a second order model or Firebase integration.
@@ -98,11 +98,13 @@ This implementation is a **candidate reusable pattern**. It still needs real bro
 
 ## Iteration 13 screen-aware guide — November 2026
 
-The current implementation is mounted from `src/app/page.tsx` and receives a deterministic screen key from the real page state (Store, customer Account, request form, or a Briefcase tab). It can therefore offer a short contextual next step without inferring intent from message contents.
+The current implementation is mounted outside the shared Store header and remains available as a compact, right-edge floating control. It is intentionally absent from the Store / Account navigation so it cannot change header wrapping or push the customer journey down.
 
-- The guide remains closed by default. Screen changes may produce a small, collapsible hint beside the launcher; no hint opens the panel or blocks the screen.
-- Hints are session-scoped, limited to three per tab, shown only for a new screen context, and separated by a minimum 35-second interval. They disappear after a short period and can be dismissed immediately.
-- The guide's local funnel events record screen context and action names only. Typed message content is not written to funnel analytics. History remains optional tab-session UI state.
-- Mobile uses a bottom sheet capped at 72dvh rather than a full-screen takeover.
-- The guide remains scripted and local. No model/API, remote telemetry, customer messaging or cross-device tracking is configured.
-- These changes still require browser, keyboard, screen-reader, reduced-motion and physical mobile QA before the pattern is promoted as a proven reusable component.
+- The guide stays closed until the visitor deliberately opens it. Screen changes are tracked locally, but they do not trigger floating hint bubbles, teasers or automatic chat openings.
+- The launcher is a small circular control at the lower-right edge, with a clear accessible name and a touch target around 48–50 CSS pixels. It respects the device safe-area inset.
+- The open panel remains a separate interaction state: desktop uses a bounded floating panel; mobile uses a contextual bottom sheet with dynamic viewport and safe-area sizing. The launcher and panel must be checked separately for overlap with primary actions, footer controls, account forms and the on-screen keyboard.
+- The page overlay is non-interactive outside the actual launcher, panel and backdrop. A closed widget must never create a full-screen invisible hit area that blocks Store, Account or Briefcase interactions.
+- Customer/admin actions still call the existing page handlers. The guide remains scripted and local; no AI service, live support or remote messaging is implied.
+- Keep Escape-to-close, focus handling and focus return, labelled controls, reduced-motion behavior, and session-scoped chat history. Typed message content is not written to funnel analytics.
+
+Acceptance checks: inspect Store, Account/request form and Briefcase at 320px, 360px, 390px and desktop widths; scroll to the final primary action on each surface; verify the closed launcher does not cover or intercept it; open/close the panel; test keyboard focus, Escape, reduced motion and the mobile keyboard.
