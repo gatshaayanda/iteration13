@@ -474,7 +474,7 @@ export default function Home() {
       if (!("serviceWorker" in navigator) || !("caches" in window)) return;
       try {
         const registration = await navigator.serviceWorker.ready;
-        const shell = await caches.open("iteration13-shell-v20");
+        const shell = await caches.open("iteration13-shell-v21");
         const [home, offlinePage] = await Promise.all([shell.match("/"), shell.match("/offline")]);
         if (active) setOfflineShellReady(Boolean(registration.active && home && offlinePage));
       } catch {
@@ -1115,11 +1115,8 @@ export default function Home() {
     {view === "shop" && <>
       <section className="sd-services sd-wrap sd-digital-store sd-store-collection" id="services">
         <div className="sd-storefront-bar">
-          <div className="sd-storefront-title"><div><span className="sd-kicker">THE STORE</span><h2>Available offerings</h2></div></div>
+          <div className="sd-storefront-title"><div><span className="sd-kicker">THE STORE</span>{announcementIsActive && Boolean(data.announcement.trim() || data.announcementImage) ? <StoreAnnouncementSlot active={true} message={data.announcement} image={data.announcementImage} /> : <h2>Available offerings</h2>}</div></div>
           <div className="sd-storefront-signals"><span className={"sd-store-availability is-"+(data.availability || "available")}><i aria-hidden="true"/>{data.availability === "limited" ? "Limited availability" : data.availability === "unavailable" ? "Currently unavailable" : "Available now"}</span></div>
-        </div>
-        <div className="sd-store-announcement-slot">
-          <StoreAnnouncementSlot active={announcementIsActive && Boolean(data.announcement.trim() || data.announcementImage)} message={data.announcement} image={data.announcementImage} />
         </div>
         <div className={"sd-service-grid sd-store-grid "+(activeServices.length === 1 ? "has-featured-item" : activeServices.length > 4 ? "has-catalogue" : "has-small-catalogue")}>
           {activeServices.length ? activeServices.map((service,index)=><article className="sd-service-card sd-store-card" key={service.id}>

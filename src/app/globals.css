@@ -5602,3 +5602,85 @@ h1 em,
  .serviceDemo .sd-identity-currency-details strong{font-size:.62rem}
  .serviceDemo .sd-store-collection .sd-storefront-bar{grid-template-columns:minmax(0,1fr) auto}
 }
+
+
+/* 2026-11-15 owner checkpoint: announcement replaces the Store heading, while availability remains persistent. */
+.serviceDemo .sd-store-collection .sd-storefront-bar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:16px;row-gap:0;margin-bottom:18px}
+.serviceDemo .sd-store-collection .sd-storefront-title{min-width:0}
+.serviceDemo .sd-store-collection .sd-storefront-title>div{display:grid;gap:7px;min-width:0}
+.serviceDemo .sd-store-collection .sd-storefront-title h2{margin:0;color:#121d2d;font-size:clamp(1.45rem,3vw,2.05rem);line-height:1.08;letter-spacing:-.045em}
+.serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement{grid-column:auto;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;margin:0!important;padding:0;border:0;background:transparent}
+.serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement-mark{width:32px;height:32px}
+.serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement-label{font-size:.62rem}
+.serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement p{font-size:clamp(.9rem,1.5vw,1.05rem);font-weight:750;line-height:1.3;color:#121d2d}
+.serviceDemo .sd-store-collection .sd-storefront-title .sd-announcement-thumb{width:44px;height:44px}
+.serviceDemo .sd-store-collection .sd-storefront-signals{align-self:center;justify-self:end}
+.serviceDemo .sd-store-collection .sd-store-availability{white-space:nowrap}
+@media(max-width:560px){
+ .serviceDemo .sd-store-collection .sd-storefront-bar{grid-template-columns:minmax(0,1fr) auto;column-gap:9px;margin-bottom:15px}
+ .serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement{grid-template-columns:28px minmax(0,1fr) 36px;gap:8px}
+ .serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement-mark{width:28px;height:28px}
+ .serviceDemo .sd-store-collection .sd-storefront-title .sd-announcement-thumb{width:36px;height:36px}
+ .serviceDemo .sd-store-collection .sd-storefront-title .sd-store-announcement p{font-size:.84rem;line-height:1.25}
+}
+/* Setup is a compact working form, not a second marketing landing page. */
+.serviceDemo .sd-identity-onboarding{padding:14px clamp(14px,3vw,28px) 28px}
+.serviceDemo .sd-identity-onboarding-top{max-width:900px;padding:5px 0 11px;font-size:.62rem}
+.serviceDemo .sd-identity-onboarding-layout{grid-template-columns:minmax(0,1.1fr) minmax(260px,.8fr);gap:18px;align-items:start;max-width:900px;margin:18px auto}
+.serviceDemo .sd-identity-onboarding-copy{max-width:none}
+.serviceDemo .sd-identity-onboarding-copy>.sd-kicker{font-size:.64rem}
+.serviceDemo .sd-identity-onboarding-copy h1{max-width:none;margin:6px 0 5px;font-size:clamp(1.75rem,4vw,2.5rem);line-height:1.05;letter-spacing:-.045em}
+.serviceDemo .sd-identity-onboarding-copy>p{max-width:560px;margin:0 0 12px;font-size:.82rem;line-height:1.4}
+.serviceDemo .sd-identity-name-label{gap:5px;margin-top:10px;font-size:.82rem}
+.serviceDemo .sd-identity-name-label input{min-height:44px;padding:9px 11px;border-radius:8px;font-size:.94rem}
+.serviceDemo .sd-identity-helper{margin-top:5px;font-size:.72rem;line-height:1.35}
+.serviceDemo .sd-identity-setup-step{margin-top:10px;padding:12px;border-radius:11px}
+.serviceDemo .sd-identity-currency{margin-top:11px}
+.serviceDemo .sd-identity-currency-options{gap:6px}
+.serviceDemo .sd-identity-currency-options>button{min-height:38px;padding:6px 8px}
+.serviceDemo .sd-identity-palette{margin-top:11px;padding:10px;border-radius:9px}
+.serviceDemo .sd-identity-swatches{gap:6px;margin-top:8px}
+.serviceDemo .sd-identity-swatches button{min-height:36px;padding:5px 7px}
+.serviceDemo .sd-custom-colour{margin-top:8px}
+.serviceDemo .sd-identity-first-service{margin-top:10px;padding:12px;border-radius:11px}
+.serviceDemo .sd-identity-step-heading{gap:3px;margin-bottom:9px}
+.serviceDemo .sd-identity-step-heading>span{font-size:.65rem}
+.serviceDemo .sd-identity-step-heading>strong{font-size:1rem}
+.serviceDemo .sd-identity-step-heading>p{font-size:.76rem;line-height:1.35}
+.serviceDemo .sd-identity-service-required-fields{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(100px,.55fr);gap:7px}
+.serviceDemo .sd-identity-service-required-fields .sd-identity-field-name{grid-column:auto}
+.serviceDemo .sd-identity-service-required-fields>label{font-size:.7rem}
+.serviceDemo .sd-identity-service-required-fields input{min-height:39px;padding:8px;font-size:.85rem}
+.serviceDemo .sd-identity-optional-details{margin-top:7px}
+.serviceDemo .sd-identity-optional-details>summary{min-height:38px;padding:5px 0}
+.serviceDemo .sd-identity-optional-details>summary span{font-size:.74rem}
+.serviceDemo .sd-identity-announcement-details>summary{min-height:40px}
+.serviceDemo .sd-identity-continue{min-height:44px;margin-top:10px;padding:9px 12px}
+.serviceDemo .sd-identity-local-note{margin-top:6px!important;font-size:.68rem!important}
+.serviceDemo .sd-identity-live-preview{position:sticky;top:12px;border-radius:11px;box-shadow:0 8px 24px rgba(20,32,51,.07)}
+.serviceDemo .sd-identity-preview-brand{padding:11px;gap:8px}
+.serviceDemo .sd-identity-preview-brand>span{width:34px;height:34px}
+.serviceDemo .sd-identity-preview-brand strong{font-size:.86rem}
+.serviceDemo .sd-identity-preview-brand small{font-size:.68rem}
+.serviceDemo .sd-identity-preview-areas span{min-height:32px;font-size:.68rem}
+.serviceDemo .sd-identity-service-preview{padding:9px 11px}
+.serviceDemo .sd-identity-service-preview-card{grid-template-columns:54px minmax(0,1fr);gap:8px}
+.serviceDemo .sd-identity-service-preview-card>img,.serviceDemo .sd-identity-service-placeholder{width:54px;height:50px}
+.serviceDemo .sd-identity-service-preview-card>div:last-child>strong,.serviceDemo .sd-identity-service-preview-card>div:last-child>b{font-size:.76rem}
+.serviceDemo .sd-identity-service-preview-card>div:last-child>p{font-size:.7rem}
+.serviceDemo .sd-identity-preview-footer{gap:6px;padding:8px 11px}
+.serviceDemo .sd-identity-preview-footer>span{font-size:.56rem}
+.serviceDemo .sd-identity-preview-footer small{font-size:.62rem}
+@media(max-width:680px){
+ .serviceDemo .sd-identity-onboarding-layout{grid-template-columns:minmax(0,1fr);gap:12px;margin:14px auto}
+ .serviceDemo .sd-identity-live-preview{position:static;order:-1}
+ .serviceDemo .sd-identity-onboarding-copy h1{font-size:clamp(1.65rem,7vw,2.2rem)}
+ .serviceDemo .sd-identity-service-required-fields{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .serviceDemo .sd-identity-service-required-fields .sd-identity-field-name{grid-column:1/-1}
+ .serviceDemo .sd-identity-preview-footer small{display:none}
+}
+@media(max-width:380px){
+ .serviceDemo .sd-identity-currency-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .serviceDemo .sd-identity-service-required-fields{grid-template-columns:minmax(0,1fr)}
+ .serviceDemo .sd-identity-service-required-fields .sd-identity-field-name{grid-column:auto}
+}
