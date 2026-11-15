@@ -724,7 +724,6 @@ export default function Home() {
     else setSetupPathChosen(true);
   }
   function continueYourBusiness() {
-    if (hasPreviousSetup) { loadPreviousBusinessSetup(); return; }
     const url = new URL(window.location.href);
     url.searchParams.set("explore", "1");
     window.location.assign(url.toString());
@@ -1075,11 +1074,11 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "BUSINESS IDENTITY" : "SETUP · STORE · ACCOUNT · BRIEFCASE"}</span></div>
       {!setupPathChosen && !identityEditing ? <section className="sd-identity-entry" aria-labelledby="sd-identity-entry-title">
         <span className="sd-kicker">YOUR BUSINESS · ONE CONNECTED SYSTEM</span>
-        <h1 id="sd-identity-entry-title">Make it yours. <em>Or continue.</em></h1>
-        <p>Build your own Business OS, or pick up where you left off in the last saved business.</p>
+        <h1 id="sd-identity-entry-title">Make it yours. <em>Or explore first.</em></h1>
+        <p>You do not need to fill anything in to see how the Business OS works. Start with your own business, or continue in the last saved business.</p>
         <div className="sd-identity-entry-actions">
           <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Build my Business OS</h2><p>Set up your business name, first offer and brand. Add the details as you go.</p></div><button type="button" onClick={beginBusinessSetup}>Set up my business <span aria-hidden="true">↗</span></button></article>
-          <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Continue Your Business instead</h2><p>Pick up where you left off. Your last saved Store, customer Account and owner Briefcase are ready to use.</p></div><button type="button" className="sd-identity-entry-continue" onClick={continueYourBusiness}>Continue your business <span aria-hidden="true">↗</span></button><small>No setup required · Your saved work stays separate</small></article>
+          <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Continue Your Business instead</h2><p>Open the last saved business. Its Store, customer Account and owner Briefcase are ready to use.</p></div><button type="button" className="sd-identity-entry-continue" onClick={continueYourBusiness}>Continue your business <span aria-hidden="true">↗</span></button><small>No setup required · Your own business data stays separate</small></article>
         </div>
       </section> : <>
       <section className="sd-identity-progress" aria-label={`Setup progress: ${setupCompletedCount} of 4 complete`}>
