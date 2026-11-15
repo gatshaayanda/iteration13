@@ -4,7 +4,7 @@
 
 The Sparkle Legacy chat-widget reference and evidence-led proposal live in [CHAT-WIDGET-RESEARCH.md](./CHAT-WIDGET-RESEARCH.md). These files explain what to preserve, where to edit, what is demo-only, and what needs deliberate project-specific replacement.
 
-The approved foundation baseline and recovery policy are documented in [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md). A reusable, mobile-first PWA foundation candidate. The homepage demonstrates a compact business-branded Store connected to an owner Briefcase/Business OS. The public navigation uses Store, Account and Login; the owner logo remains a discreet workspace entry. Owners can edit services, announcements and the Store accent theme in the local demo. The interface uses the BoardSignal-derived 25 GB monthly capacity reference and high-volume customer-day scenario supplied by the product owner; it is not live server metering or a universal capacity guarantee. Firebase configuration, rules and data were intentionally left unchanged.
+The approved foundation baseline and recovery policy are documented in [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md). A reusable, mobile-first PWA foundation candidate. The homepage demonstrates a compact business-branded Store connected to an owner Briefcase/Business OS. The customer header provides Store and Account; the footer is reserved for the single icon-only owner Briefcase entry. Owners can edit services, announcements and the Store accent theme in the local demo. The interface uses the BoardSignal-derived 25 GB monthly capacity reference and high-volume customer-day scenario supplied by the product owner; it is not live server metering or a universal capacity guarantee. Firebase configuration, rules and data were intentionally left unchanged.
 ## Customer demo
 
 1. Open the homepage and browse the four example services:
@@ -14,7 +14,7 @@ The approved foundation baseline and recovery policy are documented in [GOLDEN-B
    - Phaser games — P500
 2. Select **Request this service**, enter a name and email, choose a requested timeline date (today or later), and optionally describe the project.
 3. Submit the request. It should take you to **Account** in the header, where the request, requested date, starting price and status are shown.
-4. Return to Services to submit another request or filter account requests by the same email. Each request has a branded request/payment record that can be printed or saved as PDF, even before a payment is recorded. Use the receipt's **Print / Save PDF** action to open the browser's native print dialog, then choose **Save as PDF**; the prototype does not generate or download a server-side PDF.
+4. Return to Store to submit another request or filter account requests by the same email. Each request has a branded request/payment record that can be printed or saved as PDF, even before a payment is recorded. Use the receipt's **Print / Save PDF** action to open the browser's native print dialog, then choose **Save as PDF**; the prototype does not generate or download a server-side PDF.
 
 The date is a requested timeline, not a confirmed delivery promise. No payment is taken.
 
@@ -47,7 +47,7 @@ This is a prototype control surface, not a secure admin boundary. Do not enter r
 
 - Orders, service edits, announcements and statuses are stored in this browser's `localStorage`; customer and admin views share the same local data on the same browser profile.
 - Data is not shared with other devices, sent to a business, or synchronized to Firebase.
-- Visit the homepage while online and allow the service worker to finish installing; then reload once while online. Switch the device/browser offline and reload the homepage. Confirm the app shell opens, submit a sample request, and use the bottom **Admin demo** entry to change its status. Return to **Account** in the header and confirm the status is reflected.
+- Visit the homepage while online and allow the service worker to finish installing; then reload once while online. Switch the device/browser offline and reload the homepage. Confirm the app shell opens, submit a sample request, and use the footer 💼 Briefcase entry to open the owner demo and change its status. Return to **Account** in the header and confirm the status is reflected.
 - The service worker caches the app shell and offline fallback, uses network-first navigation with a cached-page/home/offline fallback, and keeps private routes and API responses out of the public page cache. Eligible service images from supported hosts may be retained only when a readable response exposes a size within the 4 MB per-image limit (24 image entries maximum). Video streaming, opaque/oversized images and other external assets need internet; service cards should use their local visual placeholder when media is unavailable. Browser storage can be evicted, so this is best-effort offline support—not a guaranteed download or backup.
 - If local storage is blocked or full, the app should show a notice; do not interpret a local save notice as server synchronization.
 
