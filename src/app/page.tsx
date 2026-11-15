@@ -580,7 +580,7 @@ export default function Home() {
     if (!ready) return;
     const url = new URL("/", window.location.origin);
     const restore = new URLSearchParams(window.location.search).get("restore") || "";
-    if (/^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(restore)) url.searchParams.set("restore", restore);
+    if (restore === ":explore" || /^:visitor:[a-z0-9-]{6,80}:(example|own)$/i.test(restore)) url.searchParams.set("restore", restore);
     if (view === "account") url.searchParams.set("view", "account");
     else if (view === "login") url.hash = "#login";
     else if (view === "admin") url.hash = "#admin";
@@ -765,8 +765,13 @@ export default function Home() {
   function continueYourBusiness() {
     const discovered = findSavedBusinessWorkspaces();
     setSavedBusinessOptions(discovered);
-    if (discovered.length === 1) openSavedBusinessWorkspace(discovered[0].suffix);
-    else if (discovered.length > 1) setShowPreviousBusinessPicker(true);
+    // The TrailWise workspace the owner was actively building is the intended
+    // continuation target. Prefer that exact named business over generic or older
+    // saved workspaces; never silently open "Your Business" instead.
+    const trailWiseWorkspaces = discovered.filter(option => /^trailwise$/i.test(option.name.trim()));
+    if (trailWiseWorkspaces.length === 1) openSavedBusinessWorkspace(trailWiseWorkspaces[0].suffix);
+    else if (trailWiseWorkspaces.length > 1 || discovered.length > 1) setShowPreviousBusinessPicker(true);
+    else if (discovered.length === 1) openSavedBusinessWorkspace(discovered[0].suffix);
     else setNotice("No previous business was found in this browser. Your saved browser data has not been changed.");
   }
   function loadPreviousBusinessSetup() {
