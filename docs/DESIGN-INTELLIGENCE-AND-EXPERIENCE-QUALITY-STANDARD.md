@@ -206,8 +206,10 @@ These resources inform research and implementation; they are not mandatory depen
 - [shadcn/ui — design-system page](https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/design-system-page.md): foundations, state matrices, realistic compositions and do/don't examples.
 - [Mobbin](https://mobbin.com/), [Page Flows](https://pageflows.com/) and [Refero](https://refero.design/): product and journey research.
 - [Laws of UX](https://lawsofux.com/): human-factors reference.
-- [Lucide](https://lucide.dev/): consistent icon family where no project-specific family exists.
-- [Rive](https://rive.app/) and [60FPS](https://60fps.design/): optional motion authoring and inspiration.
+- [Lucide](https://lucide.dev/) or [Phosphor](https://phosphoricons.com/): choose one consistent icon family where the project has no established choice; do not mix packs casually.
+- [Tremor](https://www.tremor.so/): optional dashboard/chart patterns when compatible with the target stack; use only where data visualisation helps a real decision.
+- [Godly](https://godly.website/): optional high-quality web art-direction inspiration, not a source for copying layouts or brand assets.
+- [Rive](https://rive.app/) and [60FPS](https://60fps.design/): optional motion authoring and interaction inspiration.
 
 Do not add a dependency, migrate a component library, adopt a new runtime or pay for a research tool solely because it appears in this list. Check current project stack, licence, cost, platform support, bundle/runtime impact, accessibility and maintenance first. Preserve working foundations and use the smallest tool that improves the outcome.
 
