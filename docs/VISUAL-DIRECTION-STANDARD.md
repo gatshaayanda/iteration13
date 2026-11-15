@@ -8,6 +8,18 @@ Before changing a screen, consult [OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md](./OBJ
 
 During screen-by-screen design QA, check purpose, orientation, primary action, content completeness, state/feedback, recovery, responsive behavior and accessibility. Ask whether each prominent visual element helps the user understand or complete the task. Remove decorative competition and redundant surfaces before reducing readability or hiding information. Keep the objective-to-screen relationship intact across Store, Account and Briefcase.
 
+## Design intelligence and visual genre — mandatory
+
+Read [DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md](./DESIGN-INTELLIGENCE-AND-EXPERIENCE-QUALITY-STANDARD.md) before substantial visual planning, redesign or visual QA. It defines the required research, art-direction, design-system, showcase and regression workflow.
+
+Before styling a product or major experience, choose a dominant visual genre—**Quiet, Character, Atmosphere, Data or Loud**—and explain why it suits the audience, positioning and primary task. These are practical art-direction lenses, not rigid categories or templates. Secondary expressions may serve distinct parts of the journey, but shared identity, tokens, components and interaction conventions must keep the product coherent. The detailed standard includes portfolio examples, research sources and anti-pattern checks.
+
+Inspect the project's existing tokens and component system before changing them. Never create a competing theme or component library merely to achieve a visual refresh. For substantial products, maintain a rendered development-only showcase where practical and use it to review foundations, contrast, component states and realistic compositions.
+
+Visual research should investigate comparable **tasks and complete flows**, not just attractive screenshots. Mobbin, Page Flows, Refero, official products and Laws of UX are optional research references; adapt patterns to the actual business and verify them. Expo Skills and shadcn DESIGN.md guidance are useful for token discipline, component contracts, rendered showcases and drift audits, but their platform-specific code and libraries are not mandatory dependencies.
+
+Do not accept a redesign from a single screenshot. Review real screens at narrow mobile and desktop widths, exercise interactions and relevant states, inspect accessibility/contrast, and revisit neighboring screens after shared changes. Diagnose generic card-heavy surfaces, inconsistent geometry, decorative hero takeover, weak hierarchy, icon inconsistency and unnecessary motion as design problems when they are actually present—not as blanket bans on cards, gradients, dark themes or animation.
+
 ## Reference interpretation
 
 The WashRide mobile-home screenshot supplied by the product owner is a useful example of a finished, app-like customer experience. Its transferable qualities are:
