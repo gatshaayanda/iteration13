@@ -5887,3 +5887,28 @@ h1 em,
  .serviceDemo .sd-identity-continue{min-height:54px;font-size:16px}
 }
 @media(prefers-reduced-motion:reduce){.serviceDemo .sd-identity-continue{transition:none}}
+
+/* Opening choice: make setup and exploration equally obvious before either begins. */
+.serviceDemo .sd-identity-entry{max-width:960px;margin:clamp(24px,5vh,52px) auto 22px;padding:0 2px}
+.serviceDemo .sd-identity-entry>.sd-kicker{display:block;margin-bottom:9px;color:#526075;font-size:12px;font-weight:800;letter-spacing:.08em}
+.serviceDemo .sd-identity-entry>h1{margin:0;color:#172033;font-size:clamp(2rem,5vw,3.25rem);line-height:1.04;letter-spacing:-.055em}
+.serviceDemo .sd-identity-entry>h1 em{color:#526075;font-style:normal}
+.serviceDemo .sd-identity-entry>p{max-width:680px;margin:13px 0 22px;color:#455166;font-size:16px;line-height:1.55}
+.serviceDemo .sd-identity-entry-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.serviceDemo .sd-identity-entry-card{display:flex;min-width:0;flex-direction:column;align-items:flex-start;gap:12px;padding:19px;border:1px solid #d8e0ea;border-radius:14px;background:#fff}
+.serviceDemo .sd-identity-entry-card.is-primary{border-color:#aebbd0;background:#f8fafc}
+.serviceDemo .sd-identity-entry-number{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#e8edf4;color:#344054;font-size:12px;font-weight:850}
+.serviceDemo .sd-identity-entry-card h2{margin:0;color:#172033;font-size:19px;line-height:1.2;letter-spacing:-.02em}
+.serviceDemo .sd-identity-entry-card p{margin:6px 0 0;color:#526075;font-size:14px;line-height:1.45}
+.serviceDemo .sd-identity-entry-card>button{display:flex;min-height:48px;width:100%;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding:12px 14px;border:0;border-radius:9px;background:#172033;color:#fff;font-size:15px;font-weight:800;text-align:left;cursor:pointer}
+.serviceDemo .sd-identity-entry-card>button:focus-visible{outline:3px solid #2458e8;outline-offset:3px}
+.serviceDemo .sd-identity-entry-card>button.sd-identity-entry-explore{border:1px solid #cbd5e1;background:#fff;color:#172033}
+.serviceDemo .sd-identity-entry-card>button.sd-identity-entry-secondary{min-height:38px;margin-top:-5px;padding:7px 0;background:transparent;color:#344054;font-size:13px;font-weight:700}
+.serviceDemo .sd-identity-entry-card>small{color:#657187;font-size:12px;line-height:1.4}
+.serviceDemo .sd-explore-banner{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px max(16px,calc((100vw - 1180px)/2));border-bottom:1px solid #d8e0ea;background:#f6f8fb}
+.serviceDemo .sd-explore-banner>div{display:grid;gap:3px;min-width:0}
+.serviceDemo .sd-explore-banner strong{color:#172033;font-size:14px}
+.serviceDemo .sd-explore-banner span{color:#526075;font-size:13px;line-height:1.35}
+.serviceDemo .sd-explore-banner button{flex:none;min-height:42px;padding:9px 13px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#172033;font-size:13px;font-weight:800;cursor:pointer}
+.serviceDemo .sd-explore-banner button:focus-visible{outline:3px solid #2458e8;outline-offset:3px}
+@media(max-width:680px){.serviceDemo .sd-identity-entry{margin:20px auto 16px}.serviceDemo .sd-identity-entry>p{margin:10px 0 16px;font-size:15px}.serviceDemo .sd-identity-entry-actions{grid-template-columns:minmax(0,1fr);gap:10px}.serviceDemo .sd-identity-entry-card{gap:9px;padding:15px}.serviceDemo .sd-identity-entry-card h2{font-size:18px}.serviceDemo .sd-explore-banner{align-items:stretch;flex-direction:column;gap:9px;padding:10px 14px}.serviceDemo .sd-explore-banner button{width:100%;justify-content:center}}

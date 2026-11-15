@@ -75,7 +75,9 @@ function getSharedWorkspaceMode(): "example" | "own" {
 }
 function getStorageKey(key: string): string {
   const shared = readSharedExampleFromUrl();
-  return shared ? `${key}:visitor:${shared.id}:${getSharedWorkspaceMode()}` : key;
+  if (shared) return `${key}:visitor:${shared.id}:${getSharedWorkspaceMode()}`;
+  if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("explore") === "1") return key + ":explore";
+  return key;
 }
 function encodeSharedExample(value: SharedExample): string {
   const bytes = new TextEncoder().encode(JSON.stringify(value));
@@ -364,6 +366,8 @@ export default function Home() {
   const [identityComplete, setIdentityComplete] = useState(false);
   const sampleLaunchHandled = useRef(false);
   const [hasPreviousSetup, setHasPreviousSetup] = useState(false);
+  const [setupPathChosen, setSetupPathChosen] = useState(false);
+  const [explorationMode, setExplorationMode] = useState(false);
   const [identityEditing, setIdentityEditing] = useState(false);
   const [identityServiceId, setIdentityServiceId] = useState<string | null>(null);
   const [customBrandColor, setCustomBrandColor] = useState("#2458e8");
@@ -372,10 +376,25 @@ export default function Home() {
   const [businessNameReady, setBusinessNameReady] = useState(false);
 
   useEffect(() => {
-    try {
-      const savedName = window.localStorage.getItem(getStorageKey("iteration13:business-name:v1"));
-      if (savedName) setBusinessName(savedName.slice(0, 48));
-    } catch { /* use the demo business name */ }
+    const exploring = new URLSearchParams(window.location.search).get("explore") === "1";
+    if (exploring) {
+      setExplorationMode(true);
+      const sampleData: DemoData = { ...emptyData, services: [{ id: "trailwise-guided-walk", name: "Guided nature walk", industry: "Outdoor experiences", price: 350, description: "A relaxed guided walk with local route knowledge and time to enjoy the landscape. This is sample content you can replace with your own offer.", media: "", mediaType: "image", active: true }], announcement: "Welcome to TrailWise. Explore the Store, send a sample request and see how it appears in Account and the owner Briefcase.", announcementActive: true };
+      try {
+        if (!window.localStorage.getItem(getStorageKey(STORAGE_KEY))) {
+          window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(sampleData));
+          window.localStorage.setItem(getStorageKey("iteration13:business-name:v1"), "TrailWise");
+          window.localStorage.setItem(getStorageKey("iteration13:business-palette:v1"), JSON.stringify(["#245b45", "#d49b52"]));
+          window.localStorage.setItem(getStorageKey("iteration13:store-theme:v1"), "#245b45");
+          window.localStorage.setItem(getStorageKey(CURRENCY_KEY), "BWP");
+          window.localStorage.setItem(getStorageKey("iteration13:identity-complete:v1"), "true");
+        }
+      } catch { setNotice("The sample workspace could not be saved. You can still explore during this visit."); }
+      setBusinessName(window.localStorage.getItem(getStorageKey("iteration13:business-name:v1")) || "TrailWise");
+    } else {
+      try { const savedName = window.localStorage.getItem(getStorageKey("iteration13:business-name:v1")); if (savedName) setBusinessName(savedName.slice(0, 48)); }
+      catch { /* use the demo business name */ }
+    }
     setBusinessNameReady(true);
   }, []);
 
@@ -397,9 +416,10 @@ export default function Home() {
           if (valid.length) setBrandColors(valid);
         }
       } else if (savedTheme && /^#[0-9a-f]{6}$/i.test(savedTheme)) setBrandColors([savedTheme]);
-      setHasPreviousSetup(window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true");
-      // Never auto-open an old business. Every visit starts with an explicit choice.
-      setIdentityComplete(false);
+      const exploring = new URLSearchParams(window.location.search).get("explore") === "1";
+      setHasPreviousSetup(window.localStorage.getItem(getStorageKey("iteration13:identity-complete:v1")) === "true" && !exploring);
+      // Never auto-open an old business. The explicit Explore path is the only sample auto-launch.
+      setIdentityComplete(exploring);
     } catch { /* identity remains at the accessible default */ }
     setThemeReady(true);
     setIdentityReady(true);
@@ -475,7 +495,7 @@ export default function Home() {
       if (!("serviceWorker" in navigator) || !("caches" in window)) return;
       try {
         const registration = await navigator.serviceWorker.ready;
-        const shell = await caches.open("iteration13-shell-v22");
+        const shell = await caches.open("iteration13-shell-v23");
         const [home, offlinePage] = await Promise.all([shell.match("/"), shell.match("/offline")]);
         if (active) setOfflineShellReady(Boolean(registration.active && home && offlinePage));
       } catch {
@@ -585,6 +605,7 @@ export default function Home() {
     setServiceActive(firstService?.active ?? true);
     setIdentityServiceId(firstService?.id || null);
     setIdentityEditing(true);
+    setSetupPathChosen(true);
     setIdentityComplete(false);
     setNotice("");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -696,6 +717,16 @@ export default function Home() {
     if (navigator.clipboard?.writeText) {
       navigator.clipboard.writeText(link).then(() => setNotice("Business example link copied. Visitors receive an independent browser-local copy.")).catch(() => setNotice("Your share link is ready below. Copy it to share the business example."));
     } else setNotice("Your share link is ready below. Copy it to share the business example.");
+  }
+  function beginBusinessSetup() {
+    if (hasPreviousSetup) startNewBusinessSetup();
+    else setSetupPathChosen(true);
+  }
+  function exploreBusinessOS() {
+    const url = new URL(window.location.href); url.searchParams.set("explore", "1"); window.location.assign(url.toString());
+  }
+  function returnToBusinessSetup() {
+    const url = new URL(window.location.href); url.searchParams.delete("explore"); url.searchParams.delete("view"); url.hash = ""; window.location.assign(url.toString());
   }
   function loadPreviousBusinessSetup() {
     setIdentityComplete(true);
@@ -1038,6 +1069,15 @@ export default function Home() {
 return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--studio-accent-secondary": secondaryColor, "--studio-accent-highlight": highlightColor, "--studio-accent-ink": accentInk(themeColor), "--studio-accent-text": accentText(themeColor) } as React.CSSProperties}>
     {!identityReady || !ready || !businessNameReady ? <section className="sd-identity-loading" aria-live="polite">Preparing your business identity…</section> : !identityComplete ? <section className="sd-identity-onboarding">
       <div className="sd-identity-onboarding-top"><span>ITERATION13 / BUSINESS OS</span><span>{identityEditing ? "BUSINESS IDENTITY" : "SETUP · STORE · ACCOUNT · BRIEFCASE"}</span></div>
+      {!setupPathChosen && !identityEditing ? <section className="sd-identity-entry" aria-labelledby="sd-identity-entry-title">
+        <span className="sd-kicker">YOUR BUSINESS · ONE CONNECTED SYSTEM</span>
+        <h1 id="sd-identity-entry-title">Make it yours. <em>Or explore first.</em></h1>
+        <p>You do not need to fill anything in to see how the Business OS works. Start with your own business, or explore a working sample first.</p>
+        <div className="sd-identity-entry-actions">
+          <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Build my Business OS</h2><p>Set up your business name, first offer and brand. Add the details as you go.</p></div><button type="button" onClick={beginBusinessSetup}>Set up my business <span aria-hidden="true">↗</span></button>{hasPreviousSetup && <button type="button" className="sd-identity-entry-secondary" onClick={loadPreviousBusinessSetup}>Continue {businessName.trim() || "my saved business"} instead</button>}</article>
+          <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Explore Business OS first</h2><p>Open a working sample Store. Try a customer request, view the Account, then see the owner Briefcase.</p></div><button type="button" className="sd-identity-entry-explore" onClick={exploreBusinessOS}>Explore the sample <span aria-hidden="true">↗</span></button><small>No setup required · Your own business data stays separate</small></article>
+        </div>
+      </section> : <>
       <section className="sd-identity-progress" aria-label={`Setup progress: ${setupCompletedCount} of 4 complete`}>
         <div className="sd-identity-progress-heading"><div><span>YOUR SETUP</span><strong>{setupCompletedCount} <small>of 4 ready</small></strong></div><p>{setupReady ? "Your business is ready to be created." : "Complete the essentials to open your Business OS."}</p></div>
         <div className="sd-identity-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={4} aria-valuenow={setupCompletedCount} aria-label="Setup essentials completed">{setupChecklist.map(item => <span key={item.label} className={item.complete ? "is-complete" : ""} />)}</div>
@@ -1064,9 +1104,6 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
       </div>
       <div className="sd-identity-onboarding-layout">
         <div className="sd-identity-onboarding-copy">
-          <span className="sd-kicker">YOUR BUSINESS · ONE CONNECTED SYSTEM</span>
-          <h1><span>{businessName.trim() || "Your Business"}</span> <em>at work.</em></h1>
-          <p>{identityEditing ? "Update your name, brand, pricing currency and first Store listing. Existing requests stay in place." : "Set your business identity and one offer. Customers use your Store and Account; your Briefcase puts the operation in your hands."}</p>
           <section className="sd-identity-setup-step sd-identity-identity-step" aria-labelledby="sd-identity-step-title">
             <div className="sd-identity-step-heading"><span>01 / BUSINESS IDENTITY</span><strong id="sd-identity-step-title">Make it yours</strong></div>
             <label className="sd-identity-name-label">Business name
@@ -1118,7 +1155,9 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
         </div>
 
       </div>
+      </>}
     {pendingConfirm?.kind === "overwrite-business" && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-onboarding-overwrite-title" aria-describedby="sd-onboarding-overwrite-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-onboarding-overwrite-title">Replace the saved business?</h2><p id="sd-onboarding-overwrite-description">This replaces the current business name, colours, currency and products / services. Its saved customer requests, messages and owner notes on this device will also be cleared. This cannot be undone.</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep existing setup</button><button type="button" className="sd-button sd-primary" onClick={() => { setPendingConfirm(null); completeBusinessIdentity(true); }}>Replace and create</button></div></section></div>}</section> : <>
+    {explorationMode && <div className="sd-explore-banner"><div><strong>Exploring TrailWise · sample business</strong><span>Try a request in the Store, then find it in Account and the owner Briefcase. Your own setup stays separate.</span></div><button type="button" onClick={returnToBusinessSetup}>Create my own business ↗</button></div>}
     <div className="sd-topline"><div className="sd-wrap"><details className="sd-connect-details"><summary className={(online ? "sd-connect" : "sd-connect is-offline") + (offlineShellReady ? " is-offline-ready" : "")} aria-label={offlineShellReady ? "App shell saved on this device; open details" : online ? "Browser-local demo; open details" : "Offline mode; open details"}><i />{offlineShellReady ? "App shell saved" : online ? "Demo mode" : "Offline mode"}<span className="sd-connect-chevron" aria-hidden="true">⌄</span></summary><div className="sd-connect-popover"><strong>{offlineShellReady ? "The Store can reopen offline on this device." : "This is a browser-local demo."}</strong><span>{offlineShellReady ? "The app interface is saved on this device. When an update is ready, use Refresh to switch to the new version." : "Your demo workspace is stored in this browser."}</span><span>Business edits stay on this device. Uploads and cloud-connected actions still need internet.</span></div></details></div></div>
     <header className="sd-header"><div className="sd-wrap sd-nav"><button className="sd-brand" onClick={() => { setView("shop"); setNotice(""); window.scrollTo({top:0,behavior:"smooth"}); }} aria-label="Back to Store"><span className="sd-logo">{(businessName.trim() || "YB").slice(0,2).toUpperCase()}</span><span><strong>{businessName || "Your Business"}</strong><small>STORE</small></span></button><nav aria-label="Main navigation"><button onClick={() => { setView("shop"); setNotice(""); }}>Store</button><button onClick={() => { recordDemoJourney("Customer account opened"); recordActivity("account", "Customer account opened"); setView("account"); setNotice(""); }}>Account <span className="sd-count">{data.orders.length}</span></button></nav>
 </div></header>

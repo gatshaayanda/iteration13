@@ -379,3 +379,11 @@ The product owner has approved a top-down, screen-by-screen redesign of the Iter
 - Keep the live Preview collapsed and attached to the saved-device / Continue row. Its Store, Account, Briefcase, first listing and palette remain inside the disclosure; do not turn it into a permanent tall panel.
 - Show truthful live **x/4 ready** progress for four essentials: business name, pricing currency, at least one brand colour, and a valid first offer (name, industry and price). Announcement is optional and never blocks setup.
 - Clearly mark each essential and explain what remains. The final Create my Business OS action is the single dominant, full-width primary action; disable it until all four essentials are ready. Keep browser-local persistence wording adjacent and honest.
+
+
+## Opening choice and explore-first flow — November 2026
+- Present two clear paths before showing the setup form: **Build my Business OS** and **Explore Business OS first**. Do not make continuing a previous sample/business appear to be the only available action.
+- Show setup progress and the form only after the setup path is selected. Keep four-essential progress, collapsed live preview and optional announcement rules.
+- Explore opens a working, clearly labelled sample Store that can be used to submit a request and inspect the connected Account and owner Briefcase. The sample uses a dedicated :explore browser-local storage namespace and must never overwrite or merge with the owner saved business data.
+- Keep an obvious **Create my own business** action in the sample workspace. Returning removes the exploration query and returns to the owner independent setup state.
+- Verify both entry paths, sample request flow, owner visibility, return path, previous-business continuation and data isolation. Keep Setup as the current QA checkpoint; do not begin Account or Briefcase redesign before owner approval.
