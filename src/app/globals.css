@@ -5354,3 +5354,35 @@ h1 em,
 @media(prefers-reduced-motion:reduce){
  .serviceDemo .sd-store-card,.serviceDemo .sd-store-card *,.serviceDemo .sd-identity-continue{transition:none!important;animation:none!important}
 }
+
+
+/* Context-aware nudges stay collapsed and disappear without blocking the current task. */
+.sd-guide-hint{position:fixed;right:clamp(14px,3vw,26px);bottom:calc(env(safe-area-inset-bottom,0px) + 82px);z-index:1101;display:flex;align-items:flex-start;gap:10px;width:min(320px,calc(100vw - 28px));padding:11px 12px;border:1px solid #dce3ed;border-radius:14px;background:#fff;color:#344256;box-shadow:0 12px 32px rgba(15,28,45,.14);animation:sd-guide-enter .2s ease both}
+.sd-guide-hint p{margin:0;font-size:.76rem;line-height:1.45}
+.sd-guide-hint button{display:grid;place-items:center;flex:0 0 26px;width:26px;height:26px;border:0;border-radius:8px;background:#f1f4f8;color:#64748b;cursor:pointer}
+@media(max-width:600px){
+ .sd-guide-panel{top:auto;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 72px);width:auto;height:min(72dvh,620px);max-height:72dvh;padding:0;border:1px solid #dce2eb;border-radius:22px;box-shadow:0 18px 60px rgba(15,28,45,.2)}
+ .sd-guide-head{padding:11px 13px 10px}
+ .sd-guide-intro{padding:11px 14px 8px}
+ .sd-guide-actions{padding:0 12px 10px}
+ .sd-guide-services{padding:0 12px 10px}
+ .sd-guide-thread{max-height:90px}
+ .sd-guide-footnote{padding:7px 10px calc(7px + env(safe-area-inset-bottom,0px))}
+ .sd-guide-teaser,.sd-guide-hint{right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 74px)}
+}
+@media(prefers-reduced-motion:reduce){.sd-guide-hint{animation:none!important}}
+
+
+/* Local customer journey funnel in Briefcase Insights. */
+.sd-journey-funnel{margin-top:18px;padding:17px;border:1px solid #dce3eb;border-radius:16px;background:#f8fafc;color:#172033}
+.sd-journey-funnel>.sd-admin-help{max-width:780px;margin:8px 0 14px}
+.sd-journey-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.sd-journey-steps article,.sd-journey-highlights article{min-width:0;padding:12px;border:1px solid #e1e6ee;border-radius:12px;background:#fff}
+.sd-journey-steps article>div:first-child{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.sd-journey-steps article span,.sd-journey-highlights article span{color:#536176;font-size:.76rem;font-weight:800;line-height:1.35}
+.sd-journey-steps article strong,.sd-journey-highlights article strong{color:#18263a;font-size:1.35rem;font-weight:950;font-variant-numeric:tabular-nums}
+.sd-journey-steps .sd-performance-track{margin:10px 0 0}
+.sd-journey-highlights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:10px}
+.sd-journey-highlights article{display:grid;gap:5px}
+.sd-journey-highlights article small{color:#6b7280;font-size:.7rem;line-height:1.4}
+@media(max-width:760px){.sd-journey-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.sd-journey-highlights{grid-template-columns:1fr}}

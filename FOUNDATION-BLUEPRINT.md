@@ -82,6 +82,14 @@ The repo contains inherited Firebase/PWA integration code beyond the local-only 
 The service demo mounts a deterministic, screen-aware Service Guide on the shared Store / Account / Briefcase page. The Sparkle Legacy reference and UX findings are documented in [CHAT-WIDGET-RESEARCH.md](./CHAT-WIDGET-RESEARCH.md). Treat that file as a design brief, not a mandate to copy the insurance widget unchanged.
 
 
+## Local customer journey measurement — November 2026
+
+The Store prototype records a joined, browser-local journey alongside its existing business activity. Event vocabulary is action-based: `store_viewed` (first Store arrival in a tab), `screen_viewed` / `screen-change` (actual screen transitions), `offer_selected` / `offer-selected`, `request_started` / `request-started`, `request_submitted` (after the existing local save succeeds), and `owner_status_updated` (after an owner status change saves). Guide opens, dismissals, typed-message submission events and shortcut actions are recorded without storing typed message content in the journey log.
+
+The joined event trail is stored in the existing Iteration 13 browser-local demo record, capped at 300 events, and includes a tab-scoped session identifier. It is not Firebase analytics, shared production telemetry, unique people, or cross-device tracking. A request start without a corresponding submission is reported as an unfinished start only; it must never be described as confirmed abandonment or intent to leave. Business records remain the source of truth for actual submitted requests and status changes.
+
+The existing Briefcase Insights screen presents the funnel and guide engagement using this same local event trail. Keep the local-demo label visible. Future production analytics require a separate privacy, retention, identity, security and consent decision before sending events to a server.
+
 ## Deterministic Service Guide — current reusable pattern
 
 - Implementation: \`src/app/ServiceGuide.tsx\`; styles are appended to \`src/app/globals.css\`; mounted by \`src/app/page.tsx\`.

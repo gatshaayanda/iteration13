@@ -16,6 +16,7 @@ type Props = {
   onOpenAccount: () => void;
   onOpenAdmin: (target?: "services" | "announcement" | "requests") => void;
   onOpenStorefront: () => void;
+  onTrack: (event: string, details?: { screen?: string; serviceId?: string; serviceName?: string }) => void;
 };
 
 const HISTORY_KEY = "iteration13:guide-history:v1";
@@ -38,7 +39,7 @@ function createMessage(from: Message["from"], text: string): Message {
   return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, from, text };
 }
 
-export default function ServiceGuide({ view, screen, services, requestCount, onChooseService, onOpenAccount, onOpenAdmin, onOpenStorefront }: Props) {
+export default function ServiceGuide({ view, screen, services, requestCount, onChooseService, onOpenAccount, onOpenAdmin, onOpenStorefront, onTrack }: Props) {
   const [open, setOpen] = useState(false);
   const [teaser, setTeaser] = useState(false);
   const [hint, setHint] = useState("");
@@ -51,17 +52,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
   const launcherRef = useRef<HTMLButtonElement>(null);
   const previousScreen = useRef(screen);
   const activeServices = useMemo(() => services.filter(service => service.active), [services]);
-  const screenTips: Record<string, string> = {
-    store: "Browsing the Store? I can compare the available offers or take you to a request.",
-    "customer-account": "Your Account keeps this browser’s requests, updates and receipts together.",
-    "request-form": "Need help with the request? Your selected offer carries through to this form.",
-    "briefcase-today": "Your Briefcase brings today's priorities and customer activity together.",
-    "briefcase-work": "Here you can review incoming work and move each request to its next status.",
-    "briefcase-money": "The Money area separates recorded payments from projected work.",
-    "briefcase-store": "Manage the offers and customer notice shown in the Store.",
-    "briefcase-notes": "Keep private working notes here; this demo saves them on this device.",
-    "briefcase-insights": "These demo insights describe activity in this browser only."
-  };
+
 
   useEffect(() => {
     try {
@@ -93,6 +84,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
       const previous = JSON.parse(window.sessionStorage.getItem(key) || "[]") as { event: string; screen: string; at: string }[];
       window.sessionStorage.setItem(key, JSON.stringify([...previous, { event: "screen-change", screen, at: new Date().toISOString() }].slice(-60)));
     } catch { /* local funnel measurement must never block navigation */ }
+    onTrack("screen-change", { screen });
     let timer: number | undefined;
     try {
       const seen = JSON.parse(window.sessionStorage.getItem("iteration13:guide-seen-screens:v1") || "[]") as string[];
@@ -137,7 +129,8 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
     return () => { window.clearTimeout(focusTimer); window.removeEventListener("keydown", handleKey); if (previous?.isConnected) previous.focus(); else launcherRef.current?.focus(); };
   }, [open]);
 
-  function track(event: string) {
+  function track(event: string, details: { serviceId?: string; serviceName?: string } = {}) {
+    onTrack(event, { screen, ...details });
     try {
       const key = "iteration13:guide-events:v1";
       const previous = JSON.parse(window.sessionStorage.getItem(key) || "[]") as { event: string; screen: string; at: string }[];
@@ -150,6 +143,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
   }
   function chooseService(service: GuideService) {
     setLastChoice(service.id);
+    track("offer-selected", { serviceId: service.id, serviceName: service.name });
     say(`${service.name} starts at P${service.price.toLocaleString("en-BW")}. ${service.description} Choose “Request this service” to continue in the existing form; your requested date is a preference, not a confirmed delivery promise.`);
   }
   function runAction(action: string) {
@@ -175,6 +169,7 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
     const service = activeServices.find(item => item.id === lastChoice);
     if (!service) { say("Choose a visible service first, then I can take you to its request form."); return; }
     say(`Taking you to the ${service.name} request form. Your service selection will be carried across.`);
+    track("request-started", { serviceId: service.id, serviceName: service.name });
     setOpen(false);
     onChooseService(service);
   }
@@ -235,20 +230,3 @@ export default function ServiceGuide({ view, screen, services, requestCount, onC
     </button>
   </div>;
 }
-
-
-/* Context-aware nudges stay collapsed and disappear without blocking the current task. */
-.sd-guide-hint{position:fixed;right:clamp(14px,3vw,26px);bottom:calc(env(safe-area-inset-bottom,0px) + 82px);z-index:1101;display:flex;align-items:flex-start;gap:10px;width:min(320px,calc(100vw - 28px));padding:11px 12px;border:1px solid #dce3ed;border-radius:14px;background:#fff;color:#344256;box-shadow:0 12px 32px rgba(15,28,45,.14);animation:sd-guide-enter .2s ease both}
-.sd-guide-hint p{margin:0;font-size:.76rem;line-height:1.45}
-.sd-guide-hint button{display:grid;place-items:center;flex:0 0 26px;width:26px;height:26px;border:0;border-radius:8px;background:#f1f4f8;color:#64748b;cursor:pointer}
-@media(max-width:600px){
- .sd-guide-panel{top:auto;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 72px);width:auto;height:min(72dvh,620px);max-height:72dvh;padding:0;border:1px solid #dce2eb;border-radius:22px;box-shadow:0 18px 60px rgba(15,28,45,.2)}
- .sd-guide-head{padding:11px 13px 10px}
- .sd-guide-intro{padding:11px 14px 8px}
- .sd-guide-actions{padding:0 12px 10px}
- .sd-guide-services{padding:0 12px 10px}
- .sd-guide-thread{max-height:90px}
- .sd-guide-footnote{padding:7px 10px calc(7px + env(safe-area-inset-bottom,0px))}
- .sd-guide-teaser,.sd-guide-hint{right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 74px)}
-}
-@media(prefers-reduced-motion:reduce){.sd-guide-hint{animation:none!important}}
