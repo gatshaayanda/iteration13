@@ -168,7 +168,7 @@ For each important capability, be able to answer:
 
 If a feature has no defensible objective or user need, challenge its inclusion. If an objective has no supporting journey, capability or test, the design is incomplete.
 
-## 4. Screen-by-screen design and QA contract
+## 5. Screen-by-screen design and QA contract
 
 Apply this during the current Iteration 13 Store/Briefcase redesign and every later screen review. Do not wait until all screens are designed.
 
@@ -191,7 +191,7 @@ Use the existing [Visual Direction Standard](./VISUAL-DIRECTION-STANDARD.md) for
 
 For Iteration 13 specifically, keep the Store as the customer entry and the Briefcase as the owner operating workspace. Review each screen against the real customer-to-owner journey and the product's current implemented capabilities. Do not let a generic design pattern, promotion, decorative card or experimental control displace the next useful customer or owner action.
 
-## 5. Progressive complexity, not feature dumping
+## 6. Progressive complexity, not feature dumping
 
 Use progressive disclosure to manage complexity, not to conceal essential information.
 
@@ -206,7 +206,7 @@ Use progressive disclosure to manage complexity, not to conceal essential inform
 
 A simple surface must not mean a simplistic system: validation, permissions, audit history, idempotency, retries and data integrity can remain sophisticated behind a calm interface.
 
-## 6. Complexity and decision discipline
+## 7. Complexity and decision discipline
 
 For every significant feature or architecture choice, distinguish:
 - **Necessary now:** required to achieve the agreed objective safely.
@@ -216,7 +216,7 @@ For every significant feature or architecture choice, distinguish:
 
 Record important trade-offs in plain language. Avoid premature abstraction, speculative integrations and technology adoption merely because a tool is interesting. Preserve proven foundations unless a verified requirement justifies change.
 
-## 7. Agent-native inspection and verification: lessons from Expo Exact
+## 8. Agent-native inspection and verification: lessons from Expo Exact
 
 Reference reviewed: [expo/exact](https://github.com/expo/exact), its [README](https://github.com/expo/exact/blob/main/README.md), [website start guide](https://github.com/expo/exact/blob/main/docs/start-here-site.md), [agent/app start guide](https://github.com/expo/exact/blob/main/docs/start-here.md) and [testing guide](https://github.com/expo/exact/blob/main/docs/testing.md). Exact describes an agent-native workflow in which an agent can build, run, inspect, operate and test an application. Its documented driver exposes a small, consistent set of operations: tree, screenshot, tap, type, state, layout, logs, clock, prefer and perf. It also describes scripted interaction tests, controllable time and accessibility/layout verification.
 
@@ -235,7 +235,7 @@ Reference reviewed: [expo/exact](https://github.com/expo/exact), its [README](ht
 
 Use the transferable agent-inspection principles with the browser/testing tools already available in the target project. Reconsider an isolated Exact proof of concept only when there is a concrete product requirement for its cross-platform runtime and its platform maturity, maintenance model, accessibility, PWA needs, integrations, security and migration costs have been freshly evaluated. Never introduce it into a production foundation solely because it offers an attractive agent workflow.
 
-## 8. Required project artefacts
+## 9. Required project artefacts
 
 For a substantial new product or redesign, maintain a concise set of linked maps. These may be Markdown, Mermaid, diagrams or a combination; choose a format that remains editable and easy to update.
 
@@ -245,7 +245,7 @@ For a substantial new product or redesign, maintain a concise set of linked maps
 
 The three maps must share objective/requirement identifiers or clear links. Keep them in the target project's documentation, not only in chat or an image export. For a small change, a compact traceability checklist is sufficient.
 
-## 9. Definition of done
+## 10. Definition of done
 
 Before calling a substantial design or implementation complete, confirm:
 
