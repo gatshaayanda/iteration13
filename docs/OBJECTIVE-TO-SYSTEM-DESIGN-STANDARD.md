@@ -32,7 +32,122 @@ Move from plain language to technical detail without losing the original purpose
 
 A small change may use a short objective-to-screen-to-test trace rather than a full architecture pack. Do not create paperwork for its own sake. A substantial product or redesign must have a complete enough map for another developer or reviewer to understand the intent and its consequences.
 
-## 3. Traceability is the control
+## 3. Turning discovery questions and answers into a project direction
+
+Questions and responses collected during Iteration 13 discovery, setup, workshops or project conversations are product evidence. Their value is not simply that they provide copy for a brief: they help an implementation team understand what kind of business is being built, who it serves, what people need to accomplish, and which operating realities the system must support. Use the answers to guide the project from business understanding through genre, user flows, functionality, interface and technical design.
+
+Do not jump from an answer directly to a screen or feature. Interpret the response in context, connect it to other answers, and follow the sequence below.
+
+### 3.1 Read responses as evidence, not a feature wishlist
+
+For each meaningful answer, capture:
+
+- **What was said:** preserve the respondent's actual meaning; do not silently rewrite uncertainty as fact.
+- **Who it concerns:** owner, staff member, customer, supplier, household member or another affected person.
+- **What it reveals:** a goal, problem, audience, business model, constraint, preference, risk, existing workaround or desired outcome.
+- **Evidence level:** observed/current fact, respondent-reported experience, preference, assumption, proposal or unanswered question.
+- **Design consequence:** what this may change about the business model, journey, information, capability, interaction, visual direction or technical boundary.
+- **Confidence and follow-up:** confirmed, plausible but unverified, conflicting or still unknown. Ask another question only when the missing answer would materially change the solution.
+
+One answer may reveal several needs; several answers may describe the same underlying need. Consolidate related responses instead of creating one feature for every sentence. A preference is not automatically a requirement, and a requested feature is not automatically the best solution to the underlying problem.
+
+### 3.2 Use the answers to establish business context before choosing a genre
+
+Synthesize the responses into a short **Business Understanding Brief**:
+
+1. What does this business or service actually do?
+2. Who are its primary audiences and what brings each of them here?
+3. What outcomes matter to the owner, customers and staff?
+4. How does value move through the business (for example, discovery, enquiry, booking, sale, delivery, payment, repeat use)?
+5. What makes this business or audience different from a generic example?
+6. What operating constraints matter (people, time, location, capacity, devices, connectivity, privacy, regulation, budget or existing tools)?
+7. What is already working and must be preserved?
+8. What is explicitly not being built now?
+
+State the main business objectives in plain language, ideally three or four words each. Define success in observable terms where possible. Separate confirmed facts from assumptions and open questions.
+
+Only after this understanding should the team select a dominant visual genre. Choose Quiet, Character, Atmosphere, Data or Loud because it supports the business positioning, audience expectations and actual tasks—not because a respondent selected a colour, mentioned a competitor or used an aesthetic adjective. Record secondary expressions by surface or journey where useful. Genre is an expression of the understood product, not a substitute for understanding it.
+
+### 3.3 Translate business understanding into role-based user flows
+
+For every relevant role, map the real journey from trigger to outcome. A role may be a visitor, prospective customer, returning customer, staff member, owner or external participant; do not assume every project needs all of them.
+
+Use this pattern:
+
+**Trigger → user intention → information needed → action → system response → next person or state → successful outcome**
+
+For each step, establish:
+
+- What starts the journey, and where does the person enter?
+- What are they trying to decide or accomplish?
+- What information must they provide, see or confirm?
+- What is the simplest clear action available?
+- What does the system do, and what feedback is shown?
+- Does another person need to review, approve, assign, fulfil or respond?
+- What record/status changes, and who can see it?
+- What happens if information is missing, the action is rejected, the process is delayed, duplicated or abandoned?
+- How does the person return, continue or understand the next step?
+
+Map handoffs explicitly. For example, a public enquiry may become a customer record, a reviewed requirement, a quotation, an approved job, a delivery workflow and a financial record. That is a possible pattern, not a mandatory workflow for every business. A different business may need walk-in service, recurring appointments, inventory, household permissions, event attendance or another flow. Derive the flow from the answers and validate it against the actual operating model.
+
+### 3.4 Derive capabilities and screens from the flows
+
+Once the journeys are clear, identify the capabilities required to make each step real. Group related capabilities into coherent areas; do not start by deciding that every project needs the same menu or dashboard.
+
+For each proposed capability, record:
+
+- The objective and user need it serves.
+- The role that uses it and the point in the journey.
+- The input, decision or action it supports.
+- The record or state it creates or changes.
+- The output, handoff or next action.
+- Required permissions and privacy boundary.
+- Essential loading, empty, validation, pending, success, failure and recovery behavior.
+- Whether it is necessary now, useful later, unverified or out of scope.
+
+Then derive the screens and navigation. A screen exists to support a task, decision or useful overview—not merely because a feature category exists. Give each screen a clear audience, purpose, primary action and relationship to the wider flow. Combine steps when that reduces friction; separate them when a distinct decision, permission or handoff requires it.
+
+### 3.5 Let the user flow shape the interface and the genre expression
+
+Apply the chosen genre to make the task easier to understand:
+
+- Public discovery and first contact may need a strong brand expression, but the next useful action must remain obvious.
+- Customer details, requests and confirmations often benefit from calm, focused presentation.
+- Operational queues, work allocation and financial oversight may need denser, data-led hierarchy.
+- Campaigns and announcements may use stronger promotional expression without turning the whole product into a promotion.
+- Distinct screen treatments must still share the same identity, design tokens, interaction conventions and accessible contrast.
+
+These are starting hypotheses, not universal rules. The discovery answers and actual task flow decide the final treatment. Do not let genre selection dictate an unsuitable workflow, and do not let a homepage aesthetic determine every internal screen.
+
+### 3.6 Derive architecture only after the required behavior is understood
+
+Map the real records, relationships, state transitions, permissions, persistence, integrations and failure boundaries needed by the journeys. For every technical component, explain which user-visible capability or system guarantee requires it. Keep implementation choices proportional:
+
+- Do not add an integration because a response merely mentions a tool or platform; confirm the business need and feasibility.
+- Do not introduce accounts, roles, dashboards, databases or automation without a journey or security/data requirement that justifies them.
+- Do not mistake a prototype/local demonstration for secure, shared or production persistence.
+- Preserve working foundation behavior unless a verified requirement and approved change justify modifying it.
+- Record deferred opportunities without making them dependencies of the first useful release.
+
+Finally, derive acceptance tests from the original answers and agreed outcomes. A discovery response is not fully translated until the team can demonstrate the relevant journey and verify its resulting state.
+
+### 3.7 Maintain a response-to-delivery trace
+
+For substantial projects, keep a compact table or linked map such as:
+
+| Discovery evidence | Interpreted need/objective | User flow | Required capability | Screen/interaction | Data or technical consequence | Acceptance evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| Respondent-reported problem or goal | What must improve | Trigger-to-outcome journey | What the system must enable | Where/how the person acts | What must be stored, protected or integrated | How the outcome will be demonstrated |
+
+Use stable identifiers where they help connect the maps. If answers conflict, record the conflict and the decision made; do not silently choose whichever answer is easiest to implement. If evidence changes, update the affected objective, flow and design decision rather than patching only the screen.
+
+**The governing sequence is:**
+
+**Questions and responses → evidence and business understanding → objectives → people and needs → role-based user flows → capabilities and handoffs → screens and interactions → visual genre expression → technical architecture → acceptance tests.**
+
+The genre decision is deliberately downstream of business and user understanding, while still happening early enough to guide substantial design. The technical architecture is downstream of the behavior it must support. This prevents attractive but irrelevant screens, generic workflows and unnecessary complexity.
+
+## 4. Traceability is the control
 
 Every significant requirement must be traceable in both directions:
 
