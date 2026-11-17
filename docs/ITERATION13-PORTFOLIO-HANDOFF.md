@@ -24,7 +24,7 @@ Always start with:
 6. `README.md`
 
 Then read only the relevant standards:
-- Any substantial product design, screen redesign, feature plan or architecture: `docs/OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md`.
+- Any substantial product design, screen redesign, feature plan or architecture: `docs/OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md`.\n- Business OS infrastructure costs, usage evidence, client commercial arrangements or owner-directed reinvestment: `docs/BUSINESS-OS-COMMERCIAL-TRANSPARENCY-STANDARD.md`.
 - Visual work: `docs/VISUAL-DIRECTION-STANDARD.md` **and open** `docs/assets/washride-home-reference.jpeg`.
 - Customer/staff workflows: `docs/OPERATIONAL-TRANSPARENCY-STANDARD.md`.
 - PWA/install: `docs/PWA-INSTALLATION-LOCK.md`.
@@ -99,7 +99,7 @@ Receipts and records should support retention, search, date filters, export and 
 
 The product demonstration should communicate the user's BoardSignal-derived capacity evidence: a 25 GB monthly server allowance has been proven against BoardSignal's observed workload, and is presented as capable of supporting thousands of customer interactions/records in a busy day, rather than framing the business system as airtime consumed by every customer call. The demonstration should show an illustrative high-volume day (thousands of customer interactions; e.g. 1,000+ calls) and a day-off scenario where customer journeys and automated record handling continue while the owner is away.
 
-Do not conflate file storage, monthly data transfer, database operations, API requests, messaging charges or AI usage. The 25 GB allowance must be defined by the actual hosting/provider plan and measured usage. BoardSignal is the evidence reference, not a universal guarantee for every app, payload size, integration or traffic pattern. Show capacity as a transparent benchmark with assumptions and usage reporting; do not promise unlimited service. Present the monthly software/infrastructure expense as a business-operating cost designed to sit below a typical marketing budget, and show the actual plan/cost breakdown rather than inventing a universal price or saying every business will spend the same amount.
+Do not conflate file storage, monthly data transfer, database operations, API requests, messaging charges or AI usage. The 25 GB allowance must be defined by the actual hosting/provider plan and measured usage. BoardSignal is the evidence reference, not a universal guarantee for every app, payload size, integration or traffic pattern. Show capacity as a transparent benchmark with assumptions and usage reporting; do not promise unlimited service. Explain infrastructure contributions separately from any optional owner-directed growth investment. An owner may choose to allocate part of their own marketing budget to next month's Business OS improvements after reviewing evidence; this is not an automatic commission on revenue. Show actual provider costs/usage only when connected and verified, disclose shared-cost allocation, and never invent a universal price or promise that every business will spend the same amount. Follow [Business OS Commercial Transparency Standard](./BUSINESS-OS-COMMERCIAL-TRANSPARENCY-STANDARD.md) before designing or describing this arrangement.
 
 ### Compact storefront visual contract
 
