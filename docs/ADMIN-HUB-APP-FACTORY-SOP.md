@@ -94,6 +94,9 @@ Use UploadThing when required by the brief or existing approved architecture. Do
 
 ### PWA installation
 
+**Permanent protected infrastructure:** the actual Africhiko `src/app/pwa-register.tsx` lifecycle is the reusable reference. Read [PWA-INSTALLATION-LOCK.md](./PWA-INSTALLATION-LOCK.md) before any install/PWA work and carry that lock into every clone. Reuse the implementation and behavior exactly; do not rewrite, refactor, simplify, replace, duplicate or “improve” it. Routine adaptation is identity/assets only (app name, artwork/icons, manifest/favicon/Apple icon references, theme colour and branded card presentation). A stale CI assertion must be corrected to test the approved code—not used as a reason to rewrite working installation. Any runtime mechanics change requires explicit, specific product-owner authorization. If installation fails, inspect the actual deployed commit, code, manifest/assets, service worker/cache and verifier, compare with Africhiko, then fix only the first proven cause.
+
+
 The approved Africhiko installation experience is the permanent reference standard for new projects: compact branded dismissible card, native `beforeinstallprompt` lifecycle and user-triggered native prompt, correct embedded-browser handling, iOS Share → Add to Home Screen guidance, and non-blocking behavior.
 
 For projects that already carry this approved pattern, preserve its actual implementation and behavior. Change identity and assets only unless the product owner explicitly authorizes a specific mechanics change. Do not fake a native prompt, show dead install CTAs, add generic desktop/Android browser-menu instructions, duplicate listeners, or replace a working flow.
