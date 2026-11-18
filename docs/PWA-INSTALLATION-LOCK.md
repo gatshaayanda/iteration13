@@ -113,3 +113,27 @@ Report separately what was changed, committed, pushed, build-verified and produc
 ### Final instruction
 
 **Africhiko's approved installation experience is the permanent default for Iteration 13 and every project based on it. Preserve it exactly in behaviour and user experience. Rebrand it for each project, leave its protected implementation alone, and make no exceptions unless the product owner explicitly authorizes otherwise.**
+
+
+## Permanent reusable baseline — explicit product-owner lock (18 November 2026)
+
+**The installation experience is protected shared infrastructure, not a feature playground.** The approved reference is the actual Africhiko implementation in `gatshaayanda/africhiko/src/app/pwa-register.tsx`. Its current core lifecycle is: listen for `beforeinstallprompt`, call `preventDefault()`, retain the event, reveal the compact branded dismissible card, invoke `deferredPrompt.prompt()` directly from the user's Install-button click, await `userChoice`, clear the retained prompt/state, and register `/sw.js`. Reuse that source behavior exactly; do not add or remove lifecycle stages because a future agent prefers another pattern.
+
+### Absolute protection rule
+- Never rewrite, refactor, simplify, replace, “improve”, duplicate, defer, or remove the working installation controller, native prompt lifecycle, event listener, install click action, dismissal behavior, or service-worker registration as part of unrelated work.
+- Never weaken or delete identity/offline/install regression checks to make CI pass. If a check is stale, update the assertion to test the approved implementation—not the runtime to satisfy an obsolete test.
+- Never add a second install controller, parallel listener, fake native prompt, dead install CTA, or substitute browser-menu explainer.
+- **Only permitted routine adaptation:** app identity and assets—application name, brand artwork/icons, favicon/Apple/manifest icon references, theme colour, and the branded card's name/copy/style. These must not change runtime behavior.
+- Preserve extra platform guidance, embedded-browser handoff, update UX or offline behavior only when it exists in the selected source/project and is explicitly part of that project's approved baseline. Do not assume those features are part of the minimal Africhiko controller or graft them in under the guise of parity.
+- If installation breaks, stop unrelated work; inspect source, tests, manifests, icon URLs, service worker/cache and deployed commit; compare against current Africhiko; identify the first proven failure; then make the smallest repair. No speculative rewrite.
+- A runtime mechanics change is forbidden unless the product owner explicitly authorizes that specific change in the current task. Silence, a general feature request, framework change, CI failure or another agent's preference is not authorization.
+
+### Required clone and maintenance procedure
+1. Read this lock before touching PWA-related code or assets.
+2. Inspect the approved Africhiko source and target implementation; preserve the source lifecycle exactly while adapting identity only.
+3. Keep automated checks for the event listener, event retention, direct native prompt invocation, userChoice handling, dismissible card and service-worker registration.
+4. For identity-only work, verify manifest, metadata, favicon, Apple icon and every launcher/shortcut icon resolve to the target brand; no source-project icon may remain.
+5. Run relevant identity/offline checks, lint and build. Report code checks, deployment status and real-device QA separately.
+6. Carry this lock into every clone and link it from the target `AGENTS.md`.
+
+**Permanent rule: reuse the approved installation. Change the identity; leave the installation alone.**
