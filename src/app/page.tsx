@@ -89,6 +89,14 @@ function encodeSharedExample(value: SharedExample): string {
   return window.btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 const supportedCurrencies = ["BWP", "USD", "GBP", "EUR", "ZAR", "INR"] as const;
+const currencyOptions = [
+  { code: "BWP", name: "Botswana pula", symbol: "P", flag: "🇧🇼" },
+  { code: "ZAR", name: "South African rand", symbol: "R", flag: "🇿🇦" },
+  { code: "USD", name: "US dollar", symbol: "$", flag: "🇺🇸" },
+  { code: "GBP", name: "British pound", symbol: "£", flag: "🇬🇧" },
+  { code: "EUR", name: "Euro", symbol: "€", flag: "🇪🇺" },
+  { code: "INR", name: "Indian rupee", symbol: "₹", flag: "🇮🇳" },
+] as const;
 type SavedBusinessWorkspace = { suffix: string; name: string; serviceCount: number; customerCount: number };
 function findSavedBusinessWorkspaces(): SavedBusinessWorkspace[] {
   if (typeof window === "undefined") return [];
@@ -656,6 +664,16 @@ export default function Home() {
       ? current
       : current.length < 3 ? [...current, customBrandColor] : [...current.slice(0, 2), customBrandColor]);
   }
+  function updateBusinessCurrency(currency: string) {
+    if (!supportedCurrencies.includes(currency as typeof supportedCurrencies[number])) return;
+    setBusinessCurrency(currency);
+    try {
+      window.localStorage.setItem(getStorageKey(CURRENCY_KEY), currency);
+    } catch {
+      setNotice("Currency selection could not be saved on this device.");
+    }
+  }
+
   function openBusinessSetup() {
     const firstService = data.services[0];
     setServiceName(firstService?.name || "");
@@ -1198,7 +1216,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
             <small className="sd-identity-helper">This name appears across your Store, Account and Briefcase.</small>
             <section className="sd-identity-currency" aria-labelledby="sd-business-currency-title">
               <div className="sd-identity-currency-heading"><div><span>PRICING CURRENCY</span><strong id="sd-business-currency-title">Which currency do you use?</strong></div><small>For prices and records</small></div>
-              <div className="sd-identity-currency-options" role="group" aria-labelledby="sd-business-currency-title">{[{code:"BWP",name:"Botswana pula",symbol:"P",flag:"🇧🇼"},{code:"ZAR",name:"South African rand",symbol:"R",flag:"🇿🇦"},{code:"USD",name:"US dollar",symbol:"$",flag:"🇺🇸"},{code:"GBP",name:"British pound",symbol:"£",flag:"🇬🇧"},{code:"EUR",name:"Euro",symbol:"€",flag:"🇪🇺"},{code:"INR",name:"Indian rupee",symbol:"₹",flag:"🇮🇳"}].map(currency => <button key={currency.code} type="button" className={businessCurrency === currency.code ? "is-selected" : ""} aria-pressed={businessCurrency === currency.code} onClick={() => setBusinessCurrency(currency.code)}><span className="sd-identity-currency-flag" aria-hidden="true">{currency.flag}</span><span className="sd-identity-currency-details"><strong>{currency.name}</strong><small>{currency.code}</small></span><b className="sd-identity-currency-symbol">{currency.symbol}</b><span className="sd-identity-currency-check" aria-hidden="true">{businessCurrency === currency.code ? "✓" : ""}</span></button>)}</div>
+              <div className="sd-identity-currency-options" role="group" aria-labelledby="sd-business-currency-title">{currencyOptions.map(currency => <button key={currency.code} type="button" className={businessCurrency === currency.code ? "is-selected" : ""} aria-pressed={businessCurrency === currency.code} onClick={() => updateBusinessCurrency(currency.code)}><span className="sd-identity-currency-flag" aria-hidden="true">{currency.flag}</span><span className="sd-identity-currency-details"><strong>{currency.name}</strong><small>{currency.code}</small></span><b className="sd-identity-currency-symbol">{currency.symbol}</b><span className="sd-identity-currency-check" aria-hidden="true">{businessCurrency === currency.code ? "✓" : ""}</span></button>)}</div>
               <p>Prices display in {businessCurrency}; no exchange-rate conversion is applied.</p>
             </section>
             <div className="sd-identity-palette">
@@ -1307,6 +1325,11 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
   <div className="sd-business-identity-fields">
     <label>Business name<input value={businessName} onChange={event => setBusinessName(event.target.value.slice(0, 48))} maxLength={48} autoComplete="organization" /></label>
     <small>Example: Metsi Wellness. Use a real or fictional name. Your Store, Account and Briefcase rebrand together instantly.</small>
+    <section className="sd-identity-currency" aria-labelledby="sd-business-currency-settings-title">
+      <div className="sd-identity-currency-heading"><div><span>PRICING CURRENCY</span><strong id="sd-business-currency-settings-title">Business currency</strong></div><small>Used across prices and records</small></div>
+      <div className="sd-identity-currency-options" role="group" aria-labelledby="sd-business-currency-settings-title">{currencyOptions.map(currency => <button key={currency.code} type="button" className={businessCurrency === currency.code ? "is-selected" : ""} aria-pressed={businessCurrency === currency.code} onClick={() => updateBusinessCurrency(currency.code)}><span className="sd-identity-currency-flag" aria-hidden="true">{currency.flag}</span><span className="sd-identity-currency-details"><strong>{currency.name}</strong><small>{currency.code}</small></span><b className="sd-identity-currency-symbol">{currency.symbol}</b><span className="sd-identity-currency-check" aria-hidden="true">{businessCurrency === currency.code ? "✓" : ""}</span></button>)}</div>
+      <p>Prices display in {businessCurrency}. Changing currency changes the denomination only; it does not convert existing amounts.</p>
+    </section>
   </div>
   <div className="sd-business-identity-preview" style={{borderColor:themeColor}}><span className="sd-kicker">LIVE BUSINESS IDENTITY</span><strong>{businessName.trim() || "Your Business"}</strong><small>Store · Account · Briefcase</small><button type="button" className="sd-small-button" onClick={openBusinessSetup}>Edit business setup ↗</button></div>
   <div className="sd-business-share"><div><span className="sd-kicker">SHARE YOUR BUSINESS EXAMPLE</span><p>Share this exact Store, Account and Briefcase setup. Visitors get their own browser-local copy; your customer records and owner notes are never included.</p></div><button type="button" className="sd-button sd-outline" onClick={shareBusinessExample}>Generate share link ↗</button>{shareLink && <label>Share link<input readOnly value={shareLink} onFocus={event=>event.currentTarget.select()} aria-label="Business example share link" /></label>}</div>
