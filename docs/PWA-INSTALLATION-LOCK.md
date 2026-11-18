@@ -13,7 +13,7 @@ Protected runtime responsibilities:
 - Respect installed/standalone state. Do not trap visitors in a modal, auto-open install instructions, or replace the native prompt with a simulated prompt.
 - Keep exactly one authoritative install controller. Do not add competing listeners, duplicate install buttons, or parallel install modals.
 - Preserve embedded-browser handoff only where the product requires it; it must not become a generic installation fallback.
-- Keep service-worker registration, update handling, cache namespacing, offline behavior, manifest and icon declarations coherent. If a stale install screen is suspected, inspect the deployed commit and service-worker caches before changing the install state machine.
+- Keep service-worker registration, update handling, cache namespacing, offline behavior, manifest and icon declarations coherent. Advance the shell cache version whenever setup/onboarding or another offline-critical UI changes, and keep the connectivity indicator and automated checks aligned. Register with `updateViaCache: "none"` so update checks do not reuse HTTP-cached worker imports. Preserve the user-controlled update/refresh lifecycle. If a stale install screen is suspected, inspect the deployed commit and service-worker caches before changing the install state machine.
 
 ## Forbidden regressions
 
