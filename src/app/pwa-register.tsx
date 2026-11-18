@@ -96,7 +96,21 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       }
     };
 
-    const online = () => { void retryPendingOrderNotifications(); };
+    let registration: ServiceWorkerRegistration | null = null;
+    const inspect = () => {
+      if (registration?.waiting && navigator.serviceWorker.controller) setUpdateReady(registration.waiting);
+    };
+    const checkForUpdates = () => {
+      if (!registration || !navigator.onLine) return;
+      void registration.update().then(inspect).catch(() => {});
+    };
+    const online = () => {
+      void retryPendingOrderNotifications();
+      checkForUpdates();
+    };
+    const visibilityChange = () => {
+      if (document.visibilityState === "visible") checkForUpdates();
+    };
 
     const onBeforeInstallPrompt = (event: Event) => {
       const current = environment();
@@ -111,6 +125,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
     };
 
     window.addEventListener("online", online);
+    document.addEventListener("visibilitychange", visibilityChange);
     const promptWindow = window as Window & { __iteration13InstallPrompt?: Event; __iteration13PwaListenerReady?: boolean };
     // The browser can emit beforeinstallprompt before React hydrates. Adopt the
     // event captured by the tiny beforeInteractive script before listening normally.
@@ -159,10 +174,6 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
     window.addEventListener("iteration13-open-install", requestInstall);
     window.addEventListener("appinstalled", appInstalled);
 
-    let registration: ServiceWorkerRegistration | null = null;
-    const inspect = () => {
-      if (registration?.waiting && navigator.serviceWorker.controller) setUpdateReady(registration.waiting);
-    };
     const register = async () => {
       if (!("serviceWorker" in navigator)) return;
       try {
@@ -188,6 +199,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       window.removeEventListener("iteration13-open-install", requestInstall);
       window.removeEventListener("appinstalled", appInstalled);
       window.removeEventListener("online", online);
+      document.removeEventListener("visibilitychange", visibilityChange);
       window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
       navigator.serviceWorker?.removeEventListener("controllerchange", controllerChange);
       stopPendingAuth();
