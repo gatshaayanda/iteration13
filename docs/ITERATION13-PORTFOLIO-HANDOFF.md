@@ -24,7 +24,8 @@ Always start with:
 6. `README.md`
 
 Then read only the relevant standards:
-- Any substantial product design, screen redesign, feature plan or architecture: `docs/OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md`.\n- Business OS infrastructure costs, usage evidence, client commercial arrangements or owner-directed reinvestment: `docs/BUSINESS-OS-COMMERCIAL-TRANSPARENCY-STANDARD.md`.
+- Any substantial product design, screen redesign, feature plan or architecture: `docs/OBJECTIVE-TO-SYSTEM-DESIGN-STANDARD.md`.
+- Business OS infrastructure costs, usage evidence, client commercial arrangements or owner-directed reinvestment: `docs/BUSINESS-OS-COMMERCIAL-TRANSPARENCY-STANDARD.md`.
 - Visual work: `docs/VISUAL-DIRECTION-STANDARD.md` **and open** `docs/assets/washride-home-reference.jpeg`.
 - Customer/staff workflows: `docs/OPERATIONAL-TRANSPARENCY-STANDARD.md`.
 - PWA/install: `docs/PWA-INSTALLATION-LOCK.md`.
