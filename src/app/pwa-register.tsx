@@ -166,7 +166,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
     const register = async () => {
       if (!("serviceWorker" in navigator)) return;
       try {
-        registration = await navigator.serviceWorker.register("/sw.js");
+        registration = await navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
         inspect();
         registration.addEventListener("updatefound", () => {
           const worker = registration?.installing;
