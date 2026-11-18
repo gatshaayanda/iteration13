@@ -6032,3 +6032,17 @@ h1 em,
 .serviceDemo .sd-store-card .sd-media-placeholder[hidden]{display:none!important}
 
 .serviceDemo .sd-store-card .sd-service-media>img[hidden]{display:none!important}
+
+
+/* Paired operating systems: the i14 Backpack switch follows the i13 Briefcase. */
+.serviceDemo .sd-footer-systems{display:flex;align-items:center;gap:10px;margin-left:auto;pointer-events:auto}
+.serviceDemo .sd-owner-backpack{display:inline-flex;align-items:center;gap:9px;min-height:50px;padding:6px 10px;border:1px solid #dce3ed;border-radius:12px;background:#fff;color:#18202b;text-decoration:none;box-shadow:0 8px 28px #0004,0 0 0 3px rgba(243,241,235,.82);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+.serviceDemo .sd-owner-backpack img{display:block;flex:0 0 32px;width:32px;height:32px;border-radius:8px}
+.serviceDemo .sd-owner-backpack-copy{display:grid;gap:2px;text-align:left}
+.serviceDemo .sd-owner-backpack-copy strong{font-size:.76rem;line-height:1.1;letter-spacing:.03em;font-weight:900}
+.serviceDemo .sd-owner-backpack-copy small{font-size:.66rem;line-height:1.2;color:#687385}
+.serviceDemo .sd-owner-backpack:hover{transform:translateY(-1px);border-color:#155eef;box-shadow:0 10px 30px #0005,0 0 0 3px rgba(243,241,235,.82)}
+.serviceDemo .sd-owner-backpack:active{transform:scale(.97)}
+.serviceDemo .sd-owner-backpack:focus-visible{outline:3px solid #155eef;outline-offset:3px}
+@media(max-width:700px){.serviceDemo .sd-footer-systems{gap:8px}.serviceDemo .sd-owner-backpack{gap:7px;padding:6px 8px}.serviceDemo .sd-owner-backpack-copy strong{font-size:.7rem}}
+@media(prefers-reduced-motion:reduce){.serviceDemo .sd-owner-backpack{transition:none}}

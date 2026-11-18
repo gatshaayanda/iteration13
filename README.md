@@ -4,7 +4,7 @@
 
 The Sparkle Legacy chat-widget reference and evidence-led proposal live in [CHAT-WIDGET-RESEARCH.md](./CHAT-WIDGET-RESEARCH.md). These files explain what to preserve, where to edit, what is demo-only, and what needs deliberate project-specific replacement.
 
-The approved foundation baseline and recovery policy are documented in [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md). A reusable, mobile-first PWA foundation candidate. The homepage demonstrates a compact business-branded Store connected to an owner Briefcase/Business OS. The customer header provides Store and Account; the footer is reserved for the single icon-only owner Briefcase entry. Owners can edit services, announcements and the Store accent theme in the local demo. The interface uses the BoardSignal-derived 25 GB monthly capacity reference and high-volume customer-day scenario supplied by the product owner; it is not live server metering or a universal capacity guarantee. Firebase configuration, rules and data were intentionally left unchanged.
+The approved foundation baseline and recovery policy are documented in [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md). A reusable, mobile-first PWA foundation candidate. The homepage demonstrates a compact business-branded Store connected to an owner Briefcase/Business OS. The customer header provides Store and Account; the footer pairs the single icon-only owner Briefcase entry with a separate 🎒 BACKPACK / Personal OS link to Iteration 14. Owners can edit services, announcements and the Store accent theme in the local demo. The interface uses the BoardSignal-derived 25 GB monthly capacity reference and high-volume customer-day scenario supplied by the product owner; it is not live server metering or a universal capacity guarantee. Firebase configuration, rules and data were intentionally left unchanged.
 ## Customer demo
 
 1. Open the homepage and browse the four example services:
@@ -20,7 +20,7 @@ The date is a requested timeline, not a confirmed delivery promise. No payment i
 
 ## Local admin demo
 
-Use the single **💼 briefcase icon** in the footer to open the one-word local Briefcase demo. There is no separate Login/Admin navigation item. From the owner workspace you can:
+Use the **💼 briefcase icon** in the footer to open the one-word local Briefcase demo. The adjacent **🎒 BACKPACK / Personal OS** link opens Iteration 14 in a new tab. There is no separate Login/Admin navigation item. From the owner workspace you can:
 
 - Add, edit, hide/show and delete services.
 - Change prices, descriptions, image/video URLs and media type.
