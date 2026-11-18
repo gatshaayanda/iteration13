@@ -51,7 +51,7 @@ self.addEventListener("notificationclick", (event) => {
   }));
 });
 
-const CACHE_VERSION = "iteration13-shell-v24";
+const CACHE_VERSION = "iteration13-shell-v25";
 const MEDIA_CACHE = "iteration13-media-v5";
 const SHELL_CACHE = CACHE_VERSION;
 const STATIC_LIMIT = 100;
