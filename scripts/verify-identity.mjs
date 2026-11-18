@@ -63,7 +63,7 @@ const installContracts = [
   [pwaRegister.includes('window.addEventListener("appinstalled", appInstalled)') && pwaRegister.includes('setCanInstall(false)'), "installed-state cleanup is missing"],
   [pwaRegister.includes('function isIosSafari()') && pwaRegister.includes('Share</b>, choose <b>Add to Home Screen</b>'), "iOS Safari Share → Add to Home Screen guidance is missing"],
   [pwaRegister.includes('installState === "embedded"') && pwaRegister.includes('function openBrowser()'), "embedded-browser handoff is missing"],
-  [pwaRegister.includes('navigator.serviceWorker.register("/sw.js")') && pwaRegister.includes('SKIP_WAITING') && pwaRegister.includes('className="pwaUpdate"'), "service-worker registration/update recovery UI is missing"],
+  [pwaRegister.includes('navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" })') && pwaRegister.includes('SKIP_WAITING') && pwaRegister.includes('className="pwaUpdate"'), "service-worker registration/update recovery UI is missing"],
 ];
 for (const [passed, message] of installContracts) if (!passed) failures.push("PWA install contract: " + message);
 
