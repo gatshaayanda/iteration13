@@ -55,8 +55,15 @@ export default function ServiceMediaPicker({value,type,online,onChange,onUploadi
       event.target.value="";return;
     }
     onUploadingChange(true);setUploadProgress(0);setMessage("Uploading… keep this page open until UploadThing confirms it.");
-    try{await startUpload([file]);}
-    catch{
+    try {
+      const uploaded = await startUpload([file]);
+      if (!uploaded?.[0]?.ufsUrl && !uploaded?.[0]?.url) {
+        const saved = await saveOfflineMedia(file);
+        attemptedSync.current = saved.id;
+        onChange("idb-media://" + saved.id, type);
+        setMessage("Upload was not confirmed. Saved on this device · Pending Sync.");
+      }
+    } catch {
       onUploadingChange(false);setUploadProgress(0);
       try{const saved=await saveOfflineMedia(file);attemptedSync.current=saved.id;onChange("idb-media://"+saved.id,type);setMessage("Upload could not finish. Saved on this device · Pending Sync.");}
       catch(error){setMessage(error instanceof Error?error.message:"Upload failed. Your current media has been kept.");}

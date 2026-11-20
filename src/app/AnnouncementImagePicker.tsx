@@ -48,8 +48,15 @@ export default function AnnouncementImagePicker({value,online,onChange,onUploadi
       event.target.value="";return;
     }
     onUploadingChange(true);setProgress(0);setMessage("Uploading image… keep this page open until UploadThing confirms it.");
-    try{await startUpload([file]);}
-    catch{
+    try {
+      const uploaded = await startUpload([file]);
+      if (!uploaded?.[0]?.ufsUrl && !uploaded?.[0]?.url) {
+        const saved = await saveOfflineMedia(file);
+        attemptedSync.current = saved.id;
+        onChange("idb-media://" + saved.id);
+        setMessage("Upload was not confirmed. Saved on this device · Pending Sync.");
+      }
+    } catch {
       onUploadingChange(false);setProgress(0);
       try{const saved=await saveOfflineMedia(file);attemptedSync.current=saved.id;onChange("idb-media://"+saved.id);setMessage("Upload could not finish. Saved on this device · Pending Sync.");}
       catch(error){setMessage(error instanceof Error?error.message:"Image upload failed.");}
