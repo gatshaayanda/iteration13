@@ -762,8 +762,10 @@ export default function Home() {
     setRewardDescriptionDraft(exampleData.rewardDescription || emptyData.rewardDescription || "");
     setRewardImageDraft(exampleData.rewardImage || "");
     setRewardDiscountDraft(String(Number(exampleData.discountAmount) > 0 ? Number(exampleData.discountAmount) : 5));
-    try { window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(exampleData)); }
-    catch { setNotice("The example loaded, but this browser could not save its local copy. Your changes may not persist."); }
+    try {
+      window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSON.stringify(exampleData));
+      window.localStorage.setItem("iteration13:shared-example-visited:" + sharedExample.id, "yes");
+    } catch { setNotice("The example loaded, but this browser could not save its local copy. Your changes may not persist."); }
     setBusinessName(sharedExample.businessName);
     setBusinessCurrency(sharedExample.currency);
     setBrandColors(sharedExample.brandColors);
@@ -808,6 +810,10 @@ export default function Home() {
   function beginBusinessSetup() {
     if (hasPreviousSetup) startNewBusinessSetup();
     else setSetupPathChosen(true);
+  }
+  function beginOwnBusinessFromSharedExample() {
+    if (sharedExample) switchSharedWorkspace("own");
+    startNewBusinessSetup();
   }
   function openSavedBusinessWorkspace(suffix: string) {
     const url = new URL(window.location.href);
@@ -913,7 +919,10 @@ export default function Home() {
     if (!sharedExample || !isSharedExampleWorkspace || identityComplete || sampleLaunchHandled.current) return;
     if (new URLSearchParams(window.location.search).get("sample") !== "1") return;
     sampleLaunchHandled.current = true;
-    loadSharedBusinessExample();
+    let alreadyVisited = false;
+    try { alreadyVisited = window.localStorage.getItem("iteration13:shared-example-visited:" + sharedExample.id) === "yes"; }
+    catch { /* If storage is unavailable, preserve the direct first-visit experience. */ }
+    if (!alreadyVisited) loadSharedBusinessExample();
   }, [sharedExample, isSharedExampleWorkspace, identityComplete]);
 
   const paidTotal = data.orders.reduce((sum, order) => sum + (order.paidAmount || 0), 0);
@@ -1195,7 +1204,8 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
         <h1 id="sd-identity-entry-title">Your business. <em>Your choice.</em></h1>
         <p>Create a new business, or use a previous business saved on this device. Choosing a new setup will not replace the previous one until you confirm that action.</p>
         <div className="sd-identity-entry-actions">
-          <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Create a new business</h2><p>Set up a separate business name, first offer and brand. Your previous business is not changed unless you explicitly replace it.</p></div><button type="button" onClick={beginBusinessSetup}>Create a business <span aria-hidden="true">↗</span></button></article>
+          {sharedExample && <article className="sd-identity-entry-card is-primary"><span className="sd-identity-entry-number">01</span><div><h2>Return to {sharedExample.businessName}</h2><p>Reopen the same shared business example, including its catalogue, announcement and linked images. Your changes remain in your browser.</p></div><button type="button" onClick={loadSharedBusinessExample}>Open this example <span aria-hidden="true">↗</span></button></article>}
+          <article className={"sd-identity-entry-card" + (sharedExample ? "" : " is-primary")}><span className="sd-identity-entry-number">{sharedExample ? "02" : "01"}</span><div><h2>Create a new business</h2><p>Set up a separate business name, first offer and brand. The shared example remains unchanged.</p></div><button type="button" onClick={sharedExample ? beginOwnBusinessFromSharedExample : beginBusinessSetup}>Create a business <span aria-hidden="true">↗</span></button></article>
           {hasPreviousSetup && <article className="sd-identity-entry-card"><span className="sd-identity-entry-number">02</span><div><h2>Use previous business</h2><p className="sd-identity-saved-name">Continue with {savedBusinessName}</p><p>Reopen {savedBusinessName} and continue working on its Store, customer Account and owner Briefcase.</p></div><button type="button" className="sd-identity-entry-continue" onClick={continueYourBusiness}>Continue {savedBusinessName} <span aria-hidden="true">↗</span></button></article>}
           {showPreviousBusinessPicker && <div className="sd-identity-entry-card sd-identity-saved-business-list"><h2>Choose a saved business</h2><p>These business records were found in this browser. Choose the one you want to reopen.</p>{savedBusinessOptions.map(option => <button type="button" className="sd-identity-entry-continue" key={option.suffix || "default"} onClick={() => openSavedBusinessWorkspace(option.suffix)}>{option.name} · {option.serviceCount} services · {option.customerCount} customer records ↗</button>)}</div>}
         </div>
