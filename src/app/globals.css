@@ -6037,7 +6037,7 @@ h1 em,
 /* Paired operating systems: the i14 Backpack switch follows the i13 Briefcase. */
 .serviceDemo .sd-footer-systems{display:flex;align-items:center;gap:10px;margin-left:auto;pointer-events:auto}
 .serviceDemo .sd-owner-backpack{display:inline-flex;align-items:center;gap:9px;min-height:50px;padding:6px 10px;border:1px solid #dce3ed;border-radius:12px;background:#fff;color:#18202b;text-decoration:none;box-shadow:0 8px 28px #0004,0 0 0 3px rgba(243,241,235,.82);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
-.serviceDemo .sd-owner-backpack img{display:block;flex:0 0 32px;width:32px;height:32px;border-radius:8px}
+.serviceDemo .sd-owner-backpack img{display:block;flex:0 0 44px;width:44px;height:44px;object-fit:contain;border-radius:10px}
 .serviceDemo .sd-owner-backpack-copy{display:grid;gap:2px;text-align:left}
 .serviceDemo .sd-owner-backpack-copy strong{font-size:.76rem;line-height:1.1;letter-spacing:.03em;font-weight:900}
 .serviceDemo .sd-owner-backpack-copy small{font-size:.66rem;line-height:1.2;color:#687385}
