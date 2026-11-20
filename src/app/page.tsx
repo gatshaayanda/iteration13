@@ -4,6 +4,7 @@ import Link from "next/link";
 import ServiceGuide from "@/app/ServiceGuide";
 import ServiceMediaPicker from "@/app/ServiceMediaPicker";
 import AnnouncementImagePicker from "@/app/AnnouncementImagePicker";
+import { useOfflineMediaSource } from "@/app/useOfflineMediaSource";
 import AccountWorkspace, { type AccountMessage } from "@/app/AccountWorkspace";
 import RacingWarmup from "@/app/games/racing-warmup";
 import ReceiptDocument from "@/app/ReceiptDocument";
@@ -154,7 +155,7 @@ const accentText = (hex: string) => {
   while (luminance(rgb) > 0.179) rgb = rgb.map(value => Math.max(0, Math.round(value * 0.88)));
   return "#" + rgb.map(value => value.toString(16).padStart(2, "0")).join("");
 };
-function StoreAnnouncementSlot({ active, message, image, preview = false }: { active: boolean; message: string; image?: string; preview?: boolean }) {
+function StoreAnnouncementSlot({ active, message, image, preview = false }: { active: boolean; message: string; image?: string; preview?: boolean }) {\n  const imageSource = useOfflineMediaSource(image || "");
   if (!active) return <h2 className="sd-store-availability-heading">Available offerings</h2>;
   return <aside className={"sd-store-announcement" + (preview ? " is-preview" : "")} aria-label="Business announcement">
     <span className="sd-store-announcement-mark" aria-hidden="true">📣</span>
@@ -162,11 +163,11 @@ function StoreAnnouncementSlot({ active, message, image, preview = false }: { ac
       <span className="sd-store-announcement-label">BUSINESS UPDATE</span>
       {message.trim() && <p>{message.trim()}</p>}
     </div>
-    {image && <img className="sd-announcement-thumb" src={image} alt={message.trim() || "Business announcement"} loading="lazy" onError={event => { event.currentTarget.hidden = true; }} />}
+    {image && <img className="sd-announcement-thumb" src={imageSource} alt={message.trim() || "Business announcement"} loading="lazy" onError={event => { event.currentTarget.hidden = true; }} />}
   </aside>;
 }
 
-function StoreVideoPreview({ src }: { src: string }) {
+function StoreMediaImage({ src, alt }: { src: string; alt: string }) {\n  const mediaSource = useOfflineMediaSource(src);\n  return <img src={mediaSource} alt={alt} loading="lazy" onError={event => { event.currentTarget.hidden = true; event.currentTarget.parentElement?.querySelector(".sd-media-placeholder")?.removeAttribute("hidden"); }} />;\n}\n\nfunction StoreVideoPreview({ src }: { src: string }) {\n  const mediaSource = useOfflineMediaSource(src);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [muted, setMuted] = useState(true);
   const toggleAudio = () => {
@@ -188,7 +189,7 @@ function StoreVideoPreview({ src }: { src: string }) {
   return <div className="sd-video-preview" role="button" tabIndex={0} aria-label={muted ? "Tap anywhere on video to play with sound" : "Tap anywhere on video to mute"} aria-pressed={!muted}
     onClick={toggleAudio}
     onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); toggleAudio(); } }}>
-    <video ref={videoRef} src={src} autoPlay loop muted={muted} playsInline preload="auto" onVolumeChange={event => setMuted(event.currentTarget.muted)} />
+    <video ref={videoRef} src={mediaSource} autoPlay loop muted={muted} playsInline preload="auto" onVolumeChange={event => setMuted(event.currentTarget.muted)} />
     <span className="sd-video-sound-indicator" aria-hidden="true">{muted ? "◖ Tap anywhere for sound" : "◖ Sound on · tap anywhere to mute"}</span>
   </div>;
 }
@@ -871,11 +872,11 @@ export default function Home() {
     if (serviceMediaUploading || announcementImageUploading) { setNotice("Wait for both media uploads to finish before creating your business space."); return; }
     const announcement = announcementDraft.trim();
     const announcementImage = announcementImageDraft.trim();
-    if (announcementImage) {
+    if (announcementImage && !announcementImage.startsWith("idb-media://")) {
       try { const parsed = new URL(announcementImage); if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported protocol"); }
       catch { setNotice("Enter a valid announcement image URL or finish the thumbnail upload before continuing."); return; }
     }
-    if (serviceMedia.trim()) {
+    if (serviceMedia.trim() && !serviceMedia.trim().startsWith("idb-media://")) {
       try { const parsed = new URL(serviceMedia.trim()); if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported protocol"); }
       catch { setNotice("Enter a valid media URL or finish the upload before continuing."); return; }
     }
@@ -1299,7 +1300,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
             <div className={"sd-service-media sd-media-"+(index%4)+(service.mediaType==="video"?" is-video":"")}>
               
               <div className="sd-media-placeholder" hidden={Boolean(service.media)} aria-hidden="true"><span>{businessName || "THE STORE"}</span><strong>{service.name}</strong><i/></div>
-              {service.media&&service.mediaType==="video"?<StoreVideoPreview src={service.media} />:service.media?<img src={service.media} alt={service.name+" preview"} loading="lazy" onError={event => { event.currentTarget.hidden = true; event.currentTarget.parentElement?.querySelector(".sd-media-placeholder")?.removeAttribute("hidden"); }}/>:null}
+              {service.media&&service.mediaType==="video"?<StoreVideoPreview src={service.media} />:service.media?<StoreMediaImage src={service.media} alt={service.name+" preview"} />:null}
               {service.media&&service.mediaType==="video"&&<span className="sd-service-media-badge">VIDEO PREVIEW</span>}
             </div>
             <div className="sd-service-info">{service.industry && <div className="sd-service-meta"><span>{service.industry}</span></div>}<div className="sd-service-title"><h3>{service.name}</h3><strong>{money(service.price)}</strong></div><p>{service.description}</p><button className="sd-order-button" onClick={()=>beginOrder(service)}>Select service <span aria-hidden="true">↗</span></button></div>
