@@ -7,7 +7,10 @@ const ignoredFiles = new Set(["AGENTS.md","scripts/verify-identity.mjs"]);
 const textExtensions = new Set([".ts",".tsx",".js",".mjs",".css",".json",".webmanifest",".md",".yml",".yaml",".txt",".html",".svg"]);
 const failures = [];
 const page = fs.readFileSync(path.join(root, "src/app/page.tsx"), "utf8");
-if (!page.includes('url.searchParams.set("sample", "1")')) failures.push("shared business example links must launch visitors directly into the Store");
+if (!page.includes('url.searchParams.set("sample", "1")')) failures.push("shared business example links must launch first-time visitors directly into the Store");
+if (!page.includes('"iteration13:shared-example-visited:" + sharedExample.id')) failures.push("shared example links must remember when a visitor has opened the example");
+if (!page.includes("beginOwnBusinessFromSharedExample")) failures.push("returning visitors must be able to start a separate business without replacing the shared example");
+if (!page.includes("Open this example")) failures.push("returning visitors must be able to reopen the shared business example");
 function walk(dir) {
   const files = [];
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
