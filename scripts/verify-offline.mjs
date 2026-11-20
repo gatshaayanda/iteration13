@@ -71,6 +71,16 @@ check(page.includes('window.localStorage.setItem(getStorageKey(STORAGE_KEY), JSO
 check(account.includes("if (!online || !navigator.onLine)") && account.includes("Upload"), "offline account messaging must stay available while uploads are blocked");
 check(offline.includes("not queued for server delivery") && offline.includes("images") && offline.toLowerCase().includes("video streaming"), "offline guidance must explain image caching, video limits and non-sync boundaries");
 
+
+const offlineMedia = read("../src/lib/offline-media.ts");
+const serviceMediaPicker = read("../src/app/ServiceMediaPicker.tsx");
+const announcementPicker = read("../src/app/AnnouncementImagePicker.tsx");
+check(offlineMedia.includes("indexedDB.open(DB_NAME,1)") && offlineMedia.includes("MAX_PENDING_BYTES=64*1024*1024") && offlineMedia.includes("navigator.storage?.estimate?.()"), "offline media must persist actual files in IndexedDB with bounded storage and quota checks");
+check(serviceMediaPicker.includes("saveOfflineMedia(file)") && announcementPicker.includes("saveOfflineMedia(file)"), "service and announcement pickers must save selected files locally while offline");
+check(serviceMediaPicker.includes("syncOfflineMedia(id") && announcementPicker.includes("syncOfflineMedia(id"), "pending media must retry through UploadThing when connectivity returns and its picker is active");
+check(page.includes("useOfflineMediaSource") && page.includes("StoreMediaImage") && page.includes("mediaSource"), "Store and owner previews must resolve IndexedDB-backed local media files");
+check(page.includes('startsWith("idb-media://")'), "business setup and service validation must accept device-local pending media references");
+
 if (failures.length) {
   console.error("OFFLINE VERIFICATION FAILED");
   failures.forEach(failure => console.error(" - " + failure));
