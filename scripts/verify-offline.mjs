@@ -43,7 +43,7 @@ check((page.match(/<StoreAnnouncementSlot /g) || []).length === 2 && page.includ
 check(pwaRegister.includes('register("/sw.js", { updateViaCache: "none" })') && pwaRegister.includes("await registration.update()"), "service-worker script and imports must bypass HTTP cache during explicit update checks");
 check(pwaRegister.includes("const checkForUpdates = () =>") && pwaRegister.includes('window.addEventListener("online", online)') && pwaRegister.includes('document.addEventListener("visibilitychange", visibilityChange)') && pwaRegister.includes('document.removeEventListener("visibilitychange", visibilityChange)'), "returning online or reopening the app must check for a waiting service-worker update and clean up its listener");
 const workerShellCache = sw.match(/const CACHE_VERSION = "([^"]+)"/)?.[1];
-const statusShellCache = page.match(/caches\\.open\\("([^"]+)"\\)/)?.[1];
+const statusShellCache = page.match(/caches\.open\("([^"]+)"\)/)?.[1];
 check(Boolean(workerShellCache && statusShellCache && workerShellCache === statusShellCache), "the connectivity indicator must inspect the exact current service-worker shell cache");
 check(sw.includes('const required = path === "/" || path === "/offline"') && sw.includes("if (required) throw error;"), "home and offline fallback must be stored successfully before the service worker can install");
 check(sw.includes("const criticalAssets = [...discovered]") && sw.includes("await shell.put(request, response);") && sw.includes("Required app-shell asset returned"), "required Next.js JavaScript and CSS must be cached before the worker installs");
