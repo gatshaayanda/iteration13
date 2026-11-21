@@ -6043,3 +6043,23 @@ h1 em,
 .serviceDemo .sd-owner-backpack:focus-visible{outline:3px solid #155eef;outline-offset:3px}
 @media(max-width:700px){.serviceDemo .sd-footer-systems{gap:8px}.serviceDemo .sd-owner-backpack{gap:7px;padding:6px 8px}.serviceDemo .sd-owner-backpack-copy strong{font-size:.7rem}}
 @media(prefers-reduced-motion:reduce){.serviceDemo .sd-owner-backpack{transition:none}}
+
+
+/* Owner Briefcase / Backpack OS entry points: visible labels and a short, purposeful launch cue. */
+.sd-footer-systems{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sd-footer-systems .sd-owner-briefcase,.sd-footer-systems .sd-owner-backpack{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:112px;min-height:82px;padding:9px 12px;border:1px solid #dce3ed;border-radius:15px;background:#fff;color:#172033;text-decoration:none;box-shadow:0 8px 26px #0002;cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease}
+.sd-footer-systems .sd-owner-briefcase>span{font-size:1.65rem;line-height:1.2}
+.sd-footer-systems .sd-owner-backpack img{width:34px;height:34px;object-fit:contain}
+.sd-footer-systems .sd-owner-briefcase strong,.sd-footer-systems .sd-owner-backpack strong{font-size:.68rem;font-weight:900;line-height:1.2}
+.sd-footer-systems .sd-owner-briefcase small,.sd-footer-systems .sd-owner-backpack small{font-size:.58rem;color:#667085;line-height:1.2}
+.sd-footer-systems .sd-owner-briefcase:hover,.sd-footer-systems .sd-owner-backpack:hover{transform:translateY(-3px);border-color:#7897c9;box-shadow:0 14px 32px #173ea526;background:#fbfdff}
+.sd-footer-systems .sd-owner-briefcase:focus-visible,.sd-footer-systems .sd-owner-backpack:focus-visible{outline:3px solid #155eef;outline-offset:3px}
+.sd-system-transition{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;background:radial-gradient(circle at 50% 42%,#273f65 0%,#111b2b 55%,#090e17 100%);color:#fff;text-align:center;animation:sd-system-arrive .32s ease both}
+.sd-transition-emblem{display:grid;place-items:center;width:112px;height:112px;margin-bottom:8px;border:1px solid #ffffff45;border-radius:30px;background:linear-gradient(145deg,#ffffff26,#ffffff08);box-shadow:0 0 0 12px #ffffff0b,0 24px 70px #0008;font-size:3.4rem;animation:sd-emblem-arrive .48s cubic-bezier(.2,.8,.2,1) both}
+.sd-system-transition>span{color:#a9c9ff;font-size:.65rem;font-weight:900;letter-spacing:.2em}
+.sd-system-transition>strong{font-size:clamp(1.45rem,5vw,2.3rem);font-weight:900;letter-spacing:-.045em}
+.sd-system-transition>small{color:#c5cedc;font-size:.82rem}
+@keyframes sd-system-arrive{from{opacity:0}to{opacity:1}}
+@keyframes sd-emblem-arrive{from{opacity:0;transform:translateY(18px) scale(.82)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:520px){.sd-footer-systems{gap:7px}.sd-footer-systems .sd-owner-briefcase,.sd-footer-systems .sd-owner-backpack{min-width:104px;min-height:76px;padding:8px}}
+@media(prefers-reduced-motion:reduce){.sd-system-transition,.sd-transition-emblem{animation:none!important}.sd-footer-systems .sd-owner-briefcase,.sd-footer-systems .sd-owner-backpack{transition:none!important}}
