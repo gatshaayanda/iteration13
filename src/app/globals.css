@@ -6078,3 +6078,15 @@ h1 em,
 .sd-announcement-editor[open]>.sd-check,.sd-announcement-editor[open]>.sd-button{margin-left:14px;margin-right:14px}
 .sd-announcement-editor[open]>.sd-button{margin-bottom:14px}
 @media(max-width:640px){.sd-store-editor>summary{align-items:flex-start;flex-direction:column;gap:4px}.sd-store-editor>.sd-admin-form{margin:8px;padding:12px}}
+
+/* Store Design workspace: one preview, three focused editing destinations. */
+.sd-store-design-nav{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 16px;padding:8px;border:1px solid #dce3dc;border-radius:12px;background:#f7f9f6}
+.sd-store-design-nav button{min-height:42px;padding:9px 13px;border:1px solid #d7ded7;border-radius:9px;background:#fff;color:#26362c;font-size:13px;font-weight:750;cursor:pointer}
+.sd-store-design-nav button[aria-pressed="true"]{border-color:#1f3026;background:#1f3026;color:#fff}
+.sd-store-design-nav button:focus-visible{outline:3px solid var(--studio-accent,#2458e8);outline-offset:3px}
+.sd-admin[data-admin-current="store"][data-store-section="identity"] [data-store-panel]:not([data-store-panel="identity"]),
+.sd-admin[data-admin-current="store"][data-store-section="offerings"] [data-store-panel]:not([data-store-panel="offerings"]),
+.sd-admin[data-admin-current="store"][data-store-section="announcement"] [data-store-panel]:not([data-store-panel="announcement"]){display:none!important}
+.sd-admin[data-admin-current="store"] .sd-store-design-group{margin-top:0}
+.sd-admin[data-admin-current="store"] .sd-showcase-preview{margin-top:12px}
+@media(max-width:640px){.sd-store-design-nav{display:grid;grid-template-columns:1fr 1fr}.sd-store-design-nav button{min-width:0;padding:9px 8px;font-size:12px}.sd-store-design-nav button:first-child{grid-column:1/-1}}
