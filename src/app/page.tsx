@@ -210,6 +210,7 @@ export default function Home() {
   const [online, setOnline] = useState(true);
   const [offlineShellReady, setOfflineShellReady] = useState(false);
   const [view, setView] = useState<"shop" | "account" | "login" | "admin">("shop");
+  const [launchingBriefcase, setLaunchingBriefcase] = useState(false);
   const [demoJourney, setDemoJourney] = useState<string[]>(["Storefront preview"]);
 
   function recordDemoJourney(action: string) {
@@ -1032,6 +1033,15 @@ export default function Home() {
     setView("login");
     setNotice("Enter the demo access word to open the owner workspace.");
   }
+  function launchOwnerBriefcase() {
+    if (launchingBriefcase) return;
+    setLaunchingBriefcase(true);
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const enter = () => { requestAdminLogin(); window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }); setLaunchingBriefcase(false); };
+    if (reduced) { enter(); return; }
+    window.setTimeout(enter, 420);
+  }
+
   function submitAdminLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (adminPassphrase.trim().toLowerCase() !== "admin") {
@@ -1477,7 +1487,7 @@ return <main className="serviceDemo" style={{ "--studio-accent": themeColor, "--
 
 
 
-    <footer className="sd-footer"><div className="sd-wrap sd-footer-inner"><div className="sd-footer-systems" role="group" aria-label="Your operating systems"><button className="sd-owner-briefcase" type="button" onClick={() => { requestAdminLogin(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Open owner Briefcase" title="Open owner Briefcase"><span aria-hidden="true">💼</span></button><a className="sd-owner-backpack" href="https://iteration14.vercel.app/" aria-label="Open BACKPACK OS" title="Open BACKPACK OS"><img src="/backpack-icon.svg?v=4" alt="" aria-hidden="true"/></a></div></div></footer>
+    <footer className="sd-footer"><div className="sd-wrap sd-footer-inner"><div className="sd-footer-systems" role="group" aria-label="Your operating systems"><button className="sd-owner-briefcase" type="button" onClick={launchOwnerBriefcase} aria-label="Open owner Briefcase" title="Open owner Briefcase"><span aria-hidden="true">💼</span><strong>Owner Briefcase</strong><small>Business workspace</small></button><a className="sd-owner-backpack" href="https://iteration14.vercel.app/" aria-label="Open BACKPACK OS" title="Open BACKPACK OS"><img src="/backpack-icon.svg?v=4" alt="" aria-hidden="true"/><strong>Backpack OS</strong><small>Personal workspace</small></a></div></div></footer>{launchingBriefcase&&<div className="sd-system-transition" role="status" aria-live="polite"><div className="sd-transition-emblem">💼</div><span>i13 · BUSINESS OPERATING SYSTEM</span><strong>Your Briefcase is opening</strong><small>Preparing owner access…</small></div>}
     {pendingConfirm && <div className="sd-confirm-backdrop" onClick={() => setPendingConfirm(null)}><section className="sd-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sd-confirm-title" aria-describedby="sd-confirm-description" onClick={event => event.stopPropagation()}><span className="sd-kicker">CONFIRM ACTION</span><h2 id="sd-confirm-title">{pendingConfirm.kind === "reset-demo" ? "Reset demo data?" : pendingConfirm.kind === "overwrite-business" ? "Replace the saved business?" : `Delete ${pendingConfirm.serviceName || "this product / service"}?`}</h2><p id="sd-confirm-description">{pendingConfirm.kind === "reset-demo" ? "This clears local requests, product / service edits and the announcement, restoring the starter examples on this device." : pendingConfirm.kind === "overwrite-business" ? "This replaces the current business name, colours, currency and products / services. Its saved customer requests, messages and owner notes on this device will also be cleared. This cannot be undone." : "This removes the product / service from this browser demo. Existing requests keep their saved product / service name and price."}</p><div className="sd-confirm-actions"><button type="button" className="sd-button sd-outline" autoFocus onClick={() => setPendingConfirm(null)}>Keep it</button><button type="button" className="sd-button sd-primary" onClick={() => { const action = pendingConfirm; setPendingConfirm(null); if (action.kind === "reset-demo") { if (commitData(() => ({ ...emptyData, views: data.views }), "Demo data reset on this device.")) { setAnnouncementDraft(""); setAnnouncementImageDraft(""); setAnnouncementEnabledDraft(false); resetServiceForm(); } } else if (action.kind === "overwrite-business") { completeBusinessIdentity(true); } else if (action.serviceId) { if (commitData(current => ({ ...current, services: current.services.filter(item => item.id !== action.serviceId) }), `${action.serviceName || "Service"} deleted from this demo.`) && editingId === action.serviceId) resetServiceForm(); } }}>Confirm</button></div></section></div>}
     {notice && <div className="sd-toast-region"><div className={"sd-toast" + (/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? " is-error" : " is-success")} role={/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? "alert" : "status"}><span className="sd-toast-mark" aria-hidden="true">{/^(Choose|Add |Enter |The browser|Local demo storage|Could not save)/i.test(notice) ? "!" : "✓"}</span><p>{notice}</p><button type="button" aria-label="Dismiss message" onClick={() => setNotice("")}>×</button></div></div>}
     </>}
