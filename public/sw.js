@@ -51,7 +51,7 @@ self.addEventListener("notificationclick", (event) => {
   }));
 });
 
-const CACHE_VERSION = "iteration13-shell-v30";
+const CACHE_VERSION = "iteration13-shell-v31";
 const MEDIA_CACHE = "iteration13-media-v5";
 const SHELL_CACHE = CACHE_VERSION;
 const STATIC_LIMIT = 100;
@@ -70,26 +70,50 @@ self.addEventListener("install", event => {
 });
 
 async function precacheShell() {
-  let shell;
-  try {
-    shell = await caches.open(SHELL_CACHE);
-  } catch {
-    // Storage may be disabled or exhausted. Do not fail service-worker installation.
-    return;
-  }
+  // The worker is not installable until the essential Store and offline fallback are
+  // safely stored. Optional artwork and utility pages must never block installation.
+  const shell = await caches.open(SHELL_CACHE);
   const discovered = new Set();
+
   for (const path of APP_SHELL) {
+    const required = path === "/" || path === "/offline";
     try {
       const request = new Request(path, { cache: "reload" });
       const response = await fetch(request);
-      if (!response.ok) continue;
-      try { await shell.put(request, response.clone()); } catch {}
-      if (!(response.headers.get("content-type") || "").includes("text/html")) continue;
+      if (!response.ok) {
+        if (required) throw new Error("Required app-shell route returned " + response.status + ": " + path);
+        continue;
+      }
+
+      const isHtml = (response.headers.get("content-type") || "").includes("text/html");
+      if (required && !isHtml) throw new Error("Required app-shell route was not HTML: " + path);
+      if (required) await shell.put(request, response.clone());
+      else {
+        try { await shell.put(request, response.clone()); } catch {}
+      }
+
+      if (!isHtml) continue;
       const html = await response.text();
       for (const match of html.matchAll(/(?:src|href)=["'](\/_next\/static\/[^"']+)["']/g)) discovered.add(match[1]);
-    } catch {}
+    } catch (error) {
+      if (required) throw error;
+    }
   }
-  await Promise.all([...discovered].map(async path => {
+
+  const criticalAssets = [...discovered].filter(path => /\.(?:js|css)(?:[?#]|$)/i.test(path));
+  if (!criticalAssets.some(path => /\.js(?:[?#]|$)/i.test(path)) || !criticalAssets.some(path => /\.css(?:[?#]|$)/i.test(path))) {
+    throw new Error("The Store HTML did not expose its required Next.js JavaScript and CSS assets.");
+  }
+
+  await Promise.all(criticalAssets.map(async path => {
+    const request = new Request(path, { cache: "reload" });
+    const response = await fetch(request);
+    if (!response.ok) throw new Error("Required app-shell asset returned " + response.status + ": " + path);
+    await shell.put(request, response);
+  }));
+
+  const optionalAssets = [...discovered].filter(path => !criticalAssets.includes(path));
+  await Promise.all(optionalAssets.map(async path => {
     try {
       const request = new Request(path, { cache: "reload" });
       const response = await fetch(request);
@@ -98,6 +122,7 @@ async function precacheShell() {
       }
     } catch {}
   }));
+
   try { await trimCache(SHELL_CACHE, STATIC_LIMIT, APP_SHELL); } catch {}
 }
 

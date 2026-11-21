@@ -571,7 +571,7 @@ export default function Home() {
       if (!("serviceWorker" in navigator) || !("caches" in window)) return;
       try {
         const registration = await navigator.serviceWorker.ready;
-        const shell = await caches.open("iteration13-shell-v29");
+        const shell = await caches.open("iteration13-shell-v31");
         const [home, offlinePage] = await Promise.all([shell.match("/"), shell.match("/offline")]);
         if (active) setOfflineShellReady(Boolean(registration.active && home && offlinePage));
       } catch {
