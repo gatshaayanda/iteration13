@@ -155,7 +155,8 @@ const accentText = (hex: string) => {
   while (luminance(rgb) > 0.179) rgb = rgb.map(value => Math.max(0, Math.round(value * 0.88)));
   return "#" + rgb.map(value => value.toString(16).padStart(2, "0")).join("");
 };
-function StoreAnnouncementSlot({ active, message, image, preview = false }: { active: boolean; message: string; image?: string; preview?: boolean }) {\n  const imageSource = useOfflineMediaSource(image || "");
+function StoreAnnouncementSlot({ active, message, image, preview = false }: { active: boolean; message: string; image?: string; preview?: boolean }) {
+  const imageSource = useOfflineMediaSource(image || "");
   if (!active) return <h2 className="sd-store-availability-heading">Available offerings</h2>;
   return <aside className={"sd-store-announcement" + (preview ? " is-preview" : "")} aria-label="Business announcement">
     <span className="sd-store-announcement-mark" aria-hidden="true">📣</span>
@@ -167,7 +168,13 @@ function StoreAnnouncementSlot({ active, message, image, preview = false }: { ac
   </aside>;
 }
 
-function StoreMediaImage({ src, alt }: { src: string; alt: string }) {\n  const mediaSource = useOfflineMediaSource(src);\n  return <img src={mediaSource} alt={alt} loading="lazy" onError={event => { event.currentTarget.hidden = true; event.currentTarget.parentElement?.querySelector(".sd-media-placeholder")?.removeAttribute("hidden"); }} />;\n}\n\nfunction StoreVideoPreview({ src }: { src: string }) {\n  const mediaSource = useOfflineMediaSource(src);
+function StoreMediaImage({ src, alt }: { src: string; alt: string }) {
+  const mediaSource = useOfflineMediaSource(src);
+  return <img src={mediaSource} alt={alt} loading="lazy" onError={event => { event.currentTarget.hidden = true; event.currentTarget.parentElement?.querySelector(".sd-media-placeholder")?.removeAttribute("hidden"); }} />;
+}
+
+function StoreVideoPreview({ src }: { src: string }) {
+  const mediaSource = useOfflineMediaSource(src);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [muted, setMuted] = useState(true);
   const toggleAudio = () => {
