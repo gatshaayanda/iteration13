@@ -33,6 +33,8 @@ Then open only the relevant task-specific documents below. Read the actual code 
 | PWA install behavior, install regression or install-related identity work | [PWA Installation Lock](./PWA-INSTALLATION-LOCK.md) |
 | New app selection, cloning, adaptation or infrastructure reset | [Cloning guide](../CLONING.md), [App Factory SOP](./ADMIN-HUB-APP-FACTORY-SOP.md), [Clone/reset checklist](./CLONE-RESET-CHECKLIST.md), and [Golden Baseline](../GOLDEN-BASELINE.md) |
 | Chat widget / guided assistant | [Chat Widget Research](../CHAT-WIDGET-RESEARCH.md), then inspect the current component and handlers |
+| External APIs, payments, messaging, maps or third-party integrations | [API & Integration Catalogue](./API-INTEGRATION-CATALOGUE.md) — Botswana-focused candidates, readiness checks and security/offline safeguards |
+| Customer account workspace
 | Customer account workspace | [Account adaptation contract](../AGENTS.md#customer-account-workspace-adaptation-contract), plus the account/data sections in [Foundation Blueprint](../FOUNDATION-BLUEPRINT.md) and [Cloning guide](../CLONING.md) |
 | Build, identity or release verification | [START-HERE](../START-HERE.md), [AGENTS](../AGENTS.md), `package.json`, verifier, CI workflow and actual check output |
 
