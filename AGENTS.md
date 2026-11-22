@@ -1,38 +1,56 @@
-# Iteration 13 — Reusable PWA Foundation Contract
+# Iteration 13 — Business Operating System (B.O.S.) Foundation Contract
 
 ## Fast handoff for future implementation chats
 - **Golden baseline:** [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md) records protected behavior, recovery policy and new-project adaptation steps. Do not casually move or develop on the golden reference branch.
 - **Installation lock:** [docs/PWA-INSTALLATION-LOCK.md](./docs/PWA-INSTALLATION-LOCK.md) is mandatory before any PWA/install change and must be carried into every clone. Installation behavior is frozen during routine identity, styling and feature work.
-- **Portfolio handoff:** [docs/ITERATION13-PORTFOLIO-HANDOFF.md](./docs/ITERATION13-PORTFOLIO-HANDOFF.md) is the canonical guide for using this repository when creating a new portfolio project or updating an existing one. Read it alongside the target repository's own instructions; apply standards selectively and never clone its demo architecture blindly.
-- **Repository role:** Iteration 13 is the portfolio's engineering standards, architecture and SOP reference. It is not the default cloning source. New-project source selection is governed by `CLONING.md` and `docs/ADMIN-HUB-APP-FACTORY-SOP.md`: use `gatshaayanda/africhiko` by default unless the product owner names or approves another source. Existing projects are improved in place.
+- **Foundation role:** Iteration13 is the maintained Business Operating System foundation. Use it for business client editions whose core model is Storefront + Customer Account + Owner Briefcase/Admin. Iteration14 is the paired Personal OS foundation for Backpack-style creator/personal experiences. The two-foundation selection contract below governs all new projects.
+- **Style references:** Other repositories may inform genre-specific presentation, landing-page composition, motion, transitions, engagement interactions and toasts only. They are not alternative architecture or workflow sources.
 - **Mandatory first read:** [START-HERE.md](./START-HERE.md). Every new implementation or QA chat must start there and follow its reading order; never ask the product owner which docs to inspect.
 - **Documentation map:** [docs/README.md](./docs/README.md) explains which document owns each policy and which task-specific files to read. Do not make the user repeat repository rules already documented there.
 - **Mandatory change discipline:** [docs/CHANGE-SAFETY-STANDARD.md](./docs/CHANGE-SAFETY-STANDARD.md) governs every change. A request to fix one thing is not permission to break adjacent working behavior. Diagnose the first proven cause, make the smallest change, review the full diff and verify both the fix and neighboring behavior.
 - **Visual direction (mandatory):** read [docs/VISUAL-DIRECTION-STANDARD.md](./docs/VISUAL-DIRECTION-STANDARD.md) AND open `docs/assets/washride-home-reference.jpeg` before planning, implementing or reviewing any visual/page design. The image is the canonical persistent reference; do not ask the product owner to re-upload it or rely on prose summaries. Apply its composition, hierarchy and finish—not its car-wash branding or literal styling—to the target product.
 - **Operational transparency (mandatory):** read [docs/OPERATIONAL-TRANSPARENCY-STANDARD.md](./docs/OPERATIONAL-TRANSPARENCY-STANDARD.md) before implementing or reviewing meaningful loading, search, booking, order, enquiry, upload, payment, messaging, account, admin, background-job or handover workflows. Show genuine activity and outcomes; never fake progress or expose sensitive internals.
-- Then read FOUNDATION-BLUEPRINT.md, README.md, and CLONING.md as directed by START-HERE. These files serve different purposes; do not substitute chat summaries for them.
+- Read START-HERE, FOUNDATION-BLUEPRINT.md, README.md and the relevant SOPs for their actual technical guidance. Historical CLONING/portfolio documents may contain older source-selection defaults; the two-foundation contract in this AGENTS.md takes precedence.
 - Read CHAT-WIDGET-RESEARCH.md before adding a chat helper. The current deterministic adaptation lives in src/app/ServiceGuide.tsx; that file separates the Sparkle Legacy reference from research-backed recommendations.
 - Before claiming a fix is complete, run the repository's available checks, inspect their actual output, and verify the exact commit/deployment state. A GitHub edit or merge alone is not a build verification. Never weaken or remove install regression checks to make a build pass.
 - README is the customer/admin demo walkthrough. Do not assume an earlier conversation summary is newer than the repository.
 ## Purpose
-Iteration 13 is the standards/reference repository and a working prototype that demonstrates responsive customer journeys, browser-local demo workflows, protected PWA installation, iPhone guidance, offline behavior, and staff/admin patterns. It is not the mandatory cloning source for new projects. The service catalogue is sample content, not a real business offering.
+Iteration13 is the maintained Business Operating System (B.O.S.) foundation and working prototype. It provides the reusable business architecture and operating patterns for a connected Storefront, Customer Account and Owner Briefcase/Admin, alongside supporting routes, APIs, PWA installation, offline behavior and reusable tools. New business client editions should clone this foundation into a verified empty destination, then apply the client's configuration, business rules and genre-appropriate visual direction. Existing demo catalogue/content is sample data, not a real client offering. Iteration14 is the separate BACKPACK Personal OS foundation.
 
-## Portfolio source-selection contract
+## Two-foundation project selection and cloning contract
 
-- The product owner chooses the source repository for each new project. Use the exact repository they name; inspect it and recommend changes only after evidence-based comparison. Never silently substitute Iteration 13 or another repository.
-- If no source is named, `gatshaayanda/africhiko` is the default starting point for new customer-facing PWAs and Admin Hub applications. Confirm the current repository state before cloning.
-- Iteration 13 is the standards, architecture and SOP reference—not the default cloning source. Apply its reusable standards without assuming its demo architecture or features belong in every client app.
-- If the product owner asks for a source recommendation, compare relevant portfolio repositories by industry, customer journey, admin workflows, architecture, integrations, protected behavior, visual quality and adaptation risk. State the recommended source and material risks before cloning.
-- Existing projects are improved in place. Never reclone or replace an established implementation merely to adopt a different foundation.
-- Clone only into the intended empty local directory, connect the new working copy to the new client remote, and establish a clean baseline safely. Inspect a non-empty destination/remote; never force-push or overwrite it.
+Iteration13 and Iteration14 are the maintained product foundations. New work must begin from the one that matches the product model:
+
+- **Iteration13 — Business Operating System (B.O.S.):** business storefront, customer account and owner Briefcase/admin. This is the foundation for business websites, service businesses, food businesses, retail, bookings, orders and other customer-to-business operating journeys.
+- **Iteration14 — BACKPACK Personal Operating System (P.O.S.):** personal/creator workspaces, channels, Spaces, publishing, participation and engagement. This is the foundation for Backpack-style personal, creator, media and community experiences.
+
+Choose between these two by inspecting the brief, the current foundation AGENTS.md, golden baseline, routes, data model and existing workflows. Do not default to Africhiko, John the Stylist, The Plug or another portfolio project. Do not compare unrelated repositories as alternative architectures. If neither foundation can safely support the stated product, identify the precise gap and explain it before proposing a different source.
+
+**Other projects are style and interaction references only.** They may be consulted for genre-appropriate landing-page composition, art direction, typography, photography treatment, animation, transitions, micro-interactions, engagement patterns and toast/feedback presentation. Reuse an idea only after checking that it improves the target experience. Do not copy their architecture, routes, data models, authentication, CRUD, business workflows, integrations or infrastructure. The two maintained foundations remain the source of working functionality.
+
+**New-project sequence:** verify that the intended local destination and destination GitHub repository are empty; clone the selected foundation into that directory; connect the new remote; push the clean baseline to `main`; then apply the client's supplied configuration and implement the business/product-specific experience. Never overwrite a non-empty destination, force-push, or develop in the source foundation. Do not create extra source-selection detours.
+
+**Existing-project sequence:** inspect the actual target repository and its AGENTS.md, then implement in place. Never reclone an established project merely to change foundations.
+
+**Three connected Business OS surfaces:** for Iteration13 client editions, treat Storefront, Customer Account and Owner Briefcase/Admin as the three primary experience surfaces. They must share identity, design language, navigation logic, data truth and interaction feedback so the product feels like one coherent system. Supporting routes, components and APIs remain as needed; this is not a requirement to collapse the application into three files or delete working journeys. Give each surface a business-appropriate visual treatment without making them feel like unrelated products.
+
+**Execution and configuration:** inspect GitHub, the local project, AGENTS.md, existing environment/configuration and available authorized integrations yourself. Do not ask the product owner to locate files, repeat supplied details, configure Firebase, or handle Vercel as a prerequisite. Use the existing project configuration and permissions where available; never invent credentials, expose secrets, copy another project's credentials, or bypass a documented security boundary. If a genuine access or security blocker remains after inspection, report the exact blocker and continue all independent work.
+
+This contract supersedes older source-selection defaults in legacy cloning guides, portfolio handoffs and historical project notes. Their technical or historical guidance may still be useful where relevant, but they must not reintroduce a third default foundation or turn style references into architecture sources.
+
 
 ## Source of truth and workflow
 - Product owner / final reviewer: the user. Implementation: ChatGPT.
-- GitHub is the source of truth. Inspect the actual branch, latest commit, working tree, instructions, routes, service worker, install code and tests before changing them.
-- Existing project workflow: START → INSPECT → BUILD → VERIFY → CHECKPOINT. Keep inspection proportional; do not endlessly re-audit a repository whose context is established.
-- Unexpected result: STOP → inspect actual state → identify the first failure → fix → verify.
-- Preserve successful behavior. Prefer focused changes over rewrites. Never claim a test, deployment, device test, offline write or Firebase workflow passed without evidence.
-- When authorized, push changes to `main`. The user handles Vercel deployments unless explicitly delegated.
+- GitHub is the source of truth. Inspect the actual branch, latest commit, instructions, routes, data flows, protected files, service worker, install code and relevant tests before changing them. Keep inspection proportional and purposeful.
+- New projects follow the two-foundation cloning contract above: empty local + empty remote, select Iteration13 or Iteration14, clone, connect remote, push clean baseline, then configure and implement.
+- Existing projects follow: START → INSPECT TARGET AGENTS/STATE → IDENTIFY PROTECTED FLOWS → IMPLEMENT IN PLACE → VERIFY → CHECKPOINT.
+- Unexpected result: STOP → inspect actual state → identify the first proven failure → fix its cause only → verify before proceeding.
+- Preserve successful behavior. Prefer focused changes over rewrites. Do not introduce unrelated refactors, repeated inspections, unnecessary builds or speculative features.
+- Use current official documentation and relevant product/UX research when it materially affects a technical, security, accessibility, interaction or design decision. Research should resolve a concrete question and lead to an implementation decision, not become a detour.
+- Inspect existing Firebase and other integration configuration and use available authorized access. Do not ask the product owner to configure Firebase or Vercel, and do not block unrelated implementation on them. Respect each foundation's actual security/data contract; in particular, BACKPACK's browser-local model and explicit cloud-migration gate remain in force unless properly approved and implemented.
+- Commit and push completed work to the supplied project's `main` when the task calls for implementation. Never force-push or rewrite history. A push is not proof of build, QA or deployment.
+- Never claim a test, device check, offline write, integration, push or deployment passed without evidence.
+
 
 ## New-project documentation handoff
 
