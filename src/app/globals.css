@@ -6092,3 +6092,63 @@ h1 em,
 /* Open Store Design on the catalogue: keep the identity setup and showcase preview out of the way until requested. The identity and announcement jump links still reveal their editing areas. */
 .sd-admin[data-admin-current="store"][data-store-section="offerings"] [data-store-panel="identity"]{display:none!important}
 .sd-admin[data-admin-current="store"][data-store-section="offerings"] .sd-showcase-preview{display:none!important}
+
+
+/* Store Design editor disclosures are primary owner actions, not quiet text links. */
+.serviceDemo .sd-admin .sd-store-editor>summary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  min-height:58px;
+  padding:13px 16px;
+  border:1px solid #172b20;
+  border-radius:10px;
+  background:#20392b!important;
+  color:#fff!important;
+  cursor:pointer;
+  box-shadow:0 2px 5px rgba(20,35,25,.12);
+}
+.serviceDemo .sd-admin .sd-store-editor>summary strong{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:15px!important;
+  line-height:1.35!important;
+  font-weight:850!important;
+}
+.serviceDemo .sd-admin .sd-store-editor>summary span{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  flex:0 0 auto;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:14px!important;
+  line-height:1.35!important;
+  font-weight:800!important;
+}
+.serviceDemo .sd-admin .sd-store-editor>summary span b{
+  font-size:19px;
+  line-height:1;
+}
+.serviceDemo .sd-admin .sd-store-editor>summary:hover,
+.serviceDemo .sd-admin .sd-store-editor>summary:focus-visible{
+  background:#294b37!important;
+  outline:3px solid #8db99a;
+  outline-offset:2px;
+}
+.serviceDemo .sd-admin .sd-store-editor[open]>summary{
+  border-radius:10px 10px 0 0;
+  background:#294b37!important;
+}
+@media(max-width:480px){
+  .serviceDemo .sd-admin .sd-store-editor>summary{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:6px;
+    min-height:68px;
+  }
+  .serviceDemo .sd-admin .sd-store-editor>summary span{
+    font-size:14px!important;
+  }
+}
