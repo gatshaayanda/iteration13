@@ -6089,4 +6089,6 @@ h1 em,
 @media(max-width:640px){.sd-store-design-nav{display:grid;grid-template-columns:1fr 1fr}.sd-store-design-nav button{min-width:0;padding:9px 8px;font-size:12px}.sd-store-design-nav button:first-child{grid-column:1/-1}}
 
 
-/* Keep identity, catalogue editing, announcements and the live preview available together. The section links above jump to each tool instead of hiding the others. */
+/* Open Store Design on the catalogue: keep the identity setup and showcase preview out of the way until requested. The identity and announcement jump links still reveal their editing areas. */
+.sd-admin[data-admin-current="store"][data-store-section="offerings"] [data-store-panel="identity"]{display:none!important}
+.sd-admin[data-admin-current="store"][data-store-section="offerings"] .sd-showcase-preview{display:none!important}
