@@ -6152,3 +6152,32 @@ h1 em,
     font-size:14px!important;
   }
 }
+
+
+/* Direct calls to action for the two most-used Store Design tasks. */
+.serviceDemo .sd-admin .sd-store-editor-cta{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:52px;
+  margin:12px 0 8px;
+  padding:13px 16px;
+  border:1px solid #172b20!important;
+  border-radius:10px;
+  background:#20392b!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:15px!important;
+  line-height:1.35!important;
+  font-weight:850!important;
+  text-align:center;
+  box-shadow:0 2px 5px rgba(20,35,25,.12);
+}
+.serviceDemo .sd-admin .sd-store-editor-cta:hover,
+.serviceDemo .sd-admin .sd-store-editor-cta:focus-visible{
+  background:#294b37!important;
+  outline:3px solid #8db99a;
+  outline-offset:2px;
+}
+.serviceDemo .sd-admin .sd-store-editor-cta:active{transform:translateY(1px)}
