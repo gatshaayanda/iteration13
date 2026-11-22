@@ -6084,13 +6084,9 @@ h1 em,
 .sd-store-design-nav button{min-height:42px;padding:9px 13px;border:1px solid #d7ded7;border-radius:9px;background:#fff;color:#26362c;font-size:13px;font-weight:750;cursor:pointer}
 .sd-store-design-nav button[aria-pressed="true"]{border-color:#1f3026;background:#1f3026;color:#fff}
 .sd-store-design-nav button:focus-visible{outline:3px solid var(--studio-accent,#2458e8);outline-offset:3px}
-.sd-admin[data-admin-current="store"][data-store-section="identity"] [data-store-panel]:not([data-store-panel="identity"]),
-.sd-admin[data-admin-current="store"][data-store-section="offerings"] [data-store-panel]:not([data-store-panel="offerings"]),
-.sd-admin[data-admin-current="store"][data-store-section="announcement"] [data-store-panel]:not([data-store-panel="announcement"]){display:none!important}
 .sd-admin[data-admin-current="store"] .sd-store-design-group{margin-top:0}
 .sd-admin[data-admin-current="store"] .sd-showcase-preview{margin-top:12px}
 @media(max-width:640px){.sd-store-design-nav{display:grid;grid-template-columns:1fr 1fr}.sd-store-design-nav button{min-width:0;padding:9px 8px;font-size:12px}.sd-store-design-nav button:first-child{grid-column:1/-1}}
 
 
-/* Store Design opens on the owner's primary job: managing customer offerings. Keep the live preview available in Identity & appearance, not above the catalogue editor. */
-.sd-admin[data-admin-current="store"][data-store-section="offerings"] .sd-showcase-preview{display:none!important}
+/* Keep identity, catalogue editing, announcements and the live preview available together. The section links above jump to each tool instead of hiding the others. */
