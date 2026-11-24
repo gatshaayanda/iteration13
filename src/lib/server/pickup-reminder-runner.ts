@@ -18,13 +18,11 @@ if(!getApps().length){
 
 const db=getFirestore();
 const messaging=getMessaging();
-const CATCH_UP_WINDOW_MS=15*60*1000;
 const GABORONE_OFFSET="+02:00";
 
 type ReminderOrder={id:string;scheduledFor?:unknown;status?:unknown;customerId?:unknown;customerName?:string;items?:unknown};
 type NotificationToken={id:string;ref:DocumentReference;token:string};
 type NotificationResult={sent:boolean;reason?:string;successCount?:number;failureCount?:number};
-type Recipient={uid:string;lead:number;admin:boolean};
 
 function parseScheduledFor(value:unknown):number{
   if(typeof value!=="string")return NaN;
@@ -34,7 +32,6 @@ function parseScheduledFor(value:unknown):number{
   return Number.isFinite(time)?time:NaN;
 }
 
-const TERMINAL_STATUSES=new Set(["Cancelled","Collected","Delivered"]);
 const INVALID_TOKEN_CODES=new Set([
   "messaging/registration-token-not-registered",
   "messaging/invalid-registration-token"
@@ -101,139 +98,6 @@ async function releaseDelivery(jobId:string):Promise<void>{
   await db.collection("notificationDeliveries").doc(jobId).delete();
 }
 
-async function remindUser(uid:string,leadMinutes:number,order:ReminderOrder,admin:boolean):Promise<NotificationResult>{
-  const jobId=order.id+"_"+uid+"_"+leadMinutes;
-
-  const scheduledTime=parseScheduledFor(order.scheduledFor);
-  if(!Number.isFinite(scheduledTime))return {sent:false,reason:"invalid-scheduled-time"};
-  const scheduled=new Date(scheduledTime);
-  const timeText=new Intl.DateTimeFormat("en-GB",{
-    timeStyle:"short",
-    timeZone:"Africa/Gaborone"
-  }).format(scheduled);
-  const items=(Array.isArray(order.items)?order.items:[])
-    .map(item=>item.quantity+"× "+item.name)
-    .join(" · ");
-  const customerName=(order.customerName||"customer").trim();
-  const title=admin
-    ?"Pickup in "+leadMinutes+" minutes · "+customerName
-    :"Your The Plug pickup is in "+leadMinutes+" minutes";
-  const body=admin
-    ?customerName+" · "+items+" · "+timeText
-    :"Hi "+customerName.split(/\s+/)[0]+", your pickup is at "+timeText+". "+items;
-  const link=admin?"/admin":"/account";
-  const publicUrl=process.env.NEXT_PUBLIC_BASE_URL||"https://the-plug-pearl.vercel.app";
-
-  const deliveryData={
-    orderId:order.id,
-    recipientUid:uid,
-    leadMinutes,
-    admin
-  };
-  if(!await claimDelivery(jobId,deliveryData)){
-    return {sent:false,reason:"already-sent-or-in-progress"};
-  }
-
-  try{
-    const result=await sendToUser(uid,{
-      notification:{title,body},
-      data:{title,body,link,orderId:order.id},
-      webpush:{
-        fcmOptions:{link:publicUrl+link},
-        notification:{
-          tag:"the-plug-pickup-"+order.id,
-          icon:"/plug-icon.svg",
-          badge:"/plug-icon.svg"
-        }
-      }
-    });
-
-    if(result.sent){
-      await markSent(jobId,deliveryData);
-    }else{
-      await releaseDelivery(jobId);
-    }
-
-    return result;
-  }catch(error){
-    await releaseDelivery(jobId).catch(()=>{});
-    throw error;
-  }
-}
-
-async function runPickupReminders():Promise<{orders:number;reminders:number;sent:number}>{
-  const now=Date.now();
-  // Do not range-query scheduledFor as a string. The Plug supports
-  // both legacy datetime-local values and explicit +02:00/Z values, and those textual
-  // representations are not safely comparable as Firestore strings. Read the small
-  // pickup queue and compare the parsed instants in Gaborone/UTC time instead.
-  const [ordersSnapshot,adminsSnapshot]=await Promise.all([
-    db.collection("orders").where("mode","==","pickup").get(),
-    db.collection("admins").get()
-  ]);
-
-  if(ordersSnapshot.empty){
-    return {orders:0,reminders:0,sent:0};
-  }
-
-  const adminUids=adminsSnapshot.docs.map(doc=>doc.id);
-  const adminPrefs=new Map<string,number>();
-  await Promise.all(adminUids.map(async uid=>{
-    const pref=(await db.collection("notificationPreferences").doc(uid).get()).data();
-    if(pref?.enabled){
-      adminPrefs.set(uid,Number(pref.leadMinutes)||15);
-    }
-  }));
-
-  let reminders=0;
-  let sent=0;
-
-  for(const orderDoc of ordersSnapshot.docs){
-    const order={id:orderDoc.id,...orderDoc.data()} as ReminderOrder;
-    if(typeof order.status==="string"&&TERMINAL_STATUSES.has(order.status))continue;
-
-    const scheduledAt=parseScheduledFor(order.scheduledFor);
-    if(!Number.isFinite(scheduledAt))continue;
-    // Only inspect orders that could currently have a reminder due. This keeps the
-    // scan bounded even though the query intentionally avoids fragile string ranges.
-    if(scheduledAt < now-CATCH_UP_WINDOW_MS || scheduledAt > now+90*60*1000)continue;
-
-    const recipients:Recipient[]=[];
-    if(typeof order.customerId==="string"){
-      const pref=(await db.collection("notificationPreferences").doc(order.customerId).get()).data();
-      if(pref?.enabled){
-        const lead=Number(pref.leadMinutes)||15;
-        const reminderAt=scheduledAt-lead*60*1000;
-        if(reminderAt<=now&&now-reminderAt<=CATCH_UP_WINDOW_MS){
-          recipients.push({uid:order.customerId,lead,admin:false});
-        }
-      }
-    }
-
-    for(const [uid,lead] of adminPrefs){
-      const reminderAt=scheduledAt-lead*60*1000;
-      if(reminderAt<=now&&now-reminderAt<=CATCH_UP_WINDOW_MS){
-        recipients.push({uid,lead,admin:true});
-      }
-    }
-
-    for(const recipient of recipients){
-      reminders++;
-      const result=await remindUser(
-        recipient.uid,
-        recipient.lead,
-        order,
-        recipient.admin
-      );
-      if(result.sent)sent++;
-    }
-  }
-
-  const summary={orders:ordersSnapshot.size,reminders,sent};
-  console.log("The Plug pickup reminders:",JSON.stringify(summary));
-  return summary;
-}
-
 async function sendTestNotification(uid:string,deviceToken:string):Promise<NotificationResult>{
   const [userRecord,adminSnapshot]=await Promise.all([
     getAuth().getUser(uid),
@@ -242,17 +106,17 @@ async function sendTestNotification(uid:string,deviceToken:string):Promise<Notif
   const displayName=(userRecord.displayName||"").trim();
   const firstName=displayName.split(/\s+/)[0]||"there";
   const isOperationsAdmin=adminSnapshot.exists&&["owner","staff"].includes(String(adminSnapshot.data()?.role||"").toLowerCase());
-  const title=isOperationsAdmin?"The Plug operations alerts are on":"The Plug notifications are on";
+  const title=isOperationsAdmin?"Business operations alerts are on":"Business notifications are on";
   const body=isOperationsAdmin
-    ? "This device is ready for new-order and pickup alerts."
-    : "Hi "+firstName+", this device is ready for your The Plug pickup reminders.";
+    ? "This device is ready for business updates."
+    : "Hi "+firstName+", this device is ready for your business notifications.";
   const link=isOperationsAdmin?"/admin":"/account";
   const result=await sendToDeviceToken(uid,deviceToken,{
     notification:{title,body},
     data:{title,body,link,test:"true"},
     webpush:{
-      fcmOptions:{link:(process.env.NEXT_PUBLIC_BASE_URL||"https://the-plug-pearl.vercel.app")+link},
-      notification:{tag:"the-plug-test-notification",icon:"/plug-icon.svg",badge:"/plug-icon.svg"}
+      fcmOptions:{link:(process.env.NEXT_PUBLIC_BASE_URL||"https://iteration13.example")+link},
+      notification:{tag:"iteration13-test-notification",icon:"/iteration13-icon.svg",badge:"/iteration13-icon.svg"}
     }
   });
   if(!result.sent)throw new Error(result.reason||"no-token");
@@ -273,16 +137,16 @@ async function sendNewOrderNotifications(orderId:string,customerUid:string):Prom
   const customerName=(order.customerName||"customer").trim();
   const title="New order · "+customerName;
   const body=items+(typeof order.total==="number"?" · P"+order.total.toFixed(2):"")+" · "+(order.mode==="delivery"?"Delivery":"Pickup")+" "+timeText;
-  const publicUrl=process.env.NEXT_PUBLIC_BASE_URL||"https://the-plug-pearl.vercel.app";
+  const publicUrl=process.env.NEXT_PUBLIC_BASE_URL||"https://iteration13.example";
   for(const adminDoc of adminsSnapshot.docs){
     const uid=adminDoc.id; const pref=(await db.collection("notificationPreferences").doc(uid).get()).data();
     if(!pref?.enabled)continue; admins++;
     const jobId="new-order_"+orderId+"_"+uid; const deliveryData={orderId,recipientUid:uid,type:"new-order",admin:true};
     if(!await claimDelivery(jobId,deliveryData))continue;
     try{
-      const result=await sendToUser(uid,{notification:{title,body},data:{title,body,link:"/admin",orderId},webpush:{fcmOptions:{link:publicUrl+"/admin"},notification:{tag:"the-plug-new-order-"+orderId,icon:"/plug-icon.svg",badge:"/plug-icon.svg"}}});
+      const result=await sendToUser(uid,{notification:{title,body},data:{title,body,link:"/admin",orderId},webpush:{fcmOptions:{link:publicUrl+"/admin"},notification:{tag:"iteration13-new-order-"+orderId,icon:"/iteration13-icon.svg",badge:"/iteration13-icon.svg"}}});
       if(result.sent){await markSent(jobId,deliveryData);sent++;}else await releaseDelivery(jobId);
-    }catch(error){await releaseDelivery(jobId).catch(()=>{});console.error("The Plug new-order notification failed for "+uid+":",error);}
+    }catch(error){await releaseDelivery(jobId).catch(()=>{});console.error("New-order notification failed for "+uid+":",error);}
   }
   return {sent,admins};
 }
@@ -312,22 +176,22 @@ async function sendConversationMessageNotification(conversationId:string,message
     if(customerId)recipientUids.push(customerId);
   }
   const customerName=String(conversation.customerName||"customer").trim();
-  const title=senderRole==="customer"?customerName+" sent a message":"The Plug replied to you";
+  const title=senderRole==="customer"?customerName+" sent a message":"Your business replied to you";
   const preview=String(message.text||"Attachment sent");
   const body=preview.length>120?preview.slice(0,117)+"…":preview;
   const link=senderRole==="customer"?"/admin":"/account";
-  const publicUrl=process.env.NEXT_PUBLIC_BASE_URL||"https://the-plug-pearl.vercel.app";
+  const publicUrl=process.env.NEXT_PUBLIC_BASE_URL||"https://iteration13.example";
   let sent=0;
   for(const uid of recipientUids){
     const jobId="conversation-message_"+conversationId+"_"+messageId+"_"+uid;
     const deliveryData={conversationId,messageId,recipientUid:uid,type:"conversation-message"};
     if(!await claimDelivery(jobId,deliveryData))continue;
     try{
-      const result=await sendToUser(uid,{notification:{title,body},data:{title,body,link,conversationId,messageId},webpush:{fcmOptions:{link:publicUrl+link},notification:{tag:"the-plug-conversation-"+conversationId,icon:"/plug-icon.svg",badge:"/plug-icon.svg"}}});
+      const result=await sendToUser(uid,{notification:{title,body},data:{title,body,link,conversationId,messageId},webpush:{fcmOptions:{link:publicUrl+link},notification:{tag:"iteration13-conversation-"+conversationId,icon:"/iteration13-icon.svg",badge:"/iteration13-icon.svg"}}});
       if(result.sent){await markSent(jobId,deliveryData);sent++;}else await releaseDelivery(jobId);
-    }catch(error){await releaseDelivery(jobId).catch(()=>{});console.error("The Plug conversation notification failed for "+uid+":",error);}
+    }catch(error){await releaseDelivery(jobId).catch(()=>{});console.error("Conversation notification failed for "+uid+":",error);}
   }
   return {sent,recipient:senderRole==="customer"?"operations":"customer"};
 }
 
-export {runPickupReminders,sendTestNotification,sendNewOrderNotifications,sendConversationMessageNotification};
+export {sendTestNotification,sendNewOrderNotifications,sendConversationMessageNotification};
