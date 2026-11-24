@@ -51,6 +51,10 @@ if (!/iteration13-shell-v\d+/.test(sw)) failures.push("service worker: missing i
 if (!sw.includes("/iteration13-icon.svg")) failures.push("service worker: prototype icon missing from app shell");
 if (!sw.includes("/iphone-install") || !sw.includes("/iphone-install.svg")) failures.push("service worker: iPhone installation guide is not cached for offline use");
 if (!layout.includes("__iteration13InstallPrompt") || !layout.includes("beforeinstallprompt")) failures.push("PWA layout: early native install-prompt capture is missing");
+const installCardCss = fs.readFileSync(path.join(root, "src/app/install-card.css"), "utf8");
+if (!layout.includes("<PwaRegister initialEmbedded={embedded} initialAndroid={android}/>{children}")) failures.push("PWA layout: install card must be mounted before page content");
+if (!/\.i13-install-card\s*\{[^}]*position:\s*relative[^}]*max-width:\s*390px[^}]*margin:\s*12px auto 0/s.test(installCardCss)) failures.push("PWA install card: protected compact top-of-page placement has changed");
+
 if (!pwaRegister.includes("await prompt.prompt()") || !pwaRegister.includes("setCanInstall(true)")) failures.push("PWA install: retained native prompt is not connected to the branded install action");
 if (!pwaRegister.includes("(canInstall || canShowManualInstall)") || !pwaRegister.includes("isIosSafari()")) failures.push("PWA install: CTA must appear only for a captured native prompt or the iOS Safari guide");
 if (/Install Iteration 13 from your browser|Chrome or Edge, open the <b>browser menu|platform-specific fallback as Odi/i.test(pwaRegister)) failures.push("PWA install: generic desktop/Android explainer fallback must not replace the native browser prompt");
