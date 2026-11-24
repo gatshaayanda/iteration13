@@ -7,9 +7,9 @@
 The product owner is the final decision-maker and chooses the source repository for each new project.
 
 1. **Explicit source wins.** If the product owner names a repository or an existing portfolio app, use that exact source. Do not silently substitute another source.
-2. **Default only when unspecified.** If no source is named, use `gatshaayanda/africhiko` as the default starting point for new customer-facing PWAs and Admin Hub apps.
+2. **Two maintained foundations.** Select Iteration 13 for Business OS and Iteration 14 for Personal OS by inspecting the product model. Do not use a finished client project as an implicit default.
 3. **Recommend only when asked.** Inspect relevant accessible repositories and compare industry fit, customer journey, staff/admin workflows, architecture, data model, authentication, uploads, integrations, protected behavior, visual quality and adaptation effort. State the recommendation and material risks before cloning.
-4. **Iteration 13 is the standards reference.** Use this repository for engineering standards, protected PWA rules, accessibility, verification, recovery and documentation patterns. Do not clone it by default.
+4. **Foundation selection.** Iteration 13 is the maintained Business OS foundation; Iteration 14 is the maintained Personal OS foundation. Other portfolio repositories are visual/interaction references only unless explicitly authorized as a source.
 5. **Existing app means in-place work.** Inspect and improve the existing repository. Do not reclone or replace it merely to obtain a different foundation.
 
 The product owner’s latest explicit instruction overrides portfolio defaults. If a source is named but appears unsuitable, explain the evidence and ask before substituting it.
@@ -94,10 +94,10 @@ Use UploadThing when required by the brief or existing approved architecture. Do
 
 ### PWA installation
 
-**Permanent protected infrastructure:** the actual Africhiko `src/app/pwa-register.tsx` lifecycle is the reusable reference. Read [PWA-INSTALLATION-LOCK.md](./PWA-INSTALLATION-LOCK.md) before any install/PWA work and carry that lock into every clone. Reuse the implementation and behavior exactly; do not rewrite, refactor, simplify, replace, duplicate or “improve” it. Routine adaptation is identity/assets only (app name, artwork/icons, manifest/favicon/Apple icon references, theme colour and branded card presentation). A stale CI assertion must be corrected to test the approved code—not used as a reason to rewrite working installation. Any runtime mechanics change requires explicit, specific product-owner authorization. If installation fails, inspect the actual deployed commit, code, manifest/assets, service worker/cache and verifier, compare with Africhiko, then fix only the first proven cause.
+**Permanent protected infrastructure:** the selected foundation's verified `src/app/pwa-register.tsx` lifecycle is the reusable reference. Read [PWA-INSTALLATION-LOCK.md](./PWA-INSTALLATION-LOCK.md) before any install/PWA work and carry that lock into every clone. Reuse the implementation and behavior exactly; do not rewrite, refactor, simplify, replace, duplicate or “improve” it. Routine adaptation is identity/assets only (app name, artwork/icons, manifest/favicon/Apple icon references, theme colour and branded card presentation). A stale CI assertion must be corrected to test the approved code—not used as a reason to rewrite working installation. Any runtime mechanics change requires explicit, specific product-owner authorization. If installation fails, inspect the actual deployed commit, code, manifest/assets, service worker/cache and verifier, compare with the selected foundation's approved baseline, then fix only the first proven cause.
 
 
-The approved Africhiko installation experience is the permanent reference standard for new projects: compact branded dismissible card, native `beforeinstallprompt` lifecycle and user-triggered native prompt, correct embedded-browser handling, iOS Share → Add to Home Screen guidance, and non-blocking behavior.
+The selected foundation's verified installation experience is the permanent reference standard for its clones: compact branded dismissible card, native `beforeinstallprompt` lifecycle and user-triggered native prompt, correct embedded-browser handling, iOS Share → Add to Home Screen guidance, and non-blocking behavior.
 
 For projects that already carry this approved pattern, preserve its actual implementation and behavior. Change identity and assets only unless the product owner explicitly authorizes a specific mechanics change. Do not fake a native prompt, show dead install CTAs, add generic desktop/Android browser-menu instructions, duplicate listeners, or replace a working flow.
 
@@ -105,7 +105,7 @@ Before copying this pattern into a source that does not have it, inspect both im
 
 ### Chatbot / guided assistant
 
-Preserve the selected source's existing chatbot implementation and behavior. For a new project based on Africhiko, adapt branding, copy and project-specific actions without replacing its behavior or removing capabilities. Connect actions to real target handlers; do not invent AI, live-agent, remote inbox or backend capabilities. If the chosen source has no chatbot or has a materially different protected assistant, document that fact and ask before grafting or replacing one.
+Preserve the selected source's existing chatbot implementation and behavior. For a new project, adapt branding, copy and project-specific actions without replacing the selected foundation's behavior or removing capabilities. Connect actions to real target handlers; do not invent AI, live-agent, remote inbox or backend capabilities. If the chosen source has no chatbot or has a materially different protected assistant, document that fact and ask before grafting or replacing one.
 
 ### One-word staff/admin access
 
