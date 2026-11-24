@@ -1,10 +1,10 @@
 # NON-NEGOTIABLE PWA INSTALLATION STANDARD — DO NOT REGRESS
 
-**Reference implementation:** The currently approved Africhiko PWA installation experience in `gatshaayanda/africhiko`, as verified against its actual repository state.
+**Reference implementation:** The currently approved foundation PWA installation experience in the selected foundation's verified implementation, as verified against its actual repository state.
 
 ## 1. The rule
 
-Reproduce the approved Africhiko installation experience in this project, changing only the brand identity, application name, icons, colours and other genuinely project-specific assets.
+Reproduce the approved selected foundation installation experience in this project, changing only the brand identity, application name, icons, colours and other genuinely project-specific assets.
 
 **The installation mechanism, behaviour, lifecycle and user experience are protected. They are not to be redesigned, rewritten, replaced, simplified, “improved”, refactored or removed unless I explicitly authorize that specific change.**
 
@@ -57,4 +57,4 @@ Report separately what was changed, committed, pushed, build-verified and produc
 
 ## Final instruction
 
-**Africhiko's approved installation experience is the permanent default for this project. Preserve it exactly in behaviour and user experience. Rebrand it for this project, leave its protected implementation alone, and make no exceptions unless I explicitly authorize otherwise.**
+**The selected foundation's approved installation experience is the permanent default for this project. Preserve it exactly in behaviour and user experience. Rebrand it for this project, leave its protected implementation alone, and make no exceptions unless I explicitly authorize otherwise.**
