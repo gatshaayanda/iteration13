@@ -28,7 +28,7 @@ Use the **💼 briefcase icon** in the footer to open the one-word local Briefca
 - Review each customer and their requests, then move work through New request, Reviewing, Accepted, In progress, Completed or Declined.
 - Record full or partial simulated payments against a request. Download or print a branded receipt / request record from both the customer account and owner job record, including unpaid, partially paid and fully paid states. The receipt uses the current business name and selected Store colour; no money moves.
 - Review the customer directory, payments received, completed value, projected accepted/in-progress value, requested value and completed-unpaid balance.
-- Choose whether a clean lap in the embedded Big Brothers Racing 3D warm-up awards P10 or P20 off. The customer enters an email, earns a one-use code on a clean lap, and can redeem it against a Store request. Owners can also assign a promotion directly to a customer email.
+- Choose whether a clean lap in the embedded 3D racing warm-up awards P10 or P20 off. The customer enters an email, earns a one-use code on a clean lap, and can redeem it against a Store request. Owners can also assign a promotion directly to a customer email.
 - Switch between Today, Customers & jobs, Money, Store design, My Notes and Insights tabs instead of scrolling through one long owner page.
 - Configure the business details and tax references shown on prototype receipts for the business's own record-keeping setup.
 - Review local operational analytics: browser-recorded Store visits, service selections, Account opens, saved enquiries and a recent activity trail. These counts describe only activity recorded in the current browser profile; they are not shared public-visitor analytics.
