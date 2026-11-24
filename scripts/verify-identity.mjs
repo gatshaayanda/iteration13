@@ -92,6 +92,34 @@ for (const file of walkUiSource(path.join(root, "src"))) {
   }
 }
 
+// New-project hygiene is part of the build contract: these routes and handlers
+// belonged to a separate client storefront and must not return to the BOS baseline.
+const retiredClientPaths = [
+  "src/app/account/page.tsx",
+  "src/app/admin/page.tsx",
+  "src/app/invite",
+  "src/app/order",
+  "src/app/orders",
+  "src/app/products",
+  "src/app/request",
+  "src/app/requests",
+  "src/app/saved",
+  "src/app/api/notifications",
+  "src/app/api/sourcing-request",
+  "src/app/api/operations-login",
+  "src/app/api/firebase",
+  ".github/workflows/pickup-reminders.yml"
+];
+for (const retiredPath of retiredClientPaths) {
+  if (fs.existsSync(path.join(root, retiredPath))) failures.push(retiredPath + ": retired client-specific route or workflow must not be present in the foundation");
+}
+if (/plug-pending-order-notification|retryPendingOrderNotifications/i.test(pwaRegister)) failures.push("PWA controller: client-specific order retry logic must not be coupled to installation");
+if (/THE_PLUG|thePlug|theplug-|The Plug|plug-icon/i.test(sw)) failures.push("service worker: inherited client messaging identity remains");
+const foundationAgents = fs.readFileSync(path.join(root, "AGENTS.md"), "utf8");
+const cloneChecklist = fs.readFileSync(path.join(root, "docs/CLONE-RESET-CHECKLIST.md"), "utf8");
+if (!foundationAgents.includes("Clone identity and experience gate (mandatory)")) failures.push("AGENTS: mandatory clone identity/experience gate is missing");
+if (!cloneChecklist.includes("Product genre and visual direction gate")) failures.push("clone checklist: mandatory project genre/design checkpoint is missing");
+
 if (failures.length) {
   console.error("IDENTITY VERIFICATION FAILED");
   failures.forEach(failure => console.error(" - " + failure));
