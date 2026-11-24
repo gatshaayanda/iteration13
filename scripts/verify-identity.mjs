@@ -24,7 +24,7 @@ for (const file of walk(root)) {
   const rel = path.relative(root, file).replaceAll(path.sep, "/");
   if (ignoredFiles.has(rel) || !textExtensions.has(path.extname(file).toLowerCase())) continue;
   const content = fs.readFileSync(file, "utf8");
-  if (/boemo-joos-food-deals|namane-tyres\.vercel\.app|yusuf-clothing-line\.vercel\.app/i.test(content)) failures.push(rel + ": inherited project URL remains");
+  if (/boemo-joos-food-deals|namane-tyres\\.vercel\\.app|yusuf-clothing-line\\.vercel\\.app|BOEMO_REMINDER_CRON_SECRET|boemoMedia|the-plug-pearl\\.vercel\\.app|plug-icon\\.svg|THE_PLUG_PUBLIC_URL/i.test(content)) failures.push(rel + ": inherited client identity, credential, storage path or production URL remains");
 }
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "public/manifest.webmanifest"), "utf8"));
 if (manifest.name !== "Iteration 13 | Service Studio") failures.push("manifest: wrong application name");
