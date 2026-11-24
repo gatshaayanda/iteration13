@@ -7,7 +7,7 @@ Use this guide to select, inspect, clone and safely adapt the product owner's ch
 
 The product owner selects the source repository. Record its exact `owner/repository`, default branch and commit. Never develop directly on Iteration 13's golden recovery branch.
 
-1. Use the exact source the product owner names. Do not silently substitute Iteration 13, Africhiko or another repository.
+1. Use the exact source the product owner names. Do not silently substitute either maintained foundation or another repository.
 2. If no source is named, choose Iteration 13 for Business OS or Iteration 14 for Personal OS based on the actual product model.
 3. If asked to recommend a source, inspect relevant portfolio repositories and compare industry fit, customer journey, admin workflows, architecture, integrations, protected features, visual quality and adaptation risk. Explain the recommendation before cloning.
 4. Use Iteration 13 as the Business OS foundation when the product model is business-led. Use Iteration 14 as the Personal OS foundation for creator/community-led products. Do not clone a finished client project merely because it looks similar; borrow only its visual/interaction patterns.
