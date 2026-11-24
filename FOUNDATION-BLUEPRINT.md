@@ -2,7 +2,7 @@
 
 **Entry point for every implementation chat:** [START-HERE.md](./START-HERE.md). Follow its required reading order and verification steps. Then read [AGENTS.md](./AGENTS.md) for protected rules and [README.md](./README.md) for the customer/admin walkthrough. Read [CLONING.md](./CLONING.md) whenever cloning, resetting identity or adapting this foundation. Chat history is not a replacement for these files.
 
-Read [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md) for the approved recovery point and the standards boundary. Iteration 13 is the engineering standards/reference repository, not the default clone source. The product owner chooses each new project's source; Africhiko (`gatshaayanda/africhiko`) is the default only when no source is named.
+Read [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md) for the approved recovery point and the standards boundary. Iteration 13 is the maintained Business OS foundation; Iteration 14 is the maintained Personal OS foundation. Select by product model. Completed client projects are not implicit source defaults.
 
 This file is the fast technical handoff for a new ChatGPT/Codex conversation. GitHub main is the source of truth; inspect the actual latest commit rather than trusting an old chat summary.
 ## What this repository is
@@ -56,7 +56,7 @@ The reusable standard is [docs/OPERATIONAL-TRANSPARENCY-STANDARD.md](./docs/OPER
 ### New client project — standards apply; source is selected separately
 
 - First decide whether this is a new app or work on an existing app. Existing projects are improved in place; never reclone to replace a working implementation.
-- Use the exact source repository named by the product owner. If none is named, use `gatshaayanda/africhiko` by default for new customer-facing PWAs/Admin Hub apps. If asked to recommend, compare relevant portfolio repositories and explain material risks before cloning.
+- Use the exact source repository named by the product owner. If none is named, choose Iteration 13 for Business OS or Iteration 14 for Personal OS. If asked to recommend, compare relevant portfolio repositories and explain material risks before cloning.
 - Iteration 13 supplies engineering standards and reusable safeguards; it is not the default cloning source. Do not assume its demo architecture, data model, routes or features belong in the target app.
 - Read `docs/ADMIN-HUB-APP-FACTORY-SOP.md` and `docs/CLONE-RESET-CHECKLIST.md` before cloning/adaptation.
 - Create an identity reset checklist: app name, visible copy, domain/base URL, metadata/Open Graph, manifest, PNG/SVG icons, Apple metadata, cache namespaces, routes, media, install guide and identity-verification checks.
@@ -75,7 +75,7 @@ The reusable standard is [docs/OPERATIONAL-TRANSPARENCY-STANDARD.md](./docs/OPER
 
 ## Legacy boundaries to review deliberately
 
-The repo contains inherited Firebase/PWA integration code beyond the local-only service demo, including background messaging and pending-notification retry hooks. They were not removed here because the product owner asked to leave Firebase alone and protect installation. Before using this repo for a real project, explicitly decide whether to retain, reconfigure or remove those integrations; do not silently inherit The Plug's project-specific notification behavior.
+The repo contains inherited Firebase/PWA integration code beyond the local-only service demo, including background messaging and pending-notification retry hooks. They were not removed here because the product owner asked to leave Firebase alone and protect installation. Before using this repo for a real project, explicitly decide whether to retain, reconfigure or remove those integrations; do not silently inherit any source project's project-specific notification behavior.
 
 ## Chat widget direction
 
