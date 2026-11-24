@@ -4,7 +4,7 @@
 
 The Sparkle Legacy chat-widget reference and evidence-led proposal live in [CHAT-WIDGET-RESEARCH.md](./CHAT-WIDGET-RESEARCH.md). These files explain what to preserve, where to edit, what is demo-only, and what needs deliberate project-specific replacement.
 
-The approved foundation baseline and recovery policy are documented in [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md). A reusable, mobile-first PWA foundation candidate. The homepage demonstrates a compact business-branded Store connected to an owner Briefcase/Business OS. The customer header provides Store and Account; the footer pairs the single icon-only owner Briefcase entry with a separate 🎒 BACKPACK / Personal OS link to Iteration 14. Owners can edit services, announcements and the Store accent theme in the local demo. The interface uses the BoardSignal-derived 25 GB monthly capacity reference and high-volume customer-day scenario supplied by the product owner; it is not live server metering or a universal capacity guarantee. Firebase configuration, rules and data were intentionally left unchanged.
+The approved foundation baseline and recovery policy are documented in [GOLDEN-BASELINE.md](./GOLDEN-BASELINE.md). A reusable, mobile-first PWA foundation candidate. The homepage demonstrates a compact business-branded Store connected to an owner Briefcase/Business OS. The customer header provides Store and Account; the footer pairs the single icon-only owner Briefcase entry with a separate 🎒 BACKPACK / Personal OS link to Iteration 14. Owners can edit services, announcements and the Store accent theme in the local demo. The interface uses the illustrative 25 GB monthly capacity reference and high-volume customer-day scenario supplied by the product owner; it is not live server metering or a universal capacity guarantee. Firebase configuration, rules and data were intentionally left unchanged.
 ## Customer demo
 
 1. Open the homepage and browse the four example services:
@@ -37,7 +37,7 @@ Use the **💼 briefcase icon** in the footer to open the one-word local Briefca
 - See summary counts for requests, statuses, services, customer emails and recorded demo visits.
 - Change the Store's accent colour using vivid presets or a custom colour picker; the chosen colour is used as an accent on neutral, readable surfaces across the Store, Briefcase and receipts.
 - Keep private My Notes in this browser.
-- Review the BoardSignal 25 GB capacity reference as a future Firebase-connected operating ceiling, not as a current usage meter.
+- Review the 25 GB capacity reference as a future Firebase-connected operating ceiling, not as a current usage meter.
 - Review the infrastructure flow showing the current browser-local demo and the planned Vercel Functions → Firestore path (Johannesburg database region; Cape Town is Vercel's listed South African compute region). The interactive payload calculator is an explicitly illustrative 25 GB workload model, not a tested server limit, live telemetry or revenue forecast.
 - Reset the local sample data for another walkthrough.
 
