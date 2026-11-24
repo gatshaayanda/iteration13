@@ -44,7 +44,7 @@ Do not respond to a missing install card or unexpected install screen by immedia
 1. **Stop unrelated edits.** Confirm the target repo, branch, latest commit, clean/dirty working tree, and exact deployed commit. Do not infer that a GitHub push reached production.
 2. **Inspect the whole path:** `src/app/layout.tsx` (early capture), `src/app/pwa-register.tsx` (one controller and click-to-prompt), install CSS, both manifest representations, metadata/icons, `public/sw.js`, cache version, and `scripts/verify-identity.mjs`.
 3. **Find the first failure.** Check whether the browser emitted `beforeinstallprompt`, whether the event was retained, whether the branded click calls its native `prompt()`, whether the card is suppressed/dismissed/standalone, and whether stale service-worker assets are being served. Treat browser eligibility and device behavior as separate from source correctness.
-4. **Compare before changing behavior.** Use the approved compact card/native prompt in `gatshaayanda/africhiko` as the UX reference and Iteration 13's implementation as the clone source, including its iOS Safari guidance and embedded-browser handoff. Revert accidental runtime drift to the last known-good implementation rather than layering on a second listener or fallback.
+4. **Compare before changing behavior.** Use the approved compact card/native prompt in the selected foundation's verified implementation as the UX reference and Iteration 13's implementation as the clone source, including its iOS Safari guidance and embedded-browser handoff. Revert accidental runtime drift to the last known-good implementation rather than layering on a second listener or fallback.
 5. **Guard the repair.** Add or correct an automated invariant for the failure, without deleting or weakening existing checks. Run `npm run verify:identity`, `npm run lint`, and `npm run build`; inspect the built/served manifest and asset URLs.
 6. **Report honestly.** State commit and checks, deployment state, and whether Chromium/iOS device testing actually occurred. If a physical device is unavailable, list it as outstanding QA.
 
@@ -55,11 +55,11 @@ This sequence is mandatory for every clone and every new implementation chat. A 
 
 ## Product-owner mandated installation standard — permanent, non-negotiable
 
-**Reference implementation:** The currently approved Africhiko PWA installation experience in `gatshaayanda/africhiko`, as verified against its actual repository state.
+**Reference implementation:** The currently approved foundation PWA installation experience in the selected foundation's verified implementation, as verified against its actual repository state.
 
 ### 1. The rule
 
-Reproduce the approved Africhiko installation experience in each project, changing only the brand identity, application name, icons, colours and other genuinely project-specific assets.
+Reproduce the approved selected foundation installation experience in each project, changing only the brand identity, application name, icons, colours and other genuinely project-specific assets.
 
 **The installation mechanism, behaviour, lifecycle and user experience are protected. They are not to be redesigned, rewritten, replaced, simplified, “improved”, refactored or removed unless the product owner explicitly authorizes that specific change.**
 
@@ -112,7 +112,7 @@ Report separately what was changed, committed, pushed, build-verified and produc
 
 ### Final instruction
 
-**Africhiko's approved installation experience is the permanent default for Iteration 13 and every project based on it. Preserve it exactly in behaviour and user experience. Rebrand it for each project, leave its protected implementation alone, and make no exceptions unless the product owner explicitly authorizes otherwise.**
+**The selected foundation's approved installation experience is the permanent default for Iteration 13 and every project based on it. Preserve it exactly in behaviour and user experience. Rebrand it for each project, leave its protected implementation alone, and make no exceptions unless the product owner explicitly authorizes otherwise.**
 
 
 ## Permanent reusable baseline — explicit product-owner lock (18 November 2026)
@@ -124,13 +124,13 @@ Report separately what was changed, committed, pushed, build-verified and produc
 - Never weaken or delete identity/offline/install regression checks to make CI pass. If a check is stale, update the assertion to test the approved implementation—not the runtime to satisfy an obsolete test.
 - Never add a second install controller, parallel listener, fake native prompt, dead install CTA, or substitute browser-menu explainer.
 - **Only permitted routine adaptation:** app identity and assets—application name, brand artwork/icons, favicon/Apple/manifest icon references, theme colour, and the branded card's name/copy/style. These must not change runtime behavior.
-- Preserve extra platform guidance, embedded-browser handoff, update UX or offline behavior only when it exists in the selected source/project and is explicitly part of that project's approved baseline. Do not assume those features are part of the minimal Africhiko controller or graft them in under the guise of parity.
-- If installation breaks, stop unrelated work; inspect source, tests, manifests, icon URLs, service worker/cache and deployed commit; compare against current Africhiko; identify the first proven failure; then make the smallest repair. No speculative rewrite.
+- Preserve extra platform guidance, embedded-browser handoff, update UX or offline behavior only when it exists in the selected source/project and is explicitly part of that project's approved baseline. Do not assume those features are part of the selected foundation controller or graft them in under the guise of parity.
+- If installation breaks, stop unrelated work; inspect source, tests, manifests, icon URLs, service worker/cache and deployed commit; compare against selected foundation; identify the first proven failure; then make the smallest repair. No speculative rewrite.
 - A runtime mechanics change is forbidden unless the product owner explicitly authorizes that specific change in the current task. Silence, a general feature request, framework change, CI failure or another agent's preference is not authorization.
 
 ### Required clone and maintenance procedure
 1. Read this lock before touching PWA-related code or assets.
-2. Inspect the approved Africhiko source and target implementation; preserve the source lifecycle exactly while adapting identity only.
+2. Inspect the approved foundation source and target implementation; preserve the source lifecycle exactly while adapting identity only.
 3. Keep automated checks for the event listener, event retention, direct native prompt invocation, userChoice handling, dismissible card and service-worker registration.
 4. For identity-only work, verify manifest, metadata, favicon, Apple icon and every launcher/shortcut icon resolve to the target brand; no source-project icon may remain.
 5. Run relevant identity/offline checks, lint and build. Report code checks, deployment status and real-device QA separately.
