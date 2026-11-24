@@ -33,7 +33,7 @@ Iteration 13 is the maintained **Business OS foundation** and contains a mobile-
 - Admin demo supports service add/edit/hide/show/delete, announcement publish/clear, request-status changes, local stats and reset.
 - The customer and admin views share the same browser profile's localStorage. Never claim the data is synced, shared, submitted to a real business or safe for real customer records.
 - External media can fail offline; cards must retain a useful local visual fallback.
-- `/request` is retained only as a compatibility redirect to the service-order journey; it is not the old Plug sourcing form.
+- Retired client-specific routes for `/request`, `/account`, `/admin`, product sourcing, invitations and community feeds have been removed. The customer request/account and owner Briefcase demonstrations live in the main Service Studio experience.
 - This prototype's service-order data flow intentionally does not use Firebase. Firebase config/rules/data were not changed in this improvement pass.
 
 ## Protected invariants — do not casually rewrite
