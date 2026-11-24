@@ -1,6 +1,6 @@
 # Iteration 13 — Portfolio Product & Engineering Handoff
 
-**Purpose:** this repository is the canonical reference for the Admin Hub portfolio's product direction, visual craft, operational transparency, reusable engineering standards and implementation discipline. It is not a universal clone template and is not the default source repository.
+**Purpose:** this repository is the maintained Business OS foundation and the canonical reference for the Admin Hub portfolio's product direction, visual craft, operational transparency, reusable engineering standards and implementation discipline. It is not a universal copy-and-paste app: adapt its verified business workflows to the target, and use Iteration 14 for Personal OS products.
 
 ## 1. What this repository is for
 
