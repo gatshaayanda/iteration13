@@ -35,7 +35,7 @@ The stable recovery branch `golden/iteration13-service-studio` is intended to po
 
 ## New-project adaptation contract
 
-Iteration 13 is the engineering standards and reference repository. It is not a universal copy-and-paste app and is not production-ready merely because its demo works. It is not the default source for new client projects.
+Iteration 13 is the maintained Business OS foundation. It is not a universal copy-and-paste app and is not production-ready merely because its demo works. Pair it with Iteration 14 for Personal OS projects.
 
 For every new project:
 
