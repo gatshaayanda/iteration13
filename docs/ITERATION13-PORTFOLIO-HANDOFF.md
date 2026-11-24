@@ -139,7 +139,7 @@ The labor-illusion insight is used ethically: communicate real work performed an
 
 Iteration 13 is a **standards/reference repository, not the default clone source**.
 
-1. Follow the product owner's explicitly named source. If none is named, the current App Factory default is `gatshaayanda/africhiko`.
+1. Select the foundation by product model: Iteration 13 for Business OS or Iteration 14 for Personal OS. Finished client projects are visual/interaction references only unless explicitly authorized.
 2. Inspect the selected source and target remote before cloning. For an existing project, work in place; never reclone just to begin.
 3. Read source `AGENTS.md`, README, cloning instructions and relevant protected-feature docs.
 4. Apply Iteration 13's relevant standards: visual reference, compactness, operational transparency, change safety, accessibility, truthful offline states, security boundaries and verification discipline.
