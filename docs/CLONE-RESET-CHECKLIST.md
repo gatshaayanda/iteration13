@@ -82,7 +82,7 @@ Use this checklist with [CLONING.md](../CLONING.md) and [ADMIN-HUB-APP-FACTORY-S
 - [ ] Compare source install behavior with the selected foundation's protected installation baseline.
 - [ ] Preserve the selected source's existing approved install runtime; rebrand only unless a specific change is authorized.
 - [ ] If source lacks the approved install pattern or has a conflicting protected implementation, stop and obtain approval before replacing/grafting.
-- [ ] Preserve the selected source's chatbot/assistant behavior; for Africhiko, adapt identity and real project actions without replacing its behavior.
+- [ ] Preserve the selected foundation's chatbot/assistant behavior and adapt only identity and real project actions without replacing its behavior.
 - [ ] If the source has no chatbot or a materially different protected assistant, document the mismatch and ask before grafting/replacing.
 - [ ] Preserve proven customer journey, admin CRUD, authentication, uploads, offline behavior, games and other golden features.
 - [ ] Remove unrelated source features only after confirming they are not dependencies or protected behavior.
