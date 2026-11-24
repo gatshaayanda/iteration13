@@ -137,7 +137,7 @@ The labor-illusion insight is used ethically: communicate real work performed an
 
 ## 7. How to apply this to a new project
 
-Iteration 13 is a **standards/reference repository, not the default clone source**.
+Iteration 13 is the maintained **Business OS foundation**. Iteration 14 is the maintained **Personal OS foundation**. Select by product model; completed client repositories are references only unless explicitly authorized.
 
 1. Select the foundation by product model: Iteration 13 for Business OS or Iteration 14 for Personal OS. Finished client projects are visual/interaction references only unless explicitly authorized.
 2. Inspect the selected source and target remote before cloning. For an existing project, work in place; never reclone just to begin.
