@@ -95,7 +95,7 @@ A customer account is a useful workspace, not just a sign-in screen or a list of
 - Share or retrieve relevant files where a secure, supported upload path exists.
 - Manage notification preferences and return to the next useful action.
 
-Do not copy Iteration 13's demo-specific garden, game, journal or sample content into another business. Select only extras that solve a genuine customer need. Keep authentication proportionate, scope every record to the authenticated customer, and enforce ownership at the backend/security-rule boundary. Never imply cross-device sync, live messaging, email delivery, offline upload or account recovery unless implemented and verified.
+Do not copy Iteration 13's demo-specific reward, game, journal or sample content into another business. Select only extras that solve a genuine customer need. Keep authentication proportionate, scope every record to the authenticated customer, and enforce ownership at the backend/security-rule boundary. Never imply cross-device sync, live messaging, email delivery, offline upload or account recovery unless implemented and verified.
 
 ## 7. Operational transparency and psychology
 
