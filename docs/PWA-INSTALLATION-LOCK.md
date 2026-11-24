@@ -117,7 +117,15 @@ Report separately what was changed, committed, pushed, build-verified and produc
 
 ## Permanent reusable baseline — explicit product-owner lock (18 November 2026)
 
-**The installation experience is protected shared infrastructure, not a feature playground.** The approved reference is the selected foundation's verified `src/app/pwa-register.tsx` implementation. Its current core lifecycle is: listen for `beforeinstallprompt`, call `preventDefault()`, retain the event, reveal the compact branded dismissible card, invoke `deferredPrompt.prompt()` directly from the user's Install-button click, await `userChoice`, clear the retained prompt/state, and register `/sw.js`. Reuse that source behavior exactly; do not add or remove lifecycle stages because a future agent prefers another pattern.
+**The installation experience is protected shared infrastructure, not a feature playground.**
+
+### Protected install-card placement
+
+- The branded install card is a compact, inline **top-of-page** element. `PwaRegister` must remain mounted before `{children}` in `src/app/layout.tsx`, so eligible visitors encounter it before the main Store content.
+- Keep `.i13-install-card` in normal document flow with `position: relative`, `max-width: 390px` and the existing centered top margin. Do not move it to a fixed bottom corner, sticky footer, floating overlay or full-screen modal.
+- It is visible only when a real retained native prompt exists, or when iOS Safari needs the manual Add to Home Screen guide. Standalone sessions and unsupported desktop/Android states must not show a dead CTA.
+- Branding changes may update the card's name, icon and colours; its position, compact dimensions, visibility conditions and native-prompt behavior remain protected.
+ The approved reference is the selected foundation's verified `src/app/pwa-register.tsx` implementation. Its current core lifecycle is: listen for `beforeinstallprompt`, call `preventDefault()`, retain the event, reveal the compact branded dismissible card, invoke `deferredPrompt.prompt()` directly from the user's Install-button click, await `userChoice`, clear the retained prompt/state, and register `/sw.js`. Reuse that source behavior exactly; do not add or remove lifecycle stages because a future agent prefers another pattern.
 
 ### Absolute protection rule
 - Never rewrite, refactor, simplify, replace, “improve”, duplicate, defer, or remove the working installation controller, native prompt lifecycle, event listener, install click action, dismissal behavior, or service-worker registration as part of unrelated work.
