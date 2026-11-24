@@ -10,13 +10,13 @@ try {
   console.warn("Background messaging is unavailable; offline app-shell support remains enabled.", error);
 }
 
-let thePlugMessaging = null;
+let iteration13Messaging = null;
 try {
-  const config = self.__THE_PLUG_FIREBASE_CONFIG__;
+  const config = self.__ITERATION13_FIREBASE_CONFIG__;
   if (config && config.apiKey && config.projectId && config.messagingSenderId && config.appId) {
     firebase.initializeApp(config);
-    thePlugMessaging = firebase.messaging();
-    thePlugMessaging.onBackgroundMessage((payload) => {
+    iteration13Messaging = firebase.messaging();
+    iteration13Messaging.onBackgroundMessage((payload) => {
       // Notification payloads are displayed automatically by Firebase. Only render
       // data-only pushes here to avoid showing the same notification twice.
       if (payload.notification) return;
@@ -30,10 +30,10 @@ try {
       self.registration.showNotification(title, options);
     });
   } else {
-    console.error("The Plug Firebase Messaging web config is incomplete.");
+    console.error("Iteration 13 Firebase Messaging web config is incomplete.");
   }
 } catch (error) {
-  console.error("The Plug Firebase Messaging service worker could not initialize.", error);
+  console.error("Iteration 13 Firebase Messaging service worker could not initialize.", error);
 }
 
 self.addEventListener("notificationclick", (event) => {
@@ -177,7 +177,7 @@ async function cacheMediaUrl(value) {
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(key => key.startsWith("theplug-shell-") || key.startsWith("theplug-media-") || (key.startsWith("iteration13-shell-") && key !== SHELL_CACHE) || (key.startsWith("iteration13-media-") && key !== MEDIA_CACHE)).map(key => caches.delete(key)));
+    await Promise.all(keys.filter(key => (key.startsWith("iteration13-shell-") && key !== SHELL_CACHE) || (key.startsWith("iteration13-media-") && key !== MEDIA_CACHE)).map(key => caches.delete(key)));
     // Navigation preload overlaps the network request with worker startup. It is
     // optional and must never prevent activation on browsers that do not support it.
     try {
