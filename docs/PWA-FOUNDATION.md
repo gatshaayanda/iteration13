@@ -1,6 +1,6 @@
 # Reusable PWA Foundation Contract
 
-This document is the portable baseline for every new PWA created by cloning BOEMO, The Plug, PurePress, or another existing project. Read it when starting a new repository or continuing clone work in a fresh ChatGPT/Codex session.
+This document defines the PWA identity-reset and installation-preservation process for projects created from the maintained Iteration 13 Business OS or Iteration 14 Personal OS foundations. Read it when starting a new repository or continuing clone work in a fresh ChatGPT/Codex session.
 
 ## Core rule
 
@@ -30,7 +30,7 @@ Preserve proven PWA behavior deliberately; do not blindly copy the source app's 
 - Keep a distinct, honest offline route and safe update/recovery behavior. Cached UI does not prove that a write was sent or accepted. Where relevant, show local/queued/syncing/confirmed/failed states and prevent duplicate writes on retry.
 - Keep connectivity awareness peripheral: use a compact, persistent status indicator and action-specific feedback rather than a screen-covering or bottom-fixed offline banner. Reserve interruptive notices for urgent, actionable events; make update prompts dismissible and user-controlled. This follows visibility-of-status guidance while reducing unnecessary task interruption.
 - Maintain accessible labels, keyboard and focus behavior, visible focus, contrast, touch targets and reduced-motion support.
-- Do not impose The Plug's account-first journey or embedded-browser gate on another product automatically. Preserve the mechanism, then adapt product policy deliberately.
+- Do not impose a source project's account-first journey or embedded-browser gate on another product automatically. Preserve the mechanism, then adapt product policy deliberately.
 
 ## Clone identity and infrastructure reset
 
@@ -44,7 +44,7 @@ Before a clone's first production deployment, audit and adapt:
 - Auth guards and return paths, notification permission/status handling, support fallbacks and all source-specific business logic.
 - Dependencies, CI checks, production build and deployment source SHA.
 
-Never reuse BOEMO or The Plug credentials, tokens, databases, push keys or customer data. A build-time placeholder/fallback is not a working production configuration. If a required service is missing, fail safely with clear customer-facing guidance; do not initialize fake project settings, leak raw SDK errors or pretend an operation succeeded.
+Never reuse credentials, tokens, databases, push keys, customer data, project IDs, domains or service-worker namespaces from any source project. A build-time placeholder/fallback is not a working production configuration. If a required service is missing, fail safely with clear customer-facing guidance; do not initialize fake project settings, leak raw SDK errors or pretend an operation succeeded.
 
 ## Required verification checklist
 
@@ -65,15 +65,4 @@ Verify the actual target project, not just code patterns:
 
 Start by asking which repository is the target and which repository is the foundation if not already stated. Read this file plus both repositories' `AGENTS.md` files. Treat this checklist as a baseline, not proof that the foundation implements it correctly. Compare the actual code and deployment to the checklist, report gaps, and make the smallest controlled changes.
 
-If cloning BOEMO, reuse only the mechanics that inspection confirms are reusable; reset BOEMO identity, Firebase resources, notification configuration and food-ordering business logic. If cloning The Plug, preserve its install journey and safe service-worker patterns while explicitly adapting its account-first and embedded-browser policies to the new product. If using PurePress or another foundation, inspect it with the same rigor. Never copy configuration blindly or claim success without evidence.
-
-## The Plug public-storefront offline QA
-
-For The Plug, public finds and offers may be retained locally only after they have been published for the public audience. Treat this cache as a convenience copy, not a source of truth:
-
-- Show when the feed is using saved content and when it was last refreshed; clearly warn that prices, stock and availability may have changed.
-- Cache only public product media with a bounded cache. Never cache account, request, message, admin or other private responses in the public shell.
-- On reconnect, attempt to refresh from the live source. If refresh fails, keep eligible saved public content visible and make the stale/offline state explicit.
-- Do not report a request, account change or save as successful without server confirmation. Offline mode is browse-only unless a separately designed and tested queue explicitly communicates pending/synced/failed states.
-- QA sequence: open the storefront online and wait for items/images; enable airplane mode and revisit the storefront; verify saved items, stale timestamp and image fallbacks; attempt a network-dependent action and verify honest feedback; restore connectivity and confirm the feed refreshes.
-- The default find-details disclaimer must remain usable if its settings document is missing or unreadable. Only authorized admins may edit it; restoring the default should remove the override rather than leave a duplicate setting.
+Use only the selected foundation's verified reusable behavior. Reset every source identity and infrastructure reference. Preserve its proven installation runtime and adapt only the brand assets/copy unless a specific install-mechanics change is authorized. Never copy configuration blindly or claim success without evidence.
