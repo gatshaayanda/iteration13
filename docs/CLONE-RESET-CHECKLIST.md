@@ -80,6 +80,7 @@ Use this checklist with [CLONING.md](../CLONING.md) and [ADMIN-HUB-APP-FACTORY-S
 ## F. Protected functionality and feature adaptation
 
 - [ ] Compare source install behavior with the selected foundation's protected installation baseline.
+- [ ] Preserve the selected foundation's branded install card position and dimensions; for Iteration 13, it stays inline at the top of the page before Store content, centered at a compact maximum width—not fixed to the bottom or turned into an overlay.
 - [ ] Preserve the selected source's existing approved install runtime; rebrand only unless a specific change is authorized.
 - [ ] If source lacks the approved install pattern or has a conflicting protected implementation, stop and obtain approval before replacing/grafting.
 - [ ] Preserve the selected foundation's chatbot/assistant behavior and adapt only identity and real project actions without replacing its behavior.
