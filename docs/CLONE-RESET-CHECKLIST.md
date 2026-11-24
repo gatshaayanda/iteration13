@@ -7,9 +7,9 @@ Use this checklist with [CLONING.md](../CLONING.md) and [ADMIN-HUB-APP-FACTORY-S
 - [ ] Confirm this is a genuinely new project; if an existing app, work in its current repository.
 - [ ] Record the exact target repository and intended local directory.
 - [ ] Record the exact source repository selected by the product owner.
-- [ ] If no source was named, select `gatshaayanda/africhiko` as the default.
+- [ ] Select Iteration 13 for Business OS or Iteration 14 for Personal OS; do not use a finished client project as an implicit default.
 - [ ] If asked to recommend a source, compare relevant portfolio apps and document industry/workflow/architecture/integration/protection trade-offs before cloning.
-- [ ] Treat Iteration 13 as the engineering standards/reference repository, not the default clone source.
+- [ ] Treat Iteration 13 as the maintained Business OS foundation and Iteration 14 as the maintained Personal OS foundation.
 - [ ] Inspect source branch, latest commit, AGENTS, README, SOPs, package scripts, routes, customer/admin flows and relevant implementation.
 - [ ] Inventory source architecture, data model, auth, uploads, integrations, PWA install, chatbot, service worker/offline behavior, tests and protected features.
 - [ ] Inspect the target GitHub remote and local destination. Confirm both are safe/empty before baseline push; stop if either contains work.
@@ -40,7 +40,16 @@ Use this checklist with [CLONING.md](../CLONING.md) and [ADMIN-HUB-APP-FACTORY-S
 - [ ] Record focused verification commands and current checkpoint.
 - [ ] Do not claim inherited features that source inspection did not verify.
 
-## D. Business and visual identity reset
+## D. Product genre and visual direction gate
+
+- [ ] Understand the actual product, audience, positioning and primary customer/staff tasks before selecting a direction.
+- [ ] Select one dominant genre: Quiet, Character, Atmosphere, Data or Loud, and record the project-specific rationale.
+- [ ] Select secondary stylistic influences deliberately and assign them to the customer and operational journey.
+- [ ] Record typography, hierarchy, colour/surface, imagery, density/composition, motion, interaction and accessibility/performance constraints in target `AGENTS.md` and `DESIGN.md` before substantial UI work.
+- [ ] Apply the direction across landing/store, request/account, owner/staff workspace, receipts and important states—not just the homepage.
+- [ ] Inspect the rendered mobile and desktop experience for readability, contrast, CTA clarity and state feedback.
+
+## E. Business and visual identity reset
 
 - [ ] Business/product name, short name and descriptions.
 - [ ] Logos, brand marks, favicon, app icons and Apple touch assets.
@@ -70,7 +79,7 @@ Use this checklist with [CLONING.md](../CLONING.md) and [ADMIN-HUB-APP-FACTORY-S
 
 ## F. Protected functionality and feature adaptation
 
-- [ ] Compare source install behavior with the approved Africhiko install standard.
+- [ ] Compare source install behavior with the selected foundation's protected installation baseline.
 - [ ] Preserve the selected source's existing approved install runtime; rebrand only unless a specific change is authorized.
 - [ ] If source lacks the approved install pattern or has a conflicting protected implementation, stop and obtain approval before replacing/grafting.
 - [ ] Preserve the selected source's chatbot/assistant behavior; for Africhiko, adapt identity and real project actions without replacing its behavior.
@@ -82,7 +91,7 @@ Use this checklist with [CLONING.md](../CLONING.md) and [ADMIN-HUB-APP-FACTORY-S
 ## G. Verification
 
 - [ ] Review the complete diff and investigate all protected-file changes.
-- [ ] Search for leftover source names, IDs, hostnames, logos, icons, copy and sample data.
+- [ ] Search all tracked files for source names, slogans, domains, URLs, Firebase IDs, storage paths, notification secrets, icon names, sample products/prices, contact details and source-specific scheduled workflows.
 - [ ] Run relevant type, lint, test, identity and build checks; record actual output.
 - [ ] Inspect the built/served manifest and referenced icon/media paths when PWA identity changes.
 - [ ] Verify customer flow and staff/admin flow end to end.
