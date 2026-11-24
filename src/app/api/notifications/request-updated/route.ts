@@ -8,11 +8,11 @@ export const runtime="nodejs";
 
 function adminApp(){
  const raw=process.env.FIREBASE_ADMIN_KEY;
- if(!raw)throw new Error("The Plug notifications are not configured yet.");
+ if(!raw)throw new Error("your business notifications are not configured yet.");
  const existing=getApps()[0];
  if(existing)return existing;
  let serviceAccount:Record<string,unknown>;
- try{serviceAccount=JSON.parse(raw) as Record<string,unknown>}catch{throw new Error("The Plug notification credentials are not valid JSON yet.")}
+ try{serviceAccount=JSON.parse(raw) as Record<string,unknown>}catch{throw new Error("your business notification credentials are not valid JSON yet.")}
  return initializeApp({credential:cert(serviceAccount as Parameters<typeof cert>[0])});
 }
 
@@ -25,7 +25,7 @@ export async function POST(request:Request){
   const db=getFirestore(app);
   const adminDoc=await db.collection("admins").doc(uid).get();
   if(!adminDoc.exists||!["owner","staff"].includes(String(adminDoc.data()?.role||"").toLowerCase())){
-   return NextResponse.json({sent:0,error:"Only The Plug staff can send request updates."},{status:403});
+   return NextResponse.json({sent:0,error:"Only your business staff can send request updates."},{status:403});
   }
 
   const {requestId}=await request.json() as {requestId?:unknown};
@@ -42,9 +42,9 @@ export async function POST(request:Request){
   if(tokens.empty)return NextResponse.json({sent:0,reason:"customer-device-not-registered"});
 
   const messaging=getMessaging(app);
-  const title="The Plug request updated";
+  const title="your business request updated";
   const body=String(data.status??"Your request has been updated.")+(data.quotedPrice!==undefined?" · Quote P"+Number(data.quotedPrice).toFixed(2):"");
-  const baseUrl=process.env.NEXT_PUBLIC_BASE_URL||"https://the-plug-pearl.vercel.app";
+  const baseUrl=process.env.NEXT_PUBLIC_BASE_URL||"https://iteration13.example";
   let sent=0;
   const failures:string[]=[];
   for(const tokenDoc of tokens.docs){
@@ -57,7 +57,7 @@ export async function POST(request:Request){
      data:{title,body,link:"/account#requests",requestId},
      webpush:{
       fcmOptions:{link:baseUrl+"/account#requests"},
-      notification:{tag:"the-plug-request-"+requestId,icon:"/plug-icon.svg",badge:"/plug-icon.svg"}
+      notification:{tag:"iteration13-request-"+requestId,icon:"/iteration13-icon.svg",badge:"/iteration13-icon.svg"}
      }
     });
     sent++;
@@ -71,7 +71,7 @@ export async function POST(request:Request){
   }
   return NextResponse.json({sent,failures});
  }catch(error){
-  console.error("The Plug request notification failed:",error);
-  return NextResponse.json({sent:0,error:error instanceof Error?error.message:"The Plug request notification failed."},{status:400});
+  console.error("your business request notification failed:",error);
+  return NextResponse.json({sent:0,error:error instanceof Error?error.message:"your business request notification failed."},{status:400});
  }
 }
