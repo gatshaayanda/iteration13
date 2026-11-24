@@ -25,7 +25,7 @@ export default function PlugLoadingState({message, onRetry}: PlugLoadingStatePro
       <div className="plugLoadingStateTrack" aria-hidden="true">
         <span />
       </div>
-      <p>{takingLonger ? "The connection is taking longer than usual. The Plug is still checking." : "Checking for published updates…"}</p>
+      <p>{takingLonger ? "The connection is taking longer than usual. the app is still checking." : "Checking for published updates…"}</p>
       {takingLonger && onRetry && (
         <button type="button" className="plugLoadingStateRetry" onClick={onRetry}>
           Try again ↻
