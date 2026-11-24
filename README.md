@@ -53,7 +53,7 @@ This is a prototype control surface, not a secure admin boundary. Do not enter r
 
 ## Installation — protected behavior
 
-The existing installation mechanics are intentionally preserved:
+The existing installation mechanics and placement are intentionally preserved. A compact, dismissible branded card appears inline at the top of the page when installation is genuinely available:
 
 - The browser's retained `beforeinstallprompt` event is invoked from the user's explicit branded install action when available.
 - When a native prompt is unavailable, platform-specific guidance is shown instead of a dead button or fake native prompt.
